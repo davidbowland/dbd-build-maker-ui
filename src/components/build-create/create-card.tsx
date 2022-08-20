@@ -31,12 +31,7 @@ export interface CreateCardProps {
 
 export type BuildType = 'survivor' | 'killer'
 
-const CreateCard = ({
-  buildId,
-  buildOptions,
-  buildTokenResponse,
-  channelId
-}: CreateCardProps): JSX.Element => {
+const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: CreateCardProps): JSX.Element => {
   const [build, setBuild] = useState<BuildSubmission>({
     addon1: 'Any',
     addon2: 'Any',

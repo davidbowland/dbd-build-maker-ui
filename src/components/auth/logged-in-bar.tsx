@@ -1,9 +1,9 @@
-import { Link, navigate } from 'gatsby'
 import React, { useState } from 'react'
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
 import Box from '@mui/material/Box'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import IconButton from '@mui/material/IconButton'
+import { Link } from 'gatsby'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -11,6 +11,8 @@ import ListItemText from '@mui/material/ListItemText'
 import LogoutIcon from '@mui/icons-material/Logout'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import Typography from '@mui/material/Typography'
+
+import { removeAccessToken } from '@services/auth'
 
 export interface LoggedInBarProps {
   userName?: string
@@ -54,7 +56,8 @@ const LoggedInBar = ({ userName }: LoggedInBarProps): JSX.Element => {
               button
               onClick={() => {
                 closeMenu()
-                navigate(window.location.pathname)
+                removeAccessToken()
+                window.location.reload()
               }}
             >
               <ListItemIcon>

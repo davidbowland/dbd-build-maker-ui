@@ -55,7 +55,6 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
   }
 
   const renderChannels = (channels: ChannelBatch[]): JSX.Element[] => {
-    const accessHash = accessToken === null ? '' : `#access_token=${accessToken}`
     return channels
       .sort((a, b) => a.data.name.localeCompare(b.data.name))
       .map((channel, index) => {
@@ -65,7 +64,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
             <CardHeader
               aria-label={`Link to ${channel.data.name}`}
               avatar={<Avatar alt={channel.data.name} src={channel.data.pic} />}
-              onClick={() => navigate(`/c/${channel.id}${accessHash}`)}
+              onClick={() => navigate(`/c/${channel.id}`)}
               style={{ cursor: 'pointer' }}
               subheader={yourChannel ? 'Your channel' : ''}
               title={channel.data.name}

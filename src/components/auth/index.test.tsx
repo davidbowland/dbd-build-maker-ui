@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom'
-import * as gatsby from 'gatsby'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 import { mocked } from 'jest-mock'
@@ -12,7 +11,6 @@ import { twitchAuthTokenStatus } from '@test/__mocks__'
 jest.mock('@aws-amplify/analytics')
 jest.mock('@services/auth')
 jest.mock('@services/build-maker')
-jest.mock('gatsby')
 
 describe('Authenticated component', () => {
   const accessToken = 'tfvbjhgfr567uhghji987ytrdsdfgbn'
@@ -21,12 +19,18 @@ describe('Authenticated component', () => {
   const windowLocationHash = `#access_token=${accessToken}`
   const windowLocationOrigin = 'http://localhost'
   const windowLocationPathname = '/index.html'
+  const windowLocationReload = jest.fn()
 
   beforeAll(() => {
     console.error = jest.fn()
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: { hash: windowLocationHash, origin: windowLocationOrigin, pathname: windowLocationPathname },
+      value: {
+        hash: windowLocationHash,
+        origin: windowLocationOrigin,
+        pathname: windowLocationPathname,
+        reload: windowLocationReload,
+      },
     })
 
     mocked(auth).getAccessToken.mockReturnValue(accessToken)
@@ -180,8 +184,9 @@ describe('Authenticated component', () => {
       })
 
       await waitFor(() => {
-        expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/index.html')
+        expect(windowLocationReload).toHaveBeenCalled()
       })
+      expect(mocked(auth).removeAccessToken).toHaveBeenCalled()
     })
 
     test('expect closing menu closes the menu', async () => {

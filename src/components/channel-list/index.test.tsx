@@ -53,19 +53,6 @@ describe('ChannelList component', () => {
         card.click()
       })
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/c/123456#access_token=otfghjklkgtyuijnmk')
-    })
-
-    test('expect clicking channel without token navigates', async () => {
-      mocked(auth).getAccessToken.mockReturnValueOnce(null)
-      render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
-
-      mocked(auth).getAccessToken.mockReturnValueOnce(null)
-      const card = await screen.findByText(/MyChannel/i)
-      act(() => {
-        card.click()
-      })
-
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/c/123456')
     })
 

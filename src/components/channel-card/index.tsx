@@ -8,7 +8,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 
 import { BuildBatch, Channel } from '@types'
-import {fetchAllBuilds, fetchChannel } from '@services/build-maker'
+import { fetchAllBuilds, fetchChannel } from '@services/build-maker'
 
 export interface ChannelCardProps {
   channelId: string
@@ -23,14 +23,22 @@ const ChannelCard = ({ channelId, initialBuilds }: ChannelCardProps): JSX.Elemen
   const uncompletedBuildCount = builds?.reduce((count, build) => 1 - Math.sign(build.data.completed ?? 0) + count, 0)
 
   const renderCard = (channelInfo: Channel): JSX.Element => {
-    return <Card sx={{ maxWidth: 600 }} variant="outlined">
-      <CardHeader
-        aria-label={`Information about ${channelInfo.name}`}
-        avatar={<Avatar alt={channelInfo.name} src={channelInfo.pic} />}
-        subheader={uncompletedBuildCount !== undefined ? `Pending builds: ${uncompletedBuildCount.toLocaleString()}` : <LinearProgress />}
-        title={channelInfo.name}
-      />
-    </Card>
+    return (
+      <Card sx={{ maxWidth: 600 }} variant="outlined">
+        <CardHeader
+          aria-label={`Information about ${channelInfo.name}`}
+          avatar={<Avatar alt={channelInfo.name} src={channelInfo.pic} />}
+          subheader={
+            uncompletedBuildCount !== undefined ? (
+              `Pending builds: ${uncompletedBuildCount.toLocaleString()}`
+            ) : (
+              <LinearProgress />
+            )
+          }
+          title={channelInfo.name}
+        />
+      </Card>
+    )
   }
 
   const renderLoading = (): JSX.Element => {

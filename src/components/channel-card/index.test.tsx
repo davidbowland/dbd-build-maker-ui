@@ -46,7 +46,9 @@ describe('ChannelCard component', () => {
       mocked(buildMaker).fetchAllBuilds.mockRejectedValueOnce(undefined)
       render(<ChannelCard channelId={channelId} />)
 
-      expect(await screen.findByText(/Error fetching build information, please refresh the page to try again/i)).toBeVisible()
+      expect(
+        await screen.findByText(/Error fetching build information, please refresh the page to try again/i)
+      ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
 
@@ -54,7 +56,9 @@ describe('ChannelCard component', () => {
       mocked(buildMaker).fetchChannel.mockRejectedValueOnce(undefined)
       render(<ChannelCard channelId={channelId} />)
 
-      expect(await screen.findByText(/Error fetching channel information, please refresh the page to try again/i)).toBeVisible()
+      expect(
+        await screen.findByText(/Error fetching channel information, please refresh the page to try again/i)
+      ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
 
@@ -67,7 +71,9 @@ describe('ChannelCard component', () => {
         closeSnackbarButton.click()
       })
 
-      expect(screen.queryByText(/Error fetching channel information, please refresh the page to try again/i)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(/Error fetching channel information, please refresh the page to try again/i)
+      ).not.toBeInTheDocument()
     })
   })
 })
