@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
 import LinearProgress from '@mui/material/LinearProgress'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
@@ -8,6 +9,7 @@ import Typography from '@mui/material/Typography'
 
 import { BuildOptions, BuildTokenResponse } from '@types'
 import { fetchBuildOptions, fetchBuildToken } from '@services/build-maker'
+import ChannelCard from '@components/channel-card'
 import CreateCard from './create-card'
 
 export interface BuildCreateProps {
@@ -67,6 +69,10 @@ const BuildCreate = ({ buildId, channelId }: BuildCreateProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Create Build
         </Typography>
+        <>
+          <ChannelCard channelId={channelId} />
+          <Divider />
+        </>
         {isLoadingInitial ? (
           renderInitialLoading()
         ) : (

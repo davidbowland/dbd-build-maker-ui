@@ -7,8 +7,10 @@ import * as buildMaker from '@services/build-maker'
 import * as gatsby from 'gatsby'
 import { buildId, buildOptions, buildTokenResponse, channelId } from '@test/__mocks__'
 import BuildCreate from './index'
+import ChannelCard from '@components/channel-card'
 
 jest.mock('@aws-amplify/analytics')
+jest.mock('@components/channel-card')
 jest.mock('@services/build-maker')
 jest.mock('gatsby')
 
@@ -19,6 +21,7 @@ describe('BuildCreate component', () => {
     console.error = jest.fn()
     mocked(buildMaker).fetchBuildOptions.mockResolvedValue(buildOptions)
     mocked(buildMaker).fetchBuildToken.mockResolvedValue(buildTokenResponse)
+    mocked(ChannelCard).mockReturnValue(<>ChannelCard</>)
   })
 
   afterAll(() => {
@@ -26,6 +29,12 @@ describe('BuildCreate component', () => {
   })
 
   describe('initial load', () => {
+    test('expect ChannelCard rendered', async () => {
+      render(<BuildCreate buildId={buildId} channelId={channelId} />)
+
+      expect(mocked(ChannelCard)).toHaveBeenCalledWith({ channelId }, {})
+    })
+
     test('expect fetchBuildOptions failure displays message', async () => {
       mocked(buildMaker).fetchBuildOptions.mockRejectedValueOnce(undefined)
       render(<BuildCreate buildId={buildId} channelId={channelId} />)

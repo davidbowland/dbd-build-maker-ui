@@ -7,9 +7,11 @@ import * as auth from '@services/auth'
 import * as buildMaker from '@services/build-maker'
 import { buildBatch, buildKiller, channel, channelId, twitchAuthToken, twitchAuthTokenStatus } from '@test/__mocks__'
 import BuildList from './index'
+import ChannelCard from '@components/channel-card'
 import GenerateBuildUrl from '@components/generate-build-url'
 
 jest.mock('@aws-amplify/analytics')
+jest.mock('@components/channel-card')
 jest.mock('@components/generate-build-url')
 jest.mock('@services/auth')
 jest.mock('@services/build-maker')
@@ -22,6 +24,7 @@ describe('BuildList component', () => {
     mocked(auth).getAccessToken.mockReturnValue(twitchAuthToken)
     mocked(buildMaker).fetchAllBuilds.mockResolvedValue(buildBatch)
     mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
+    mocked(ChannelCard).mockReturnValue(<>ChannelCard</>)
     mocked(GenerateBuildUrl).mockReturnValue(<>GenerateBuildUrl</>)
   })
 
@@ -30,6 +33,12 @@ describe('BuildList component', () => {
   })
 
   describe('builds', () => {
+    test('expect ChannelCard with build count rendered', async () => {
+      render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+      expect(mocked(ChannelCard)).toHaveBeenCalledWith({ channelId }, {})
+    })
+
     test('expect builds to be shown', async () => {
       render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
 

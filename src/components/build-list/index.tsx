@@ -20,6 +20,7 @@ import jsonpatch from 'fast-json-patch'
 
 import { Build, BuildBatch, Channel, TwitchTokenStatus } from '@types'
 import { fetchAllBuilds, fetchChannel, patchBuild } from '@services/build-maker'
+import ChannelCard from '@components/channel-card'
 import GenerateBuildUrl from '@components/generate-build-url'
 import { getAccessToken } from '@services/auth'
 
@@ -35,7 +36,6 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
 
   const accessToken = getAccessToken()
-  const incompleteCount = builds?.reduce((count, build) => 1 - Math.sign(build.data.completed ?? 0) + count, 0) ?? 0
   const isChannelMod =
     (channel?.mods && channel?.mods.some((value) => tokenStatus?.name === value)) || channelId === tokenStatus?.id
 
@@ -225,15 +225,16 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
+        <>
+          <ChannelCard channelId={channelId} initialBuilds={builds} />
+          <Divider />
+        </>
         {isChannelMod && accessToken && (
           <>
             <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />
             <Divider />
           </>
         )}
-        <Typography sx={{ textAlign: 'center' }} variant="h5">
-          Pending builds: {incompleteCount.toLocaleString()}
-        </Typography>
         {builds ? renderBuilds(builds) : renderLoading()}
       </Stack>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
