@@ -4,7 +4,7 @@ import AppBar from '@mui/material/AppBar'
 import Snackbar from '@mui/material/Snackbar'
 import Toolbar from '@mui/material/Toolbar'
 
-import { getAccessToken, initiateTwitchLogin } from '@services/auth'
+import { getAccessToken, initiateTwitchLogin, redirectLogin } from '@services/auth'
 import LoggedInBar from './logged-in-bar'
 import LoggedOutBar from './logged-out-bar'
 import { TwitchTokenStatus } from '@types'
@@ -32,6 +32,7 @@ const Authenticated = ({ children, setTokenStatus }: AuthenticatedProps): JSX.El
           setTokenStatus(result)
           if (result.status === 'valid') {
             setUserName(result.name)
+            redirectLogin()
           } else {
             setErrorMessage('Token has expired, refreshing token')
             initiateTwitchLogin()
