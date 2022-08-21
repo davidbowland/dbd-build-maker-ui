@@ -18,6 +18,7 @@ jest.mock('@services/build-maker')
 
 describe('BuildList component', () => {
   const consoleError = console.error
+  const setInterval = jest.spyOn(window, 'setInterval')
 
   beforeAll(() => {
     console.error = jest.fn()
@@ -86,6 +87,13 @@ describe('BuildList component', () => {
 
       expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled()
     })
+
+    test('expect refresh build is called when setInterval fires', async () => {
+      setInterval.mockImplementationOnce((fn) => fn() as unknown as ReturnType<typeof window.setInterval>)
+      render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+      expect(mocked(buildMaker).fetchAllBuilds).toHaveBeenCalledTimes(2)
+    })
   })
 
   describe('authorized', () => {
@@ -106,6 +114,7 @@ describe('BuildList component', () => {
         return buildKiller
       })
       render(<BuildList channelId={channelId} tokenStatus={tokenForChannel} />)
+      mocked(buildMaker).fetchAllBuilds.mockRejectedValueOnce(undefined)
 
       const markCompleteButton = (await screen.findByText(/^Mark complete/i, {
         selector: 'button',
@@ -133,6 +142,7 @@ describe('BuildList component', () => {
         return buildKiller
       })
       render(<BuildList channelId={channelId} tokenStatus={tokenForChannel} />)
+      mocked(buildMaker).fetchAllBuilds.mockRejectedValueOnce(undefined)
 
       const unmarkCompleteButton = (await screen.findByText(/Unmark complete/i, {
         selector: 'button',

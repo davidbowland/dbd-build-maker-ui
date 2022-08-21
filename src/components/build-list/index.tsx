@@ -26,6 +26,8 @@ import ChannelCard from '@components/channel-card'
 import GenerateBuildUrl from '@components/generate-build-url'
 import { getAccessToken } from '@services/auth'
 
+const REFRESH_INTERVAL_SECONDS = parseInt(process.env.GATSBY_REFRESH_INTERVAL_SECONDS, 10)
+
 export interface BuildListProps {
   channelId: string
   tokenStatus?: TwitchTokenStatus
@@ -36,12 +38,26 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const [buildUpdating, setBuildUpdating] = useState<{ [key: string]: boolean }>({})
   const [channel, setChannel] = useState<Channel | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [refreshCount, setRefreshCount] = useState(0)
 
   const topRef = useRef<HTMLHRElement>(null)
 
   const accessToken = getAccessToken()
   const isChannelMod =
     (channel?.mods && channel?.mods.some((value) => tokenStatus?.name === value)) || channelId === tokenStatus?.id
+
+  const refreshBuilds = (): void => {
+    setIsRefreshing(true)
+    setRefreshCount(0)
+    fetchAllBuilds(channelId)
+      .then(setBuilds)
+      .catch((error) => {
+        console.error('refreshBuilds', error)
+        setErrorMessage('Error fetching build list, please refresh the page to try again')
+      })
+      .then(() => setIsRefreshing(false))
+  }
 
   const renderBuilds = (builds: BuildBatch[]): JSX.Element[] => {
     if (builds.length === 0) {
@@ -202,25 +218,30 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
       const { [buildId]: _, ...newBuildUpdating } = current
       return newBuildUpdating
     })
+    refreshBuilds()
   }
 
   const snackbarErrorClose = (): void => {
     setErrorMessage(undefined)
   }
 
-  useEffect((): void => {
-    fetchAllBuilds(channelId)
-      .then(setBuilds)
-      .catch((error) => {
-        console.error('fetchAllBuilds', error)
-        setErrorMessage('Error fetching build list, please refresh the page to try again')
-      })
+  useEffect(() => {
+    if (refreshCount >= REFRESH_INTERVAL_SECONDS) {
+      refreshBuilds()
+    }
+  }, [refreshCount])
+
+  useEffect(() => {
     fetchChannel(channelId)
       .then(setChannel)
       .catch((error) => {
         console.error('fetchChannel', error)
         setErrorMessage('Error fetching channel info, please refresh the page to try again')
       })
+
+    refreshBuilds()
+    const timer = window.setInterval(() => setRefreshCount((refreshCount) => refreshCount + 1), 1_000)
+    return () => window.clearInterval(timer)
   }, [])
 
   return (
@@ -237,6 +258,26 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
           </>
         )}
         <Divider ref={topRef} />
+        <Button
+          disabled={isRefreshing}
+          onClick={refreshBuilds}
+          size="small"
+          startIcon={
+            isRefreshing ? (
+              <CircularProgress color="inherit" size={14} />
+            ) : (
+              <CircularProgress
+                color="inherit"
+                size={14}
+                value={(100 * refreshCount) / REFRESH_INTERVAL_SECONDS}
+                variant="determinate"
+              />
+            )
+          }
+          variant="contained"
+        >
+          {isRefreshing ? 'Refreshing...' : 'Refresh'}
+        </Button>
         {builds ? renderBuilds(builds) : renderLoading()}
       </Stack>
       <Fab
