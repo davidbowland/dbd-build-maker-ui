@@ -50,6 +50,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
       )
       setExpiration(new Date(buildToken.expiration).toLocaleString())
       setSubmitter('')
+      setSubmitterError('')
     } catch (error) {
       console.error('generateBuildUrl', error)
       setErrorMessage('Error generating build URL')

@@ -181,7 +181,7 @@ describe('GenerateBuildUrl component', () => {
         copyToClipboardButton.click()
       })
 
-      expect(screen.queryByText(/Could not copy link to clipboard/i)).toBeVisible()
+      expect(await screen.findByText(/Could not copy link to clipboard/i)).toBeVisible()
     })
   })
 })
