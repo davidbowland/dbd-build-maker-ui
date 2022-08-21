@@ -21,6 +21,8 @@ describe('BuildList component', () => {
 
   beforeAll(() => {
     console.error = jest.fn()
+    window.HTMLElement.prototype.scrollIntoView = jest.fn()
+
     mocked(auth).getAccessToken.mockReturnValue(twitchAuthToken)
     mocked(buildMaker).fetchAllBuilds.mockResolvedValue(buildBatch)
     mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
@@ -72,6 +74,17 @@ describe('BuildList component', () => {
       })
 
       expect(screen.queryByText(/Error fetching build list/i)).not.toBeInTheDocument()
+    })
+
+    test('expect clicking scroll to top button scrolls view', async () => {
+      render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+      const scroller = (await screen.findByLabelText(/Scroll to top/i)) as HTMLDivElement
+      await act(() => {
+        scroller.click()
+      })
+
+      expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled()
     })
   })
 

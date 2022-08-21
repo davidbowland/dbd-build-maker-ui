@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CancelIcon from '@mui/icons-material/Cancel'
@@ -9,6 +9,8 @@ import CardHeader from '@mui/material/CardHeader'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
+import Fab from '@mui/material/Fab'
+import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -34,6 +36,8 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const [buildUpdating, setBuildUpdating] = useState<{ [key: string]: boolean }>({})
   const [channel, setChannel] = useState<Channel | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+
+  const topRef = useRef<HTMLHRElement>(null)
 
   const accessToken = getAccessToken()
   const isChannelMod =
@@ -221,22 +225,28 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
 
   return (
     <>
-      <Stack margin="auto" maxWidth="400px" spacing={4}>
+      <Stack margin="auto" marginBottom="50px" maxWidth="400px" spacing={4}>
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
-        <>
-          <ChannelCard channelId={channelId} initialBuilds={builds} />
-          <Divider />
-        </>
+        <ChannelCard channelId={channelId} initialBuilds={builds} />
         {isChannelMod && accessToken && (
           <>
-            <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />
             <Divider />
+            <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />
           </>
         )}
+        <Divider ref={topRef} />
         {builds ? renderBuilds(builds) : renderLoading()}
       </Stack>
+      <Fab
+        aria-label="Scroll to top"
+        color="secondary"
+        onClick={() => topRef.current && topRef.current.scrollIntoView()}
+        sx={{ bottom: 16, position: 'fixed', right: 16 }}
+      >
+        <KeyboardDoubleArrowUpRoundedIcon />
+      </Fab>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
           {errorMessage}
