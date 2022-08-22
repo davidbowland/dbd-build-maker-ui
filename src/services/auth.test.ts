@@ -108,6 +108,11 @@ describe('Auth service', () => {
         sameSite: 'strict',
         secure: true,
       })
+      expect(mockCookieSet).toHaveBeenCalledWith('access_token', '', {
+        path: '/',
+        sameSite: 'strict',
+        secure: true,
+      })
     })
 
     test('expect cookie not set when it already exists', () => {
@@ -118,7 +123,7 @@ describe('Auth service', () => {
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith(
         'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=jhgfrtyhjkjgyjh&redirect_uri=http%3A%2F%2Flocalhost&scope=moderation%3Aread'
       )
-      expect(mockCookieSet).toHaveBeenCalledTimes(0)
+      expect(mockCookieSet).not.toHaveBeenCalledWith('return_url', expect.anything(), expect.anything())
     })
   })
 
