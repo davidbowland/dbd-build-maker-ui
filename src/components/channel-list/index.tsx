@@ -111,7 +111,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Channels
         </Typography>
-        {tokenStatus !== undefined && !hasChannel && accessToken && (
+        {tokenStatus !== undefined && channels && !hasChannel && accessToken && (
           <>
             <CreateButton accessToken={accessToken} />
             <Divider />
