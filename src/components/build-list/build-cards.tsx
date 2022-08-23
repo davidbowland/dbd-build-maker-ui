@@ -121,6 +121,7 @@ const BuildCards = ({
                 </ListItem>
               </List>
             </>
+            <Typography variant="caption">Expires {new Date(build.data.expiration).toLocaleString()}</Typography>
           </CardContent>
           {renderCardAction(build.id, build.data)}
         </Card>
