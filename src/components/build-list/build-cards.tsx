@@ -174,7 +174,7 @@ const BuildCards = ({
         )
       } catch (error) {
         console.error('setBuildCompleted', error)
-        setErrorMessage('Error updating build')
+        setErrorMessage('Error updating build, please refresh the page as the build may have changed')
       }
     }
 

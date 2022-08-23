@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
 import Alert from '@mui/material/Alert'
 import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import LinearProgress from '@mui/material/LinearProgress'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
+import Typography from '@mui/material/Typography'
 
 import { BuildBatch, Channel } from '@types'
 import { fetchAllBuilds, fetchChannel } from '@services/build-maker'
+import { CardContent } from '@mui/material'
 
 export interface ChannelCardProps {
   channelId: string
@@ -37,6 +46,7 @@ const ChannelCard = ({ channelId, initialBuilds }: ChannelCardProps): JSX.Elemen
           }
           title={channelInfo.name}
         />
+        {channelInfo.mods.length > 0 && renderMods(channelInfo.mods)}
       </Card>
     )
   }
@@ -44,6 +54,25 @@ const ChannelCard = ({ channelId, initialBuilds }: ChannelCardProps): JSX.Elemen
   const renderLoading = (): JSX.Element => {
     return <Skeleton height={100} variant="text" width="100%" />
   }
+
+  const renderMods = (mods: string[]): JSX.Element => (
+    <CardContent>
+      <Accordion>
+        <AccordionSummary aria-controls="mods-content" expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="body1">Moderators</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <List dense={true}>
+            {mods.map((name, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={name} />
+              </ListItem>
+            ))}
+          </List>
+        </AccordionDetails>
+      </Accordion>
+    </CardContent>
+  )
 
   const snackbarErrorClose = (): void => {
     setErrorMessage(undefined)
