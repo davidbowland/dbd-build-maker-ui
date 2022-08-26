@@ -47,6 +47,7 @@ export interface BuildTokenResponse {
 export interface Channel {
   mods: string[]
   name: string
+  notes?: string
   pic: string
 }
 

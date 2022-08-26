@@ -13,7 +13,7 @@ export interface BuildPageProps {
 }
 
 const BuildPage = ({ params }: BuildPageProps): JSX.Element => {
-  const [_, setTokenStatus] = useState<TwitchTokenStatus | undefined>(undefined)
+  const [tokenStatus, setTokenStatus] = useState<TwitchTokenStatus | undefined>(undefined)
 
   return (
     <main style={{ minHeight: '90vh' }}>
@@ -22,7 +22,7 @@ const BuildPage = ({ params }: BuildPageProps): JSX.Element => {
       </Helmet>
       <Authenticated setTokenStatus={setTokenStatus}>
         <section style={{ padding: '50px' }}>
-          <BuildCreate buildId={params.buildId} channelId={params.channelId} />
+          <BuildCreate buildId={params.buildId} channelId={params.channelId} tokenStatus={tokenStatus} />
         </section>
       </Authenticated>
     </main>

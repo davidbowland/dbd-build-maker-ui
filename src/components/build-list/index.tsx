@@ -89,7 +89,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
-        <ChannelCard channelId={channelId} initialBuilds={builds} />
+        <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
         {isChannelMod && accessToken && (
           <>
             <Divider />

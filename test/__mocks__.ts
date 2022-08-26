@@ -56,6 +56,7 @@ export const channelId = '123456'
 
 export const channelInfo = {
   name: 'MyChannel',
+  notes: 'No new perks',
   pic: 'https://twitch.com/logo.png',
 }
 

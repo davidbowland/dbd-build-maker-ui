@@ -40,7 +40,7 @@ describe('BuildList component', () => {
     test('expect ChannelCard with build count rendered', async () => {
       render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
 
-      expect(mocked(ChannelCard)).toHaveBeenCalledWith({ channelId }, {})
+      expect(mocked(ChannelCard)).toHaveBeenCalledWith({ channelId, tokenStatus: twitchAuthTokenStatus }, {})
     })
 
     test('expect builds to be shown', async () => {

@@ -7,7 +7,7 @@ import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { BuildOptions, BuildTokenResponse } from '@types'
+import { BuildOptions, BuildTokenResponse, TwitchTokenStatus } from '@types'
 import { fetchBuildOptions, fetchBuildToken } from '@services/build-maker'
 import ChannelCard from '@components/channel-card'
 import CreateCard from './create-card'
@@ -15,9 +15,10 @@ import CreateCard from './create-card'
 export interface BuildCreateProps {
   buildId: string
   channelId: string
+  tokenStatus?: TwitchTokenStatus
 }
 
-const BuildCreate = ({ buildId, channelId }: BuildCreateProps): JSX.Element => {
+const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX.Element => {
   const [buildOptions, setBuildOptions] = useState<BuildOptions | undefined>(undefined)
   const [buildTokenResponse, setBuildTokenResponse] = useState<BuildTokenResponse | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
@@ -70,7 +71,7 @@ const BuildCreate = ({ buildId, channelId }: BuildCreateProps): JSX.Element => {
           Create Build
         </Typography>
         <>
-          <ChannelCard channelId={channelId} />
+          <ChannelCard channelId={channelId} tokenStatus={tokenStatus} />
           <Divider />
         </>
         {isLoadingInitial ? (

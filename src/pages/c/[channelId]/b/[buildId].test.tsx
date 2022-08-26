@@ -23,11 +23,14 @@ describe('Build page', () => {
 
   test('expect rendering BuildPage renders Authenticated', () => {
     render(<BuildPage params={{ buildId, channelId }} />)
-    expect(mocked(Authenticated)).toHaveBeenCalledTimes(1)
+    expect(mocked(Authenticated)).toHaveBeenCalled()
   })
 
   test('expect rendering BuildPage renders BuildCreate', () => {
     render(<BuildPage params={{ buildId, channelId }} />)
-    expect(mocked(BuildCreate)).toBeCalledWith(expect.objectContaining({ buildId, channelId }), {})
+    expect(mocked(BuildCreate)).toBeCalledWith(
+      expect.objectContaining({ buildId, channelId, tokenStatus: undefined }),
+      {}
+    )
   })
 })
