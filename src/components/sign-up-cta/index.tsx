@@ -9,7 +9,7 @@ import { initiateTwitchLogin } from '@services/auth'
 const SignUpCta = (): JSX.Element => {
   return (
     <>
-      <Stack margin="auto" maxWidth="400px" spacing={2}>
+      <Stack margin="auto" maxWidth="600px" spacing={2}>
         <Typography sx={{ textAlign: 'center' }} variant="h6">
           Sign in with Twitch to get started collecting builds for your channel!
         </Typography>

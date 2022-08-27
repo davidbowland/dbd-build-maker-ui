@@ -16,8 +16,11 @@ jest.mock('gatsby')
 
 describe('BuildCreate component', () => {
   const consoleError = console.error
+  const mathRandom = Math.random
+  const mockRandom = jest.fn()
 
   beforeAll(() => {
+    Math.random = mockRandom.mockReturnValue(0.5)
     console.error = jest.fn()
     mocked(buildMaker).fetchBuildOptions.mockResolvedValue(buildOptions)
     mocked(buildMaker).fetchBuildToken.mockResolvedValue(buildTokenResponse)
@@ -25,6 +28,7 @@ describe('BuildCreate component', () => {
   })
 
   afterAll(() => {
+    Math.random = mathRandom
     console.error = consoleError
   })
 
@@ -120,7 +124,9 @@ describe('BuildCreate component', () => {
         submitButton.click()
       })
 
-      expect(await screen.findByText(/Error processing submission, please try again/i)).toBeVisible()
+      expect(
+        await screen.findByText(/Error processing submission, please reload the page and try again/i)
+      ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
 
@@ -137,7 +143,9 @@ describe('BuildCreate component', () => {
         closeSnackbarButton.click()
       })
 
-      expect(screen.queryByText(/Error processing submission, please try again/i)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(/Error processing submission, please reload the page and try again/i)
+      ).not.toBeInTheDocument()
     })
   })
 
@@ -207,6 +215,34 @@ describe('BuildCreate component', () => {
         perk2: 'Dance With Me',
         perk3: 'Saboteur',
         perk4: 'Smash Hit',
+        submitter: 'cfb',
+      })
+    })
+
+    test('expect random build submitted', async () => {
+      render(<BuildCreate buildId={buildId} channelId={channelId} />)
+
+      const randomCharacterIcon = (await screen.findByLabelText(/Shuffle character/i)) as HTMLImageElement
+      act(() => {
+        randomCharacterIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      })
+      const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
+      act(() => {
+        submitButton.click()
+      })
+
+      expect(await screen.findByText(/Build submitted successfully!/i)).toBeVisible()
+      expect(mocked(buildMaker).createBuild).toHaveBeenCalledWith('123456', 'ytrfghjklkmnbvfty', {
+        addon1: 'Any',
+        addon2: 'Any',
+        character: 'Huntress',
+        item: undefined,
+        notes: '',
+        offering: 'Any',
+        perk1: 'Any',
+        perk2: 'Any',
+        perk3: 'Any',
+        perk4: 'Any',
         submitter: 'cfb',
       })
     })

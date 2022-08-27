@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -13,6 +14,7 @@ import InputLabel from '@mui/material/InputLabel'
 import NativeSelect from '@mui/material/NativeSelect'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
+import ShuffleIcon from '@mui/icons-material/Shuffle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
@@ -92,21 +94,31 @@ const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: Cr
   const renderOptionList = (title: string, name: string, value: string, options: string[]): JSX.Element => {
     return (
       <FormControl fullWidth>
-        <InputLabel id={`${name}-label`}>{title}</InputLabel>
-        <NativeSelect
-          aria-labelledby={`${name}-label`}
-          disabled={isSubmitting}
-          id={name}
-          inputProps={{ 'data-testid': name } as Partial<NativeSelectInputProps>}
-          onChange={(event) => setBuild({ ...build, [name]: event.target.value })}
-          value={value}
-        >
-          {options.map((value, index) => (
-            <option key={index} value={value}>
-              {value}
-            </option>
-          ))}
-        </NativeSelect>
+        <Stack direction="row">
+          <InputLabel id={`${name}-label`}>{title}</InputLabel>
+          <NativeSelect
+            aria-labelledby={`${name}-label`}
+            disabled={isSubmitting}
+            id={name}
+            inputProps={{ 'data-testid': name } as Partial<NativeSelectInputProps>}
+            onChange={(event) => setBuild({ ...build, [name]: event.target.value })}
+            sx={{ maxWidth: '95%' }}
+            value={value}
+          >
+            {options.map((value, index) => (
+              <option key={index} value={value}>
+                {value}
+              </option>
+            ))}
+          </NativeSelect>
+          <Box>
+            <ShuffleIcon
+              aria-label={`Shuffle ${name}`}
+              onClick={() => setBuild({ ...build, [name]: options[Math.floor(Math.random() * options.length)] })}
+              sx={{ position: 'absolute', top: '50%' }}
+            />
+          </Box>
+        </Stack>
       </FormControl>
     )
   }
@@ -128,7 +140,7 @@ const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: Cr
       navigate(`/c/${encodeURIComponent(channelId)}`)
     } catch (error) {
       console.error('submitClick', error)
-      setErrorMessage('Error processing submission, please try again')
+      setErrorMessage('Error processing submission, please reload the page and try again')
       setIsSubmitting(false)
     }
   }

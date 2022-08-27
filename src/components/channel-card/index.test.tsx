@@ -170,7 +170,7 @@ describe('ChannelCard component', () => {
         submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
 
-      expect(await screen.findByText(/Unable to save changes, please try again/i)).toBeVisible()
+      expect(await screen.findByText(/Unable to save changes, please reload the page and try again/i)).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
   })

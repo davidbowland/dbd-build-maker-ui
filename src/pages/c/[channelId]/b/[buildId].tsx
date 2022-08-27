@@ -21,7 +21,7 @@ const BuildPage = ({ params }: BuildPageProps): JSX.Element => {
         <title>DBD Build Maker | dbowland.com</title>
       </Helmet>
       <Authenticated setTokenStatus={setTokenStatus}>
-        <section style={{ padding: '50px' }}>
+        <section style={{ padding: '50px 10px' }}>
           <BuildCreate buildId={params.buildId} channelId={params.channelId} tokenStatus={tokenStatus} />
         </section>
       </Authenticated>

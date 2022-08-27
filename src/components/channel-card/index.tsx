@@ -56,7 +56,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
       setIsEditing(false)
     } catch (error) {
       console.error('handleSubmitClick', error)
-      setErrorMessage('Unable to save changes, please try again')
+      setErrorMessage('Unable to save changes, please reload the page and try again')
     }
     setIsLoading(false)
   }
