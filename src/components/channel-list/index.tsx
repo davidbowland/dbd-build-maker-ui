@@ -72,6 +72,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
             <CardActions>
               {yourChannel && (
                 <Button
+                  disabled={showDeletePending}
                   fullWidth
                   onClick={() => setShowDeleteDialog(true)}
                   size="small"

@@ -36,6 +36,7 @@ export const CreateButton = ({ accessToken }: CreateButtonProps): JSX.Element =>
       <Button
         data-amplify-analytics-name="create-channel-click"
         data-amplify-analytics-on="click"
+        disabled={showCreatePending}
         fullWidth
         onClick={createChannelClick}
         startIcon={showCreatePending ? <CircularProgress color="inherit" size={14} /> : <CreateIcon />}
