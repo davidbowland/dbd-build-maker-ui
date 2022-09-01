@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
 import LinearProgress from '@mui/material/LinearProgress'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
@@ -70,20 +69,19 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Create Build
         </Typography>
-        <>
+        <Stack spacing={8}>
           <ChannelCard channelId={channelId} tokenStatus={tokenStatus} />
-          <Divider />
-        </>
-        {isLoadingInitial ? (
-          renderInitialLoading()
-        ) : (
-          <CreateCard
-            buildId={buildId}
-            buildOptions={buildOptions}
-            buildTokenResponse={buildTokenResponse}
-            channelId={channelId}
-          />
-        )}
+          {isLoadingInitial ? (
+            renderInitialLoading()
+          ) : (
+            <CreateCard
+              buildId={buildId}
+              buildOptions={buildOptions}
+              buildTokenResponse={buildTokenResponse}
+              channelId={channelId}
+            />
+          )}
+        </Stack>
       </Stack>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-import Divider from '@mui/material/Divider'
 import Fab from '@mui/material/Fab'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 import Skeleton from '@mui/material/Skeleton'
@@ -89,34 +88,33 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
-        <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
-        {isChannelMod && accessToken && (
-          <>
-            <Divider />
-            <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />
-          </>
-        )}
-        <Divider ref={topRef} />
-        <Button
-          disabled={isRefreshing}
-          onClick={refreshBuilds}
-          size="small"
-          startIcon={
-            isRefreshing ? (
-              <CircularProgress color="inherit" size={14} />
-            ) : (
-              <CircularProgress
-                color="inherit"
-                size={14}
-                value={(100 * refreshCount) / REFRESH_INTERVAL_SECONDS}
-                variant="determinate"
-              />
-            )
-          }
-          variant="contained"
-        >
-          {isRefreshing ? 'Refreshing...' : 'Refresh'}
-        </Button>
+        <Stack ref={topRef} spacing={8}>
+          <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
+          <Stack spacing={2}>
+            {isChannelMod && accessToken && <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />}
+            <Button
+              disabled={isRefreshing}
+              fullWidth
+              onClick={refreshBuilds}
+              size="small"
+              startIcon={
+                isRefreshing ? (
+                  <CircularProgress color="inherit" size={14} />
+                ) : (
+                  <CircularProgress
+                    color="inherit"
+                    size={14}
+                    value={(100 * refreshCount) / REFRESH_INTERVAL_SECONDS}
+                    variant="determinate"
+                  />
+                )
+              }
+              variant="contained"
+            >
+              {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            </Button>
+          </Stack>
+        </Stack>
         {builds ? (
           <BuildCards
             accessToken={accessToken}

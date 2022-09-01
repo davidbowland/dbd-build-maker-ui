@@ -181,9 +181,9 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   }, [])
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1}>
       {channelInfo === undefined ? (
-        renderLoading(3)
+        renderLoading(2)
       ) : (
         <>
           {renderCard(channelInfo)}
