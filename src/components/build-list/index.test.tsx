@@ -120,7 +120,7 @@ describe('BuildList component', () => {
       render(<BuildList channelId={channelId} tokenStatus={tokenForChannel} />)
 
       waitFor(() => {
-        expect(mocked(GenerateBuildUrl)).toHaveBeenCalledTimes(1)
+        expect(mocked(GenerateBuildUrl)).toHaveBeenCalled()
       })
     })
 

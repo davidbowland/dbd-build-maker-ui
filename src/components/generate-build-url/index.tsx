@@ -3,7 +3,10 @@ import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import Divider from '@mui/material/Divider'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
 import LinkIcon from '@mui/icons-material/Link'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
@@ -17,8 +20,11 @@ export interface GenerateBuildUrlProps {
   channelId: string
 }
 
+type Dialogs = 'none' | 'generate' | 'complete'
+
 const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JSX.Element => {
   const [buildUrl, setBuildUrl] = useState<string | undefined>(undefined)
+  const [dialogOpen, setDialogOpen] = useState<Dialogs>('none')
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [expiration, setExpiration] = useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
@@ -33,6 +39,12 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
     } catch (error) {
       console.error('copyShortenedUrl', error)
       setErrorMessage('Could not copy link to clipboard')
+    }
+  }
+
+  const dialogClose = (): void => {
+    if (!isLoading) {
+      setDialogOpen('none')
     }
   }
 
@@ -51,6 +63,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
       setExpiration(new Date(buildToken.expiration).toLocaleString())
       setSubmitter('')
       setSubmitterError(undefined)
+      setDialogOpen('complete')
     } catch (error) {
       console.error('generateBuildUrl', error)
       setErrorMessage('Error generating build URL')
@@ -67,6 +80,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
             fullWidth
             label="Build URL"
             name="build-url"
+            sx={{ maxWidth: '100%', width: '450px' }}
             type="text"
             value={buildUrl}
             variant="filled"
@@ -86,37 +100,6 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
         >
           Copy build URL
         </Button>
-        <Divider />
-      </Stack>
-    )
-  }
-
-  const renderGenerateToken = (): JSX.Element => {
-    return (
-      <Stack spacing={2}>
-        <label>
-          <TextField
-            disabled={isLoading}
-            error={submitterError !== undefined}
-            fullWidth
-            helperText={submitterError}
-            label="Name of Requestor"
-            name="requestor-name"
-            onChange={(event) => setSubmitter(event.target.value)}
-            type="text"
-            value={submitter}
-            variant="filled"
-          />
-        </label>
-        <Button
-          disabled={isLoading}
-          fullWidth
-          onClick={generateBuildUrl}
-          startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : <LinkIcon />}
-          variant="contained"
-        >
-          {isLoading ? 'Generating new build URL...' : 'Generate new build URL'}
-        </Button>
       </Stack>
     )
   }
@@ -131,10 +114,48 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
 
   return (
     <>
-      <Stack spacing={2}>
-        {buildUrl !== undefined && renderCopyUrl(buildUrl)}
-        {renderGenerateToken()}
-      </Stack>
+      <Dialog onClose={dialogClose} open={dialogOpen === 'generate'}>
+        <DialogTitle>Generate build URL</DialogTitle>
+        <DialogContent>
+          <label>
+            <TextField
+              disabled={isLoading}
+              error={submitterError !== undefined}
+              fullWidth
+              helperText={submitterError}
+              label="Name of Requestor"
+              name="requestor-name"
+              onChange={(event) => setSubmitter(event.target.value)}
+              sx={{ maxWidth: '100%', width: '450px' }}
+              type="text"
+              value={submitter}
+              variant="filled"
+            />
+          </label>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={isLoading}
+            fullWidth
+            onClick={generateBuildUrl}
+            startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
+          >
+            {isLoading ? 'Generating...' : 'Generate'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog onClose={dialogClose} open={dialogOpen === 'complete'}>
+        <DialogTitle>Build URL</DialogTitle>
+        <DialogContent>{buildUrl !== undefined && renderCopyUrl(buildUrl)}</DialogContent>
+        <DialogActions>
+          <Button fullWidth onClick={dialogClose}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Button fullWidth onClick={() => setDialogOpen('generate')} startIcon={<LinkIcon />} variant="contained">
+        Generate new build URL
+      </Button>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
           {errorMessage}
