@@ -25,6 +25,7 @@ import {
   fetchChannel,
   patchBuild,
   patchChannel,
+  updateChannelMods,
   validateTwitchToken,
 } from './build-maker'
 import { rest, server } from '@test/setup-server'
@@ -141,6 +142,30 @@ describe('Build maker service', () => {
         const result = await deleteChannel(channelId, twitchAuthToken)
         expect(deleteEndpoint).toHaveBeenCalledTimes(1)
         expect(result).toEqual(channel)
+      })
+    })
+
+    describe('updateChannelMods', () => {
+      const updateModsEndpoint = jest.fn()
+
+      beforeAll(() => {
+        server.use(
+          rest.post(`${baseUrl}/channels/:id/update-mods`, async (req, res, ctx) => {
+            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
+              return res(ctx.status(401))
+            }
+
+            const { id } = req.params
+            updateModsEndpoint(id)
+            return res(ctx.json({}))
+          })
+        )
+      })
+
+      test('expect result from call returned', async () => {
+        const result = await updateChannelMods(channelId, twitchAuthToken)
+        expect(updateModsEndpoint).toHaveBeenCalledWith(channelId)
+        expect(result).toEqual({})
       })
     })
   })

@@ -34,6 +34,11 @@ export const deleteChannel = (channelId: string, token: string): Promise<Channel
     headers: { 'X-Twitch-Token': token },
   })
 
+export const updateChannelMods = (channelId: string, token: string): Promise<void> =>
+  API.post(buildMakerApiNameUnauthenticated, `/channels/${encodeURIComponent(channelId)}/update-mods`, {
+    headers: { 'X-Twitch-Token': token },
+  })
+
 /* Build tokens */
 
 export const createBuildToken = (channelId: string, token: string, submitter: string): Promise<Token> =>

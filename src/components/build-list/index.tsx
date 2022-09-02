@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
-import { createChannel, fetchAllBuilds, fetchChannel } from '@services/build-maker'
+import { fetchAllBuilds, fetchChannel, updateChannelMods } from '@services/build-maker'
 import BuildCards from './build-cards'
 import ChannelCard from '@components/channel-card'
 import GenerateBuildUrl from '@components/generate-build-url'
@@ -65,17 +65,18 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   }, [refreshCount])
 
   useEffect(() => {
+    if (channelId === tokenStatus?.id && accessToken) {
+      updateChannelMods(channelId, accessToken).catch((error) => console.error('updateChannelMods', error))
+    }
+  }, [tokenStatus])
+
+  useEffect(() => {
     fetchChannel(channelId)
       .then(setChannel)
       .catch((error) => {
         console.error('fetchChannel', error)
         setErrorMessage('Error fetching channel info, please refresh the page to try again')
       })
-
-    // Recreate this channel if the user owns it to update mods
-    if (channelId === tokenStatus?.id && accessToken) {
-      createChannel(accessToken).catch((error) => console.error('createChannel', error))
-    }
 
     refreshBuilds()
     const timer = window.setInterval(() => setRefreshCount((refreshCount) => refreshCount + 1), 1_000)

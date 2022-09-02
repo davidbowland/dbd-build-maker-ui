@@ -25,9 +25,9 @@ describe('BuildList component', () => {
     window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
     mocked(auth).getAccessToken.mockReturnValue(twitchAuthToken)
-    mocked(buildMaker).createChannel.mockResolvedValue(channel)
     mocked(buildMaker).fetchAllBuilds.mockResolvedValue(buildBatch)
     mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
+    mocked(buildMaker).updateChannelMods.mockResolvedValue(undefined)
     mocked(ChannelCard).mockReturnValue(<>ChannelCard</>)
     mocked(GenerateBuildUrl).mockReturnValue(<>GenerateBuildUrl</>)
   })
@@ -100,17 +100,17 @@ describe('BuildList component', () => {
   describe('authorized', () => {
     const tokenForChannel = { ...twitchAuthTokenStatus, id: channelId, name: 'mod1' }
 
-    test('expect createChannel called when channel matches token', async () => {
+    test('expect updateChannelMods called when channel matches token', async () => {
       render(<BuildList channelId={channelId} tokenStatus={tokenForChannel} />)
 
-      expect(mocked(buildMaker).createChannel).toHaveBeenCalledWith(twitchAuthToken)
+      expect(mocked(buildMaker).updateChannelMods).toHaveBeenCalledWith(channelId, twitchAuthToken)
     })
 
-    test('expect createChannel reject calls console.error', async () => {
-      mocked(buildMaker).createChannel.mockRejectedValueOnce(undefined)
+    test('expect updateChannelMods reject calls console.error', async () => {
+      mocked(buildMaker).updateChannelMods.mockRejectedValueOnce(undefined)
       render(<BuildList channelId={channelId} tokenStatus={tokenForChannel} />)
 
-      expect(mocked(buildMaker).createChannel).toHaveBeenCalledWith(twitchAuthToken)
+      expect(mocked(buildMaker).updateChannelMods).toHaveBeenCalledWith(channelId, twitchAuthToken)
       waitFor(() => {
         expect(console.error).toHaveBeenCalled()
       })

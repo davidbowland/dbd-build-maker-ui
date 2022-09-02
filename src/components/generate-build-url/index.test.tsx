@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 import { mocked } from 'jest-mock'
 
@@ -121,6 +121,61 @@ describe('GenerateBuildUrl component', () => {
       })
 
       expect(screen.queryByText(/Error generating build URL/i)).not.toBeInTheDocument()
+    })
+
+    test('expect dialog closes on escape', async () => {
+      render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
+
+      const generateTokenButton = (await screen.findByText(/Generate new build URL/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(() => {
+        generateTokenButton.click()
+      })
+      const dialog = (await screen.findByText(/Generate build URL/i)) as HTMLBodyElement
+      await act(() => {
+        fireEvent.keyDown(dialog, {
+          code: 'Escape',
+          key: 'Escape',
+        })
+      })
+
+      waitFor(() => {
+        expect(screen.queryByText(/Generate$/i, { selector: 'button' })).not.toBeInTheDocument()
+      })
+    })
+
+    test("expect dialog won't close while loading", async () => {
+      mocked(buildMaker).createBuildToken.mockReturnValueOnce(
+        new Promise(() => {
+          return
+        })
+      )
+      render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
+
+      const generateTokenButton = (await screen.findByText(/Generate new build URL/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(() => {
+        generateTokenButton.click()
+      })
+      const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
+      await act(() => {
+        fireEvent.change(submitterInput, { target: { value: submitter } })
+      })
+      const generateButton = (await screen.findByText(/Generate$/i, { selector: 'button' })) as HTMLButtonElement
+      await act(() => {
+        generateButton.click()
+      })
+      const dialog = (await screen.findByText(/Generate build URL/i)) as HTMLBodyElement
+      await act(() => {
+        fireEvent.keyDown(dialog, {
+          code: 'Escape',
+          key: 'Escape',
+        })
+      })
+
+      expect(screen.queryByText(/Generate$/i, { selector: 'button' })).not.toBeInTheDocument()
     })
   })
 
