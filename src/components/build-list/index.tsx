@@ -89,9 +89,9 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
-        <Stack ref={topRef} spacing={8}>
+        <Stack spacing={8}>
           <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
-          <Stack spacing={2}>
+          <Stack ref={topRef} spacing={2}>
             {isChannelMod && accessToken && <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />}
             <Button
               disabled={isRefreshing}
