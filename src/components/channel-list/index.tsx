@@ -89,7 +89,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
 
   const renderLoading = (): JSX.Element[] => {
     return Array.from({ length: 3 }).map((_, index) => (
-      <Skeleton height={100} key={index} variant="text" width="100%" />
+      <Skeleton height={100} key={index} variant="rounded" width="100%" />
     ))
   }
 

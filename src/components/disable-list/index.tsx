@@ -52,7 +52,7 @@ const DisableList = ({ accessToken, channelId }: DisableListProps): JSX.Element 
   const renderLoading = (count: number): JSX.Element[] =>
     Array.from({ length: count }).map((_, index) => (
       <ListItem key={index}>
-        <Skeleton height={100} variant="text" width="100%" />
+        <Skeleton height={50} variant="rounded" width="100%" />
       </ListItem>
     ))
 

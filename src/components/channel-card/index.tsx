@@ -128,7 +128,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   }
 
   const renderLoading = (count: number): JSX.Element[] =>
-    Array.from({ length: count }).map((_, index) => <Skeleton height={100} key={index} variant="text" width="100%" />)
+    Array.from({ length: count }).map((_, index) => <Skeleton height={60} key={index} variant="rounded" width="100%" />)
 
   const renderMods = (mods: string[]): JSX.Element => (
     <Accordion>
@@ -180,7 +180,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   return (
     <Stack spacing={1}>
       {channelInfo === undefined ? (
-        renderLoading(2)
+        renderLoading(3)
       ) : (
         <>
           {renderCard(channelInfo)}

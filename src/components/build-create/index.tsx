@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
-import LinearProgress from '@mui/material/LinearProgress'
+import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -34,11 +33,7 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
         </Typography>
       )
     }
-    return (
-      <Box sx={{ width: '100%' }}>
-        <LinearProgress />
-      </Box>
-    )
+    return <Skeleton height={450} variant="rounded" width="100%" />
   }
 
   const snackbarErrorClose = (): void => {
