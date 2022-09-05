@@ -93,10 +93,10 @@ export interface Items {
 
 export interface BuildOptions {
   Killers: Killers
-  KillerOfferings: Offerings
-  KillerPerks: Perks
+  ['Killer Offerings']: Offerings
+  ['Killer Perks']: Perks
   Survivors: string[]
-  SurvivorItems: Items
-  SurvivorPerks: Perks
-  SurvivorOfferings: Offerings
+  ['Survivor Items']: Items
+  ['Survivor Perks']: Perks
+  ['Survivor Offerings']: Offerings
 }

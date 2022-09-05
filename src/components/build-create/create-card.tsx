@@ -53,11 +53,12 @@ const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: Cr
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
 
   const characters = buildType === 'killer' ? Object.keys(buildOptions.Killers) : buildOptions.Survivors
-  const addons = buildType === 'killer' ? buildOptions.Killers[build.character] : buildOptions.SurvivorItems[build.item]
+  const addons =
+    buildType === 'killer' ? buildOptions.Killers[build.character] : buildOptions['Survivor Items'][build.item]
   const addons1 = addons.filter((value) => value === 'Any' || value === 'None' || value !== build.addon2)
   const addons2 = addons.filter((value) => value === 'Any' || value === 'None' || value !== build.addon1)
-  const offerings = buildType === 'killer' ? buildOptions.KillerOfferings : buildOptions.SurvivorOfferings
-  const perks = buildType === 'killer' ? buildOptions.KillerPerks : buildOptions.SurvivorPerks
+  const offerings = buildType === 'killer' ? buildOptions['Killer Offerings'] : buildOptions['Survivor Offerings']
+  const perks = buildType === 'killer' ? buildOptions['Killer Perks'] : buildOptions['Survivor Perks']
   const perks1 = perks.filter(
     (value) =>
       value === 'Any' || value === 'None' || (value !== build.perk2 && value !== build.perk3 && value !== build.perk4)
@@ -179,7 +180,7 @@ const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: Cr
             {renderOptionList('Character', 'character', build.character, characters)}
             <Divider />
             {buildType === 'survivor' &&
-              renderOptionList('Item', 'item', build.item, Object.keys(buildOptions.SurvivorItems))}
+              renderOptionList('Item', 'item', build.item, Object.keys(buildOptions['Survivor Items']))}
             {(buildType === 'killer' || build.item !== 'None') &&
               renderOptionList('Addon 1', 'addon1', build.addon1, addons1)}
             {(buildType === 'killer' || build.item !== 'None') &&

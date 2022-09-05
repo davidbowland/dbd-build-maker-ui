@@ -787,7 +787,7 @@ export const buildOptions: BuildOptions = {
       'Coxcombed Clapper',
     ],
   },
-  KillerOfferings: [
+  ['Killer Offerings']: [
     'Any',
     'None',
     'Ardent Raven Wreath',
@@ -808,7 +808,7 @@ export const buildOptions: BuildOptions = {
     'Survivor Pudding',
     'Tanager Wreath',
   ],
-  KillerPerks: [
+  ['Killer Perks']: [
     'Any',
     'None',
     "A Nurse's Calling",
@@ -943,7 +943,7 @@ export const buildOptions: BuildOptions = {
     'Yun-Jin Lee',
     'Zarina Kassir',
   ],
-  SurvivorItems: {
+  ['Survivor Items']: {
     Any: ['Any', 'None'],
     Flashlight: [
       'Any',
@@ -1024,7 +1024,32 @@ export const buildOptions: BuildOptions = {
     ],
     None: ['None'],
   },
-  SurvivorPerks: [
+  ['Survivor Offerings']: [
+    'Any',
+    'None',
+    'Black Salt Statuette',
+    'Bog Laurel Sachet',
+    'Bound Envelope',
+    'Chalk Pouch',
+    'Cream Chalk Pouch',
+    'Crispleaf Amaranth Sachet',
+    'Escape Cake',
+    'Fragrant Bog Laurel',
+    'Fragrant Crispleaf Amaranth',
+    'Fragrant Primrose Blossom',
+    'Fragrant Sweet William',
+    'Fresh Bog Laurel',
+    'Fresh Crispleaf Amaranth',
+    'Fresh Primrose Blossom',
+    'Fresh Sweet William',
+    'Ivory Chalk Pouch',
+    'Primrose Blossom Sachet',
+    'Salt Pouch',
+    'Sealed Envelope',
+    'Sweet William Sachet',
+    "Vigo's Jar of Salty Lips",
+  ],
+  ['Survivor Perks']: [
     'Any',
     'None',
     'Ace in the Hole',
@@ -1134,31 +1159,6 @@ export const buildOptions: BuildOptions = {
     "We'll Make It",
     "We're Gonna Live Forever",
     'Windows of Opportunity',
-  ],
-  SurvivorOfferings: [
-    'Any',
-    'None',
-    'Black Salt Statuette',
-    'Bog Laurel Sachet',
-    'Bound Envelope',
-    'Chalk Pouch',
-    'Cream Chalk Pouch',
-    'Crispleaf Amaranth Sachet',
-    'Escape Cake',
-    'Fragrant Bog Laurel',
-    'Fragrant Crispleaf Amaranth',
-    'Fragrant Primrose Blossom',
-    'Fragrant Sweet William',
-    'Fresh Bog Laurel',
-    'Fresh Crispleaf Amaranth',
-    'Fresh Primrose Blossom',
-    'Fresh Sweet William',
-    'Ivory Chalk Pouch',
-    'Primrose Blossom Sachet',
-    'Salt Pouch',
-    'Sealed Envelope',
-    'Sweet William Sachet',
-    "Vigo's Jar of Salty Lips",
   ],
 }
 
