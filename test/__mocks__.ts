@@ -64,6 +64,7 @@ export const mods = ['mod1', 'mod2']
 
 export const channel: Channel = {
   ...channelInfo,
+  disabledOptions: [],
   mods,
 }
 
@@ -104,7 +105,7 @@ export const buildBatch: BuildBatch[] = [
 
 export const channelBatch: ChannelBatch[] = [
   { data: channel, id: channelId },
-  { data: { mods: [], name: 'fnord', pic: 'pic.png' }, id: '9324824' },
+  { data: { disabledOptions: [], mods: [], name: 'fnord', pic: 'pic.png' }, id: '9324824' },
 ]
 
 /* Build options */

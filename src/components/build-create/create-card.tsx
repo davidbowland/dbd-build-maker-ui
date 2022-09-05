@@ -20,7 +20,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { navigate } from 'gatsby'
 
-import { Build, BuildOptions, BuildSubmission, BuildTokenResponse } from '@types'
+import { Build, BuildOptions, BuildSubmission, BuildTokenResponse, Channel } from '@types'
 import { NativeSelectInputProps } from '@mui/material/NativeSelect/NativeSelectInput'
 import { createBuild } from '@services/build-maker'
 
@@ -28,12 +28,22 @@ export interface CreateCardProps {
   buildId: string
   buildOptions: BuildOptions
   buildTokenResponse: BuildTokenResponse
+  channel: Channel
   channelId: string
 }
 
 export type BuildType = 'survivor' | 'killer'
 
-const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: CreateCardProps): JSX.Element => {
+const applyFilter = (arr: any[], toFilter: any[]): any[] =>
+  arr.filter((value) => value === 'Any' || value === 'None' || toFilter.indexOf(value) === -1)
+
+const CreateCard = ({
+  buildId,
+  buildOptions,
+  buildTokenResponse,
+  channel,
+  channelId,
+}: CreateCardProps): JSX.Element => {
   const [build, setBuild] = useState<BuildSubmission>({
     addon1: 'Any',
     addon2: 'Any',
@@ -47,34 +57,36 @@ const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: Cr
     perk4: 'Any',
     submitter: buildTokenResponse.submitter,
   })
-  const [buildType, setBuildType] = useState<BuildType>('killer')
+  const [buildType, setBuildType] = useState<BuildType>(
+    channel.disabledOptions.indexOf('Killers') === -1 ? 'killer' : 'survivor'
+  )
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
 
-  const characters = buildType === 'killer' ? Object.keys(buildOptions.Killers) : buildOptions.Survivors
-  const addons =
-    buildType === 'killer' ? buildOptions.Killers[build.character] : buildOptions['Survivor Items'][build.item]
-  const addons1 = addons.filter((value) => value === 'Any' || value === 'None' || value !== build.addon2)
-  const addons2 = addons.filter((value) => value === 'Any' || value === 'None' || value !== build.addon1)
-  const offerings = buildType === 'killer' ? buildOptions['Killer Offerings'] : buildOptions['Survivor Offerings']
-  const perks = buildType === 'killer' ? buildOptions['Killer Perks'] : buildOptions['Survivor Perks']
-  const perks1 = perks.filter(
-    (value) =>
-      value === 'Any' || value === 'None' || (value !== build.perk2 && value !== build.perk3 && value !== build.perk4)
+  const characters = applyFilter(
+    buildType === 'killer' ? Object.keys(buildOptions.Killers) : buildOptions.Survivors,
+    channel.disabledOptions
   )
-  const perks2 = perks.filter(
-    (value) =>
-      value === 'Any' || value === 'None' || (value !== build.perk1 && value !== build.perk3 && value !== build.perk4)
+  const addons = applyFilter(
+    buildType === 'killer' ? buildOptions.Killers[build.character] : buildOptions['Survivor Items'][build.item],
+    channel.disabledOptions
   )
-  const perks3 = perks.filter(
-    (value) =>
-      value === 'Any' || value === 'None' || (value !== build.perk1 && value !== build.perk2 && value !== build.perk4)
+  const addons1 = applyFilter(addons, [build.addon2])
+  const addons2 = applyFilter(addons, [build.addon1])
+  const items = applyFilter(Object.keys(buildOptions['Survivor Items']), channel.disabledOptions)
+  const offerings = applyFilter(
+    buildType === 'killer' ? buildOptions['Killer Offerings'] : buildOptions['Survivor Offerings'],
+    channel.disabledOptions
   )
-  const perks4 = perks.filter(
-    (value) =>
-      value === 'Any' || value === 'None' || (value !== build.perk1 && value !== build.perk2 && value !== build.perk3)
+  const perks = applyFilter(
+    buildType === 'killer' ? buildOptions['Killer Perks'] : buildOptions['Survivor Perks'],
+    channel.disabledOptions
   )
+  const perks1 = applyFilter(perks, [build.perk2, build.perk3, build.perk4])
+  const perks2 = applyFilter(perks, [build.perk1, build.perk3, build.perk4])
+  const perks3 = applyFilter(perks, [build.perk1, build.perk2, build.perk4])
+  const perks4 = applyFilter(perks, [build.perk1, build.perk2, build.perk3])
 
   const buildTypeChange = (value: BuildType): void => {
     setBuildType(value)
@@ -172,40 +184,61 @@ const CreateCard = ({ buildId, buildOptions, buildTokenResponse, channelId }: Cr
                 onChange={(event) => buildTypeChange(event.target.value as BuildType)}
                 value={buildType}
               >
-                <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Killer" value="killer" />
-                <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Survivor" value="survivor" />
+                {channel.disabledOptions.indexOf('Killers') === -1 && (
+                  <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Killer" value="killer" />
+                )}
+                {channel.disabledOptions.indexOf('Survivors') === -1 && (
+                  <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Survivor" value="survivor" />
+                )}
               </RadioGroup>
             </FormControl>
             <Divider />
             {renderOptionList('Character', 'character', build.character, characters)}
-            <Divider />
-            {buildType === 'survivor' &&
-              renderOptionList('Item', 'item', build.item, Object.keys(buildOptions['Survivor Items']))}
-            {(buildType === 'killer' || build.item !== 'None') &&
-              renderOptionList('Addon 1', 'addon1', build.addon1, addons1)}
-            {(buildType === 'killer' || build.item !== 'None') &&
-              renderOptionList('Addon 2', 'addon2', build.addon2, addons2)}
-            <Divider />
-            {renderOptionList('Perk 1', 'perk1', build.perk1, perks1)}
-            {renderOptionList('Perk 2', 'perk2', build.perk2, perks2)}
-            {renderOptionList('Perk 3', 'perk3', build.perk3, perks3)}
-            {renderOptionList('Perk 4', 'perk4', build.perk4, perks4)}
-            <Divider />
-            {renderOptionList('Offering', 'offering', build.offering, offerings)}
-            <Divider />
-            <label>
-              <TextField
-                disabled={isSubmitting}
-                fullWidth
-                label="Notes"
-                multiline
-                name="notes"
-                onChange={(event) => setBuild({ ...build, notes: event.target.value.slice(0, 250) })}
-                type="text"
-                value={build.notes}
-                variant="filled"
-              />
-            </label>
+            {(buildType === 'killer' || channel.disabledOptions.indexOf('Survivor Items') === -1) && (
+              <>
+                <Divider />
+                {buildType === 'survivor' && renderOptionList('Item', 'item', build.item, items)}
+                {(buildType === 'killer' || build.item !== 'None') &&
+                  renderOptionList('Addon 1', 'addon1', build.addon1, addons1)}
+                {(buildType === 'killer' || build.item !== 'None') &&
+                  renderOptionList('Addon 2', 'addon2', build.addon2, addons2)}
+              </>
+            )}
+            {((buildType === 'killer' && channel.disabledOptions.indexOf('Killer Perks') === -1) ||
+              (buildType === 'survivor' && channel.disabledOptions.indexOf('Survivor Perks') === -1)) && (
+              <>
+                <Divider />
+                {renderOptionList('Perk 1', 'perk1', build.perk1, perks1)}
+                {renderOptionList('Perk 2', 'perk2', build.perk2, perks2)}
+                {renderOptionList('Perk 3', 'perk3', build.perk3, perks3)}
+                {renderOptionList('Perk 4', 'perk4', build.perk4, perks4)}
+              </>
+            )}
+            {((buildType === 'killer' && channel.disabledOptions.indexOf('Killer Offerings') === -1) ||
+              (buildType === 'survivor' && channel.disabledOptions.indexOf('Survivor Offerings') === -1)) && (
+              <>
+                <Divider />
+                {renderOptionList('Offering', 'offering', build.offering, offerings)}
+              </>
+            )}
+            {channel.disabledOptions.indexOf('Notes') === -1 && (
+              <>
+                <Divider />
+                <label>
+                  <TextField
+                    disabled={isSubmitting}
+                    fullWidth
+                    label="Notes"
+                    multiline
+                    name="notes"
+                    onChange={(event) => setBuild({ ...build, notes: event.target.value.slice(0, 250) })}
+                    type="text"
+                    value={build.notes}
+                    variant="filled"
+                  />
+                </label>
+              </>
+            )}
           </Stack>
         </CardContent>
         <CardActions>

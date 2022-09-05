@@ -154,7 +154,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
         </DialogActions>
       </Dialog>
       <Button fullWidth onClick={() => setDialogOpen('generate')} startIcon={<LinkIcon />} variant="contained">
-        Generate new build URL
+        Generate build URL
       </Button>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">

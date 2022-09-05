@@ -50,7 +50,7 @@ describe('ChannelCard component', () => {
       render(<ChannelCard channelId={channelId} />)
 
       expect(
-        await screen.findByText(/Error fetching build information, please refresh the page to try again/i)
+        await screen.findByText(/Error fetching build details, please refresh the page to try again/i)
       ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -60,7 +60,7 @@ describe('ChannelCard component', () => {
       render(<ChannelCard channelId={channelId} />)
 
       expect(
-        await screen.findByText(/Error fetching channel information, please refresh the page to try again/i)
+        await screen.findByText(/Error fetching channel details, please refresh the page to try again/i)
       ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -75,7 +75,7 @@ describe('ChannelCard component', () => {
       })
 
       expect(
-        screen.queryByText(/Error fetching channel information, please refresh the page to try again/i)
+        screen.queryByText(/Error fetching channel details, please refresh the page to try again/i)
       ).not.toBeInTheDocument()
     })
   })
@@ -85,33 +85,33 @@ describe('ChannelCard component', () => {
 
     test('expect no edit button when no token', async () => {
       render(<ChannelCard channelId={channelId} />)
-      expect(screen.queryByLabelText(/Edit restrictions/i)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Edit instructions/i)).not.toBeInTheDocument()
     })
 
     test("expect no edit button when token doesn't match channel", async () => {
       render(<ChannelCard channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
-      expect(screen.queryByLabelText(/Edit restrictions/i)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Edit instructions/i)).not.toBeInTheDocument()
     })
 
     test('expect no edit button when no access token', async () => {
       mocked(auth).getAccessToken.mockReturnValueOnce(null)
 
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
-      expect(screen.queryByLabelText(/Edit restrictions/i)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Edit instructions/i)).not.toBeInTheDocument()
     })
 
     test('expect editing restrictions invokes patchChannel', async () => {
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
 
-      const editRestrictionsIcon = (await screen.findByLabelText(/Edit restrictions/i)) as HTMLImageElement
+      const editRestrictionsIcon = (await screen.findByLabelText(/Edit instructions/i)) as HTMLImageElement
       act(() => {
         editRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
-      const restrictionsInput = (await screen.findByLabelText(/Build restrictions/i)) as HTMLInputElement
+      const restrictionsInput = (await screen.findByLabelText(/Special instructions/i)) as HTMLInputElement
       act(() => {
         fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
       })
-      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit restrictions/i)) as HTMLImageElement
+      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit instructions/i)) as HTMLImageElement
       act(() => {
         submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
@@ -129,15 +129,15 @@ describe('ChannelCard component', () => {
     test('expect patchChannel invoked with undefined when no restrictions', async () => {
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
 
-      const editRestrictionsIcon = (await screen.findByLabelText(/Edit restrictions/i)) as HTMLImageElement
+      const editRestrictionsIcon = (await screen.findByLabelText(/Edit instructions/i)) as HTMLImageElement
       act(() => {
         editRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
-      const restrictionsInput = (await screen.findByLabelText(/Build restrictions/i)) as HTMLInputElement
+      const restrictionsInput = (await screen.findByLabelText(/Special instructions/i)) as HTMLInputElement
       act(() => {
         fireEvent.change(restrictionsInput, { target: { value: '' } })
       })
-      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit restrictions/i)) as HTMLImageElement
+      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit instructions/i)) as HTMLImageElement
       act(() => {
         submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
@@ -157,15 +157,15 @@ describe('ChannelCard component', () => {
       mocked(buildMaker).patchChannel.mockRejectedValueOnce(undefined)
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
 
-      const editRestrictionsIcon = (await screen.findByLabelText(/Edit restrictions/i)) as HTMLImageElement
+      const editRestrictionsIcon = (await screen.findByLabelText(/Edit instructions/i)) as HTMLImageElement
       act(() => {
         editRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
-      const restrictionsInput = (await screen.findByLabelText(/Build restrictions/i)) as HTMLInputElement
+      const restrictionsInput = (await screen.findByLabelText(/Special instructions/i)) as HTMLInputElement
       act(() => {
         fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
       })
-      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit restrictions/i)) as HTMLImageElement
+      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit instructions/i)) as HTMLImageElement
       act(() => {
         submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })

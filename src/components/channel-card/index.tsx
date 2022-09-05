@@ -26,7 +26,7 @@ import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
 import { fetchAllBuilds, fetchChannel, patchChannel } from '@services/build-maker'
 import { getAccessToken } from '@services/auth'
 
-const NO_RESTRICTIONS_TEXT = 'No build restrictions'
+const NO_INSTRUCTIONS_TEXT = 'No special instructions'
 
 export interface ChannelCardProps {
   channelId: string
@@ -38,9 +38,9 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   const [builds, setBuilds] = useState<BuildBatch[] | undefined>(initialBuilds)
   const [channelInfo, setChannelInfo] = useState<Channel | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [instructions, setInstructions] = useState(NO_INSTRUCTIONS_TEXT)
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [restrictions, setRestrictions] = useState(NO_RESTRICTIONS_TEXT)
 
   const accessToken = getAccessToken()
   const uncompletedBuildCount = builds?.reduce((count, build) => 1 - Math.sign(build.data.completed ?? 0) + count, 0)
@@ -48,7 +48,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   const handleSubmitClick = async (channelInfo: Channel, accessToken: string): Promise<void> => {
     setIsLoading(true)
     try {
-      const notes = restrictions === '' || restrictions === NO_RESTRICTIONS_TEXT ? undefined : restrictions
+      const notes = instructions === '' || instructions === NO_INSTRUCTIONS_TEXT ? undefined : instructions
       const newChannelInfo = { ...channelInfo, notes }
       const jsonPatchOperations = jsonpatch.compare(channelInfo, newChannelInfo, true)
       await patchChannel(channelId, jsonPatchOperations, accessToken)
@@ -65,7 +65,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
     return (
       <Card sx={{ maxWidth: 600 }} variant="outlined">
         <CardHeader
-          aria-label={`Information about ${channelInfo.name}`}
+          aria-label={`Details for ${channelInfo.name}`}
           avatar={<Avatar alt={channelInfo.name} src={channelInfo.pic} />}
           subheader={
             uncompletedBuildCount !== undefined ? (
@@ -80,11 +80,55 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
     )
   }
 
-  const renderLoading = (count: number): JSX.Element[] => {
-    return Array.from({ length: count }).map((_, index) => (
-      <Skeleton height={100} key={index} variant="text" width="100%" />
-    ))
+  const renderInstructions = (channelInfo: Channel): JSX.Element => {
+    if (isEditing && accessToken) {
+      return (
+        <Alert severity="info" variant="filled">
+          <Stack direction="row" spacing={1}>
+            <TextField
+              disabled={isLoading}
+              fullWidth
+              label="Special instructions"
+              name="special-instructions"
+              onChange={(event) => setInstructions(event.target.value)}
+              sx={{ maxWidth: '100%', width: '600px' }}
+              type="text"
+              value={instructions}
+              variant="filled"
+            />
+            <Box sx={{ minWidth: '25px' }}>
+              {isLoading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : (
+                <CheckIcon
+                  aria-label="Submit instructions"
+                  color="success"
+                  onClick={() => handleSubmitClick(channelInfo, accessToken)}
+                />
+              )}
+            </Box>
+          </Stack>
+        </Alert>
+      )
+    }
+    return (
+      <Alert severity={channelInfo.notes ? 'warning' : 'success'} variant="filled">
+        <Stack direction="row" spacing={1}>
+          <Typography sx={{ maxWidth: '100%', width: '600px' }} variant="body1">
+            {channelInfo.notes ?? NO_INSTRUCTIONS_TEXT}
+          </Typography>
+          {tokenStatus?.id === channelId && accessToken && (
+            <Box>
+              <EditIcon aria-label="Edit instructions" onClick={() => setIsEditing(true)} />
+            </Box>
+          )}
+        </Stack>
+      </Alert>
+    )
   }
+
+  const renderLoading = (count: number): JSX.Element[] =>
+    Array.from({ length: count }).map((_, index) => <Skeleton height={100} key={index} variant="text" width="100%" />)
 
   const renderMods = (mods: string[]): JSX.Element => (
     <Accordion>
@@ -103,59 +147,12 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
     </Accordion>
   )
 
-  const renderRestrictions = (channelInfo: Channel): JSX.Element => {
-    if (isEditing && accessToken) {
-      return (
-        <Alert severity="info" variant="filled">
-          <Stack direction="row" spacing={1}>
-            <TextField
-              disabled={isLoading}
-              fullWidth
-              label="Build restrictions"
-              name="build-restrictions"
-              onChange={(event) => setRestrictions(event.target.value)}
-              sx={{ maxWidth: '100%', width: '600px' }}
-              type="text"
-              value={restrictions}
-              variant="filled"
-            />
-            <Box sx={{ minWidth: '25px' }}>
-              {isLoading ? (
-                <CircularProgress color="inherit" size={20} />
-              ) : (
-                <CheckIcon
-                  aria-label="Submit restrictions"
-                  color="success"
-                  onClick={() => handleSubmitClick(channelInfo, accessToken)}
-                />
-              )}
-            </Box>
-          </Stack>
-        </Alert>
-      )
-    }
-    return (
-      <Alert severity={channelInfo.notes ? 'warning' : 'success'} variant="filled">
-        <Stack direction="row" spacing={1}>
-          <Typography sx={{ maxWidth: '100%', width: '600px' }} variant="body1">
-            {channelInfo.notes ?? 'No build restrictions'}
-          </Typography>
-          {tokenStatus?.id === channelId && accessToken && (
-            <Box>
-              <EditIcon aria-label="Edit restrictions" onClick={() => setIsEditing(true)} />
-            </Box>
-          )}
-        </Stack>
-      </Alert>
-    )
-  }
-
   const snackbarErrorClose = (): void => {
     setErrorMessage(undefined)
   }
 
   useEffect(() => {
-    setRestrictions(channelInfo?.notes ?? NO_RESTRICTIONS_TEXT)
+    setInstructions(channelInfo?.notes ?? NO_INSTRUCTIONS_TEXT)
   }, [channelInfo])
 
   useEffect(() => {
@@ -164,7 +161,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
         .then(setBuilds)
         .catch((error) => {
           console.error('fetchAllBuilds', error)
-          setErrorMessage('Error fetching build information, please refresh the page to try again')
+          setErrorMessage('Error fetching build details, please refresh the page to try again')
         })
     } else {
       setBuilds(initialBuilds)
@@ -176,7 +173,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
       .then(setChannelInfo)
       .catch((error) => {
         console.error('fetchChannel', error)
-        setErrorMessage('Error fetching channel information, please refresh the page to try again')
+        setErrorMessage('Error fetching channel details, please refresh the page to try again')
       })
   }, [])
 
@@ -188,7 +185,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
         <>
           {renderCard(channelInfo)}
           {channelInfo.mods.length > 0 && renderMods(channelInfo.mods)}
-          {renderRestrictions(channelInfo)}
+          {renderInstructions(channelInfo)}
         </>
       )}
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>

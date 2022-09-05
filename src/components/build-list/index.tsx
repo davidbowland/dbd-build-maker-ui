@@ -13,6 +13,7 @@ import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
 import { fetchAllBuilds, fetchChannel, updateChannelMods } from '@services/build-maker'
 import BuildCards from './build-cards'
 import ChannelCard from '@components/channel-card'
+import DisableList from '@components/disable-list'
 import GenerateBuildUrl from '@components/generate-build-url'
 import { getAccessToken } from '@services/auth'
 
@@ -92,12 +93,12 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <Stack spacing={8}>
           <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
           <Stack ref={topRef} spacing={2}>
+            {isChannelMod && accessToken && <DisableList accessToken={accessToken} channelId={channelId} />}
             {isChannelMod && accessToken && <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />}
             <Button
               disabled={isRefreshing}
               fullWidth
               onClick={refreshBuilds}
-              size="small"
               startIcon={
                 isRefreshing ? (
                   <CircularProgress color="inherit" size={14} />
@@ -112,7 +113,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
               }
               variant="contained"
             >
-              {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              {isRefreshing ? 'Refreshing builds...' : 'Refresh builds'}
             </Button>
           </Stack>
         </Stack>

@@ -5,7 +5,7 @@ import { mocked } from 'jest-mock'
 
 import * as buildMaker from '@services/build-maker'
 import * as gatsby from 'gatsby'
-import { buildId, buildOptions, buildTokenResponse, channelId } from '@test/__mocks__'
+import { buildId, buildOptions, buildTokenResponse, channel, channelId } from '@test/__mocks__'
 import BuildCreate from './index'
 import ChannelCard from '@components/channel-card'
 
@@ -24,6 +24,7 @@ describe('BuildCreate component', () => {
     console.error = jest.fn()
     mocked(buildMaker).fetchBuildOptions.mockResolvedValue(buildOptions)
     mocked(buildMaker).fetchBuildToken.mockResolvedValue(buildTokenResponse)
+    mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
     mocked(ChannelCard).mockReturnValue(<>ChannelCard</>)
   })
 
@@ -59,6 +60,16 @@ describe('BuildCreate component', () => {
       expect(console.error).toHaveBeenCalledTimes(1)
     })
 
+    test('expect fetchChannel failure displays message', async () => {
+      mocked(buildMaker).fetchChannel.mockRejectedValueOnce(undefined)
+      render(<BuildCreate buildId={buildId} channelId={channelId} />)
+
+      expect(
+        (await screen.findAllByText(/Error fetching channel details, please refresh the page to try again/i)).length
+      ).toEqual(2)
+      expect(console.error).toHaveBeenCalledTimes(1)
+    })
+
     test('expect closing error message snackbar removes it', async () => {
       mocked(buildMaker).fetchBuildOptions.mockRejectedValueOnce(undefined)
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
@@ -75,6 +86,14 @@ describe('BuildCreate component', () => {
   })
 
   describe('CreateCard submit', () => {
+    test("expect having killers disabled doesn't show killers selection", async () => {
+      mocked(buildMaker).fetchChannel.mockResolvedValueOnce({ ...channel, disabledOptions: ['Killers'] })
+      render(<BuildCreate buildId={buildId} channelId={channelId} />)
+
+      expect(await screen.findByLabelText(/Survivor/i)).toBeInTheDocument()
+      expect(screen.queryByLabelText(/Killer/i)).not.toBeInTheDocument()
+    })
+
     test('expect submitting build calls createBuild, displays a message, and navigates', async () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 

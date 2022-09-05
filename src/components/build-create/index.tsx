@@ -6,8 +6,8 @@ import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { BuildOptions, BuildTokenResponse, TwitchTokenStatus } from '@types'
-import { fetchBuildOptions, fetchBuildToken } from '@services/build-maker'
+import { BuildOptions, BuildTokenResponse, Channel, TwitchTokenStatus } from '@types'
+import { fetchBuildOptions, fetchBuildToken, fetchChannel } from '@services/build-maker'
 import ChannelCard from '@components/channel-card'
 import CreateCard from './create-card'
 
@@ -20,10 +20,11 @@ export interface BuildCreateProps {
 const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX.Element => {
   const [buildOptions, setBuildOptions] = useState<BuildOptions | undefined>(undefined)
   const [buildTokenResponse, setBuildTokenResponse] = useState<BuildTokenResponse | undefined>(undefined)
+  const [channel, setChannel] = useState<Channel | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [loadingError, setLoadingError] = useState<string | undefined>(undefined)
 
-  const isLoadingInitial = buildOptions === undefined || buildTokenResponse === undefined
+  const isLoadingInitial = buildOptions === undefined || buildTokenResponse === undefined || channel === undefined
 
   const renderInitialLoading = (): JSX.Element => {
     if (loadingError !== undefined) {
@@ -61,6 +62,14 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
         setErrorMessage(message)
         setLoadingError(message)
       })
+    fetchChannel(channelId)
+      .then(setChannel)
+      .catch((error) => {
+        console.error('fetchChannel', error)
+        const message = 'Error fetching channel details, please refresh the page to try again'
+        setErrorMessage(message)
+        setLoadingError(message)
+      })
   }, [])
 
   return (
@@ -78,6 +87,7 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
               buildId={buildId}
               buildOptions={buildOptions}
               buildTokenResponse={buildTokenResponse}
+              channel={channel}
               channelId={channelId}
             />
           )}
