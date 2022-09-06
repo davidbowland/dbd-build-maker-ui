@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -10,6 +9,7 @@ import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
+import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import NativeSelect from '@mui/material/NativeSelect'
 import Radio from '@mui/material/Radio'
@@ -124,13 +124,14 @@ const CreateCard = ({
               </option>
             ))}
           </NativeSelect>
-          <Box>
-            <ShuffleIcon
-              aria-label={`Shuffle ${name}`}
-              onClick={() => setBuild({ ...build, [name]: options[Math.floor(Math.random() * options.length)] })}
-              sx={{ position: 'absolute', top: '50%' }}
-            />
-          </Box>
+          <IconButton
+            aria-label={`Shuffle ${name}`}
+            disabled={isSubmitting}
+            onClick={() => setBuild({ ...build, [name]: options[Math.floor(Math.random() * options.length)] })}
+            sx={{ margin: 'auto 0 0 0' }}
+          >
+            <ShuffleIcon />
+          </IconButton>
         </Stack>
       </FormControl>
     )
