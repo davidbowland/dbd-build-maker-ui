@@ -43,10 +43,21 @@ describe('BuildList component', () => {
       expect(mocked(ChannelCard)).toHaveBeenCalledWith({ channelId, tokenStatus: twitchAuthTokenStatus }, {})
     })
 
-    test('expect builds to be shown', async () => {
+    test('expect pending builds to be shown', async () => {
       render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
 
       expect(await screen.findByText(/Wraith/i)).toBeVisible()
+    })
+
+    test('expect completed builds to be shown', async () => {
+      render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+      const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      act(() => {
+        completedBuildsTab.click()
+      })
       expect(await screen.findByText(/Jill Valentine/i)).toBeVisible()
     })
 
@@ -139,6 +150,12 @@ describe('BuildList component', () => {
       await act(async () => {
         await markCompleteButton.click()
       })
+      const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      act(() => {
+        completedBuildsTab.click()
+      })
       waitFor(() => {
         expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
       })
@@ -161,11 +178,23 @@ describe('BuildList component', () => {
       render(<BuildList channelId={channelId} tokenStatus={tokenForChannel} />)
       mocked(buildMaker).fetchAllBuilds.mockRejectedValueOnce(undefined)
 
+      const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      act(() => {
+        completedBuildsTab.click()
+      })
       const unmarkCompleteButton = (await screen.findByText(/Unmark complete/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(async () => {
         await unmarkCompleteButton.click()
+      })
+      const pendingBuildsTab = (await screen.findByText(/Pending builds/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      act(() => {
+        pendingBuildsTab.click()
       })
       waitFor(() => {
         expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
@@ -178,7 +207,7 @@ describe('BuildList component', () => {
       )
       expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'test', path: '/completed' }))
       expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'remove', path: '/completed' }))
-      expect(screen.queryAllByText(/^Mark complete/i).length).toEqual(2)
+      expect((await screen.findAllByText(/^Mark complete/i)).length).toEqual(2)
     })
 
     test('expect patchBuild error shows error message', async () => {
@@ -193,8 +222,8 @@ describe('BuildList component', () => {
       })
       waitFor(() => {
         expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
+        expect(screen.queryByText(/Error updating build/i)).toBeVisible()
       })
-      expect(await screen.findByText(/Error updating build/i)).toBeVisible()
       expect(console.error).toHaveBeenCalled()
     })
 
@@ -233,6 +262,33 @@ describe('BuildList component', () => {
       })
 
       expect(screen.queryByText(/Error fetching channel info/i)).not.toBeInTheDocument()
+    })
+
+    test('expect mods shown when requested', async () => {
+      render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+      const modsTab = (await screen.findByText(/Mods/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      act(() => {
+        modsTab.click()
+      })
+
+      expect(await screen.findByText(/mod1/i)).toBeInTheDocument()
+    })
+
+    test('expect no mods shown when no mods', async () => {
+      mocked(buildMaker).fetchChannel.mockResolvedValueOnce({ ...channel, mods: [] })
+      render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+      const modsTab = (await screen.findByText(/Mods/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      act(() => {
+        modsTab.click()
+      })
+
+      expect(await screen.findByText(/No mods/i)).toBeInTheDocument()
     })
   })
 })

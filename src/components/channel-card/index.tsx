@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Accordion from '@mui/material/Accordion'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import AccordionSummary from '@mui/material/AccordionSummary'
 import Alert from '@mui/material/Alert'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
@@ -10,11 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CheckIcon from '@mui/icons-material/Check'
 import CircularProgress from '@mui/material/CircularProgress'
 import EditIcon from '@mui/icons-material/Edit'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import LinearProgress from '@mui/material/LinearProgress'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
@@ -130,23 +123,6 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   const renderLoading = (count: number): JSX.Element[] =>
     Array.from({ length: count }).map((_, index) => <Skeleton height={60} key={index} variant="rounded" width="100%" />)
 
-  const renderMods = (mods: string[]): JSX.Element => (
-    <Accordion>
-      <AccordionSummary aria-controls="mods-content" expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="body1">Moderators</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <List dense={true}>
-          {mods.map((name, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={name} />
-            </ListItem>
-          ))}
-        </List>
-      </AccordionDetails>
-    </Accordion>
-  )
-
   const snackbarErrorClose = (): void => {
     setErrorMessage(undefined)
   }
@@ -180,11 +156,10 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   return (
     <Stack spacing={1}>
       {channelInfo === undefined ? (
-        renderLoading(3)
+        renderLoading(2)
       ) : (
         <>
           {renderCard(channelInfo)}
-          {channelInfo.mods.length > 0 && renderMods(channelInfo.mods)}
           {renderInstructions(channelInfo)}
         </>
       )}

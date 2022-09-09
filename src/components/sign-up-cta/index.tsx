@@ -29,7 +29,9 @@ const SignUpCta = (): JSX.Element => {
         >
           Sign in with Twitch
         </Button>
-        <Typography>Your account is free and we collect no personally identifiable information.</Typography>
+        <Typography sx={{ textAlign: 'center' }}>
+          Your account is free and we collect no personally identifiable information.
+        </Typography>
       </Stack>
       <Grid alignItems="center" component="div" container direction="column" spacing={0} style={{ minHeight: '100vh' }}>
         <Grid item xs={3}>
@@ -127,7 +129,7 @@ const SignUpCta = (): JSX.Element => {
               </CardContent>
               <CardActions>
                 <Button onClick={initiateTwitchLogin} size="small">
-                  I&apos;m in!
+                  I&apos;m in
                 </Button>
               </CardActions>
             </Card>

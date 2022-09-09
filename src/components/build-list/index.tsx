@@ -1,12 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Fab from '@mui/material/Fab'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import Typography from '@mui/material/Typography'
 
 import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
@@ -30,12 +36,15 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [refreshCount, setRefreshCount] = useState(0)
+  const [tabIndex, setTabIndex] = useState(0)
 
   const topRef = useRef<HTMLHRElement>(null)
 
   const accessToken = getAccessToken()
   const isChannelMod =
     (channel?.mods && channel?.mods.some((value) => tokenStatus?.name === value)) || channelId === tokenStatus?.id
+
+  const handleTabChange = (event: React.SyntheticEvent, value: number) => setTabIndex(value)
 
   const refreshBuilds = (): void => {
     setIsRefreshing(true)
@@ -54,6 +63,16 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
       <Skeleton height={250} key={index} variant="rounded" width="100%" />
     ))
   }
+
+  const renderMods = (mods: string[]): JSX.Element => (
+    <List dense={true}>
+      {mods.map((name, index) => (
+        <ListItem key={index}>
+          <ListItemText primary={name} />
+        </ListItem>
+      ))}
+    </List>
+  )
 
   const snackbarErrorClose = (): void => {
     setErrorMessage(undefined)
@@ -118,15 +137,60 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
           </Stack>
         </Stack>
         {builds ? (
-          <BuildCards
-            accessToken={accessToken}
-            builds={builds}
-            channelId={channelId}
-            isChannelMod={isChannelMod}
-            refreshBuilds={refreshBuilds}
-            setBuilds={setBuilds}
-            setErrorMessage={setErrorMessage}
-          />
+          <Box sx={{ width: '100%' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs aria-label="Build selection tabs" onChange={handleTabChange} value={tabIndex} variant="fullWidth">
+                <Tab
+                  label={`Pending builds (${builds.filter((build) => !build.data.completed).length.toLocaleString()})`}
+                />
+                <Tab
+                  label={`Completed builds (${builds
+                    .filter((build) => !!build.data.completed)
+                    .length.toLocaleString()})`}
+                />
+                {channel && <Tab label={`Mods (${channel.mods.length.toLocaleString()})`} />}
+              </Tabs>
+            </Box>
+            {tabIndex === 0 && (
+              <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+                <BuildCards
+                  accessToken={accessToken}
+                  builds={builds}
+                  channelId={channelId}
+                  isChannelMod={isChannelMod}
+                  pendingBuilds={true}
+                  refreshBuilds={refreshBuilds}
+                  setBuilds={setBuilds}
+                  setErrorMessage={setErrorMessage}
+                />
+              </Box>
+            )}
+            {tabIndex === 1 && (
+              <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+                <BuildCards
+                  accessToken={accessToken}
+                  builds={builds}
+                  channelId={channelId}
+                  isChannelMod={isChannelMod}
+                  pendingBuilds={false}
+                  refreshBuilds={refreshBuilds}
+                  setBuilds={setBuilds}
+                  setErrorMessage={setErrorMessage}
+                />
+              </Box>
+            )}
+            {channel && tabIndex === 2 && (
+              <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+                {channel.mods.length > 0 ? (
+                  renderMods(channel.mods)
+                ) : (
+                  <Typography sx={{ textAlign: 'center' }} variant="h5">
+                    No mods
+                  </Typography>
+                )}
+              </Box>
+            )}
+          </Box>
         ) : (
           renderLoading()
         )}
