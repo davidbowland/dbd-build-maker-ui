@@ -7,9 +7,6 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import CircularProgress from '@mui/material/CircularProgress'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import jsonpatch from 'fast-json-patch'
@@ -50,7 +47,7 @@ const BuildCards = ({
 
   const renderBuilds = (builds: BuildBatch[]): JSX.Element[] => {
     return builds.map((build, index) => (
-      <Card key={index} sx={{ maxWidth: 600 }} variant="outlined">
+      <Card key={index} sx={{ boxShadow: 20, maxWidth: 600 }} variant="outlined">
         <CardHeader
           avatar={build.data.completed ? <CheckCircleOutlineIcon color="success" /> : <CancelIcon color="error" />}
           subheader={
@@ -62,68 +59,42 @@ const BuildCards = ({
           {build.data.item && (
             <>
               <Typography variant="h6">Item</Typography>
-              <List>
-                <ListItem>
-                  <ListItemText primary={build.data.item} />
-                </ListItem>
-              </List>
+              <Typography variant="body2">{renderSortedList(build.data.item)}</Typography>
             </>
           )}
           {build.data.item !== 'None' && (
             <>
               <Typography variant="h6">Addons</Typography>
-              <List dense={true}>
-                <ListItem>
-                  <ListItemText primary={build.data.addon1} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary={build.data.addon2} />
-                </ListItem>
-              </List>
+              <Typography variant="body2">{renderSortedList(build.data.addon1, build.data.addon2)}</Typography>
             </>
           )}
           <>
             <Typography variant="h6">Offering</Typography>
-            <List dense={true}>
-              <ListItem>
-                <ListItemText primary={build.data.offering} />
-              </ListItem>
-            </List>
+            <Typography variant="body2">{renderSortedList(build.data.offering)}</Typography>
           </>
           <>
             <Typography variant="h6">Perks</Typography>
-            <List dense={true}>
-              <ListItem>
-                <ListItemText primary={build.data.perk1} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary={build.data.perk2} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary={build.data.perk3} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary={build.data.perk4} />
-              </ListItem>
-            </List>
+            <Typography variant="body2">
+              {renderSortedList(build.data.perk1, build.data.perk2, build.data.perk3, build.data.perk4)}
+            </Typography>
           </>
           {build.data.notes && (
             <>
               <Typography variant="h6">Notes</Typography>
-              <List dense={true}>
-                <ListItem>
-                  <ListItemText primary={build.data.notes} />
-                </ListItem>
-              </List>
+              <Typography variant="body2">
+                <ul style={{ listStyle: 'none' }}>
+                  <li>{build.data.notes}</li>
+                </ul>
+              </Typography>
             </>
           )}
           <>
             <Typography variant="h6">Submitted by</Typography>
-            <List dense={true}>
-              <ListItem>
-                <ListItemText primary={build.data.submitter} />
-              </ListItem>
-            </List>
+            <Typography variant="body2">
+              <ul style={{ listStyle: 'none' }}>
+                <li>{build.data.submitter}</li>
+              </ul>
+            </Typography>
           </>
           <Typography variant="caption">Expires {new Date(build.data.expiration).toLocaleString()}</Typography>
         </CardContent>
@@ -160,6 +131,14 @@ const BuildCards = ({
       </CardActions>
     )
   }
+
+  const renderSortedList = (...args: string[]): JSX.Element => (
+    <ul>
+      {args.sort().map((value, index) => (
+        <li key={index}>{value}</li>
+      ))}
+    </ul>
+  )
 
   const setBuildCompleted = async (buildId: string, build: Build, completed?: number): Promise<void> => {
     setBuildUpdating({ ...buildUpdating, [buildId]: true })

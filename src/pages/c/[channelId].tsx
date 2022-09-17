@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Grid from '@mui/material/Grid'
 import { Helmet } from 'react-helmet'
 
 import Authenticated from '@components/auth'
@@ -20,9 +21,11 @@ const ChannelPage = ({ params }: ChannelPageProps): JSX.Element => {
         <title>DBD Build Maker | dbowland.com</title>
       </Helmet>
       <Authenticated setTokenStatus={setTokenStatus}>
-        <section style={{ padding: '50px 10px' }}>
-          <BuildList channelId={params.channelId} tokenStatus={tokenStatus} />
-        </section>
+        <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
+          <Grid item sx={{ m: 'auto', maxWidth: 600, width: '100%' }}>
+            <BuildList channelId={params.channelId} tokenStatus={tokenStatus} />
+          </Grid>
+        </Grid>
       </Authenticated>
     </main>
   )

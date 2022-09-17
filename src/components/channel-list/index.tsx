@@ -3,6 +3,7 @@ import Alert from '@mui/material/Alert'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
 import CardActions from '@mui/material/CardActions'
 import CardHeader from '@mui/material/CardHeader'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -61,16 +62,17 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
         const yourChannel = tokenStatus && channel.id === tokenStatus?.id
         return (
           <Card key={index} sx={{ maxWidth: 600 }} variant="outlined">
-            <CardHeader
-              aria-label={`Link to ${channel.data.name}`}
-              avatar={<Avatar alt={channel.data.name} src={channel.data.pic} />}
-              onClick={() => navigate(`/c/${channel.id}`)}
-              style={{ cursor: 'pointer' }}
-              subheader={yourChannel ? 'Your channel' : ''}
-              title={channel.data.name}
-            />
-            <CardActions>
-              {yourChannel && (
+            <CardActionArea>
+              <CardHeader
+                aria-label={`Link to ${channel.data.name}`}
+                avatar={<Avatar alt={channel.data.name} src={channel.data.pic} />}
+                onClick={() => navigate(`/c/${channel.id}`)}
+                subheader={yourChannel ? 'Your channel' : ''}
+                title={channel.data.name}
+              />
+            </CardActionArea>
+            {yourChannel && (
+              <CardActions>
                 <Button
                   disabled={showDeletePending}
                   fullWidth
@@ -80,8 +82,8 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
                 >
                   {showDeletePending ? 'Deleting channel...' : 'Delete channel'}
                 </Button>
-              )}
-            </CardActions>
+              </CardActions>
+            )}
           </Card>
         )
       })
