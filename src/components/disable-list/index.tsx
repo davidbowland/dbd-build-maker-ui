@@ -8,9 +8,9 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import EditIcon from '@mui/icons-material/Edit'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import FactCheckIcon from '@mui/icons-material/FactCheck'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -20,6 +20,7 @@ import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
+import Tooltip from '@mui/material/Tooltip'
 import jsonpatch from 'fast-json-patch'
 
 import { BuildOptions, Channel } from '@types'
@@ -224,9 +225,12 @@ const DisableList = ({ accessToken, channelId }: DisableListProps): JSX.Element 
           </Button>
         </DialogActions>
       </Dialog>
-      <Button fullWidth onClick={() => setDialogOpen(true)} startIcon={<FactCheckIcon />} variant="contained">
-        Edit build options
-      </Button>
+
+      <Tooltip title="Edit build options">
+        <IconButton aria-label="Edit build options" onClick={() => setDialogOpen(true)}>
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
           {errorMessage}

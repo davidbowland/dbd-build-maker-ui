@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import AddIcon from '@mui/icons-material/Add'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -7,10 +8,11 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import LinkIcon from '@mui/icons-material/Link'
+import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
 import { createBuildToken } from '@services/build-maker'
@@ -153,9 +155,11 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
           </Button>
         </DialogActions>
       </Dialog>
-      <Button fullWidth onClick={() => setDialogOpen('generate')} startIcon={<LinkIcon />} variant="contained">
-        Generate build URL
-      </Button>
+      <Tooltip title="Generate build URL">
+        <IconButton aria-label="Generate build URL" onClick={() => setDialogOpen('generate')}>
+          <AddIcon />
+        </IconButton>
+      </Tooltip>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
           {errorMessage}

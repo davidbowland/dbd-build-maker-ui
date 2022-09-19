@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import CircularProgress from '@mui/material/CircularProgress'
-import Stack from '@mui/material/Stack'
+import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import jsonpatch from 'fast-json-patch'
 
@@ -47,59 +47,61 @@ const BuildCards = ({
 
   const renderBuilds = (builds: BuildBatch[]): JSX.Element[] => {
     return builds.map((build, index) => (
-      <Card key={index} sx={{ boxShadow: 20, maxWidth: 600 }} variant="outlined">
-        <CardHeader
-          avatar={build.data.completed ? <CheckCircleOutlineIcon color="success" /> : <CancelIcon color="error" />}
-          subheader={
-            build.data.completed ? `Completed ${new Date(build.data.completed).toLocaleString()}` : 'Incomplete'
-          }
-          title={build.data.character}
-        />
-        <CardContent>
-          {build.data.item && (
+      <Grid item key={index} md={4} sm={6} xs={12}>
+        <Card variant="outlined">
+          <CardHeader
+            avatar={build.data.completed ? <CheckCircleOutlineIcon color="success" /> : <CancelIcon color="error" />}
+            subheader={
+              build.data.completed ? `Completed ${new Date(build.data.completed).toLocaleString()}` : 'Incomplete'
+            }
+            title={build.data.character}
+          />
+          <CardContent>
+            {build.data.item && (
+              <>
+                <Typography variant="h6">Item</Typography>
+                <Typography variant="body2">{renderSortedList(build.data.item)}</Typography>
+              </>
+            )}
+            {build.data.item !== 'None' && (
+              <>
+                <Typography variant="h6">Addons</Typography>
+                <Typography variant="body2">{renderSortedList(build.data.addon1, build.data.addon2)}</Typography>
+              </>
+            )}
             <>
-              <Typography variant="h6">Item</Typography>
-              <Typography variant="body2">{renderSortedList(build.data.item)}</Typography>
+              <Typography variant="h6">Offering</Typography>
+              <Typography variant="body2">{renderSortedList(build.data.offering)}</Typography>
             </>
-          )}
-          {build.data.item !== 'None' && (
             <>
-              <Typography variant="h6">Addons</Typography>
-              <Typography variant="body2">{renderSortedList(build.data.addon1, build.data.addon2)}</Typography>
+              <Typography variant="h6">Perks</Typography>
+              <Typography variant="body2">
+                {renderSortedList(build.data.perk1, build.data.perk2, build.data.perk3, build.data.perk4)}
+              </Typography>
             </>
-          )}
-          <>
-            <Typography variant="h6">Offering</Typography>
-            <Typography variant="body2">{renderSortedList(build.data.offering)}</Typography>
-          </>
-          <>
-            <Typography variant="h6">Perks</Typography>
-            <Typography variant="body2">
-              {renderSortedList(build.data.perk1, build.data.perk2, build.data.perk3, build.data.perk4)}
-            </Typography>
-          </>
-          {build.data.notes && (
+            {build.data.notes && (
+              <>
+                <Typography variant="h6">Notes</Typography>
+                <Typography variant="body2">
+                  <ul style={{ listStyle: 'none' }}>
+                    <li>{build.data.notes}</li>
+                  </ul>
+                </Typography>
+              </>
+            )}
             <>
-              <Typography variant="h6">Notes</Typography>
+              <Typography variant="h6">Submitted by</Typography>
               <Typography variant="body2">
                 <ul style={{ listStyle: 'none' }}>
-                  <li>{build.data.notes}</li>
+                  <li>{build.data.submitter}</li>
                 </ul>
               </Typography>
             </>
-          )}
-          <>
-            <Typography variant="h6">Submitted by</Typography>
-            <Typography variant="body2">
-              <ul style={{ listStyle: 'none' }}>
-                <li>{build.data.submitter}</li>
-              </ul>
-            </Typography>
-          </>
-          <Typography variant="caption">Expires {new Date(build.data.expiration).toLocaleString()}</Typography>
-        </CardContent>
-        {renderCardAction(build.id, build.data)}
-      </Card>
+            <Typography variant="caption">Expires {new Date(build.data.expiration).toLocaleString()}</Typography>
+          </CardContent>
+          {renderCardAction(build.id, build.data)}
+        </Card>
+      </Grid>
     ))
   }
 
@@ -109,7 +111,13 @@ const BuildCards = ({
     } else if (buildUpdating[buildId]) {
       return (
         <CardActions>
-          <Button disabled={true} fullWidth size="small" startIcon={<CircularProgress color="inherit" size={14} />}>
+          <Button
+            disabled={true}
+            fullWidth
+            size="small"
+            startIcon={<CircularProgress color="inherit" size={14} />}
+            variant="outlined"
+          >
             Loading
           </Button>
         </CardActions>
@@ -117,7 +125,12 @@ const BuildCards = ({
     } else if (build.completed) {
       return (
         <CardActions>
-          <Button fullWidth onClick={() => setBuildCompleted(buildId, build, undefined)} size="small">
+          <Button
+            fullWidth
+            onClick={() => setBuildCompleted(buildId, build, undefined)}
+            size="small"
+            variant="outlined"
+          >
             Unmark complete
           </Button>
         </CardActions>
@@ -125,7 +138,12 @@ const BuildCards = ({
     }
     return (
       <CardActions>
-        <Button fullWidth onClick={() => setBuildCompleted(buildId, build, new Date().getTime())} size="small">
+        <Button
+          fullWidth
+          onClick={() => setBuildCompleted(buildId, build, new Date().getTime())}
+          size="small"
+          variant="outlined"
+        >
           Mark complete
         </Button>
       </CardActions>
@@ -170,15 +188,19 @@ const BuildCards = ({
 
   const sortedBuilds = filterAndSortBuilds(builds)
   return (
-    <Stack spacing={4}>
-      {sortedBuilds.length === 0 ? (
-        <Typography sx={{ textAlign: 'center' }} variant="h5">
-          No builds
-        </Typography>
-      ) : (
-        renderBuilds(sortedBuilds)
-      )}
-    </Stack>
+    <Grid spacing={4} sx={{ width: '100%' }}>
+      <Grid container justifyContent="center" spacing={4}>
+        {sortedBuilds.length === 0 ? (
+          <Grid item xs>
+            <Typography sx={{ textAlign: 'center' }} variant="h5">
+              No builds
+            </Typography>
+          </Grid>
+        ) : (
+          renderBuilds(sortedBuilds)
+        )}
+      </Grid>
+    </Grid>
   )
 }
 

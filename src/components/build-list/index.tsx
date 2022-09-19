@@ -1,18 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Fab from '@mui/material/Fab'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
+import ReplayIcon from '@mui/icons-material/Replay'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
 import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
@@ -43,6 +46,9 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const accessToken = getAccessToken()
   const isChannelMod =
     (channel?.mods && channel?.mods.some((value) => tokenStatus?.name === value)) || channelId === tokenStatus?.id
+
+  const formatRefreshCount = (refreshCount: number): string =>
+    new Date((REFRESH_INTERVAL_SECONDS - refreshCount) * 1000).toISOString().replace(/^.*T(00:)?([^.]+).*$/, '$2')
 
   const handleTabChange = (event: React.SyntheticEvent, value: number) => setTabIndex(value)
 
@@ -109,92 +115,93 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
-        <Stack spacing={8}>
-          <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
-          <Stack ref={topRef} spacing={2}>
-            {isChannelMod && accessToken && <DisableList accessToken={accessToken} channelId={channelId} />}
-            {isChannelMod && accessToken && <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />}
-            <Button
-              disabled={isRefreshing}
-              fullWidth
-              onClick={refreshBuilds}
-              startIcon={
-                isRefreshing ? (
-                  <CircularProgress color="inherit" size={14} />
-                ) : (
-                  <CircularProgress
-                    color="inherit"
-                    size={14}
-                    value={(100 * refreshCount) / REFRESH_INTERVAL_SECONDS}
-                    variant="determinate"
-                  />
-                )
-              }
-              variant="contained"
-            >
-              {isRefreshing ? 'Refreshing builds...' : 'Refresh builds'}
-            </Button>
-          </Stack>
-        </Stack>
-        {builds ? (
-          <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs aria-label="Build selection tabs" onChange={handleTabChange} value={tabIndex} variant="fullWidth">
-                <Tab
-                  label={`Pending builds (${builds.filter((build) => !build.data.completed).length.toLocaleString()})`}
-                />
-                <Tab
-                  label={`Completed builds (${builds
-                    .filter((build) => !!build.data.completed)
-                    .length.toLocaleString()})`}
-                />
-                {channel && <Tab label={`Mods (${channel.mods.length.toLocaleString()})`} />}
-              </Tabs>
-            </Box>
-            {tabIndex === 0 && (
-              <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
-                <BuildCards
-                  accessToken={accessToken}
-                  builds={builds}
-                  channelId={channelId}
-                  isChannelMod={isChannelMod}
-                  pendingBuilds={true}
-                  refreshBuilds={refreshBuilds}
-                  setBuilds={setBuilds}
-                  setErrorMessage={setErrorMessage}
-                />
-              </Box>
-            )}
-            {tabIndex === 1 && (
-              <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
-                <BuildCards
-                  accessToken={accessToken}
-                  builds={builds}
-                  channelId={channelId}
-                  isChannelMod={isChannelMod}
-                  pendingBuilds={false}
-                  refreshBuilds={refreshBuilds}
-                  setBuilds={setBuilds}
-                  setErrorMessage={setErrorMessage}
-                />
-              </Box>
-            )}
-            {channel && tabIndex === 2 && (
-              <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
-                {channel.mods.length > 0 ? (
-                  renderMods(channel.mods)
-                ) : (
-                  <Typography sx={{ textAlign: 'center' }} variant="h5">
-                    No mods
-                  </Typography>
-                )}
-              </Box>
-            )}
-          </Box>
-        ) : (
-          renderLoading()
-        )}
+        <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
       </Stack>
+      <Grid container ref={topRef} spacing={2} sx={{ paddingRight: 2, width: '100%' }}>
+        <Grid item xs></Grid>
+        <Grid container item spacing={1} sx={{ paddingRight: 1 }} xs="auto">
+          {isChannelMod && accessToken && (
+            <Grid item xs>
+              <GenerateBuildUrl accessToken={accessToken} channelId={channelId} />
+            </Grid>
+          )}
+          {isChannelMod && accessToken && (
+            <Grid item xs>
+              <DisableList accessToken={accessToken} channelId={channelId} />
+            </Grid>
+          )}
+          <Grid item xs>
+            <Tooltip title={isRefreshing ? 'Refreshing builds...' : 'Refresh builds'}>
+              <IconButton disabled={isRefreshing} onClick={refreshBuilds}>
+                {isRefreshing ? <CircularProgress color="inherit" size={14} /> : <ReplayIcon />}
+              </IconButton>
+            </Tooltip>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ paddingRight: 2, width: '100%' }}>
+        <Grid item xs></Grid>
+        <Grid item xs="auto">
+          <Typography variant="caption">Automatic refresh in {formatRefreshCount(refreshCount)}</Typography>
+        </Grid>
+      </Grid>
+
+      {builds ? (
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs aria-label="Build selection tabs" onChange={handleTabChange} value={tabIndex} variant="fullWidth">
+              <Tab
+                label={`Pending builds (${builds.filter((build) => !build.data.completed).length.toLocaleString()})`}
+              />
+              <Tab
+                label={`Completed builds (${builds.filter((build) => !!build.data.completed).length.toLocaleString()})`}
+              />
+              {channel && <Tab label={`Mods (${channel.mods.length.toLocaleString()})`} />}
+            </Tabs>
+          </Box>
+          {tabIndex === 0 && (
+            <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+              <BuildCards
+                accessToken={accessToken}
+                builds={builds}
+                channelId={channelId}
+                isChannelMod={isChannelMod}
+                pendingBuilds={true}
+                refreshBuilds={refreshBuilds}
+                setBuilds={setBuilds}
+                setErrorMessage={setErrorMessage}
+              />
+            </Box>
+          )}
+          {tabIndex === 1 && (
+            <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+              <BuildCards
+                accessToken={accessToken}
+                builds={builds}
+                channelId={channelId}
+                isChannelMod={isChannelMod}
+                pendingBuilds={false}
+                refreshBuilds={refreshBuilds}
+                setBuilds={setBuilds}
+                setErrorMessage={setErrorMessage}
+              />
+            </Box>
+          )}
+          {channel && tabIndex === 2 && (
+            <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+              {channel.mods.length > 0 ? (
+                renderMods(channel.mods)
+              ) : (
+                <Typography sx={{ textAlign: 'center' }} variant="h5">
+                  No mods
+                </Typography>
+              )}
+            </Box>
+          )}
+        </Box>
+      ) : (
+        renderLoading()
+      )}
       <Fab
         aria-label="Scroll to top"
         color="secondary"

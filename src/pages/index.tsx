@@ -16,7 +16,7 @@ const Index = (): JSX.Element => {
       </Helmet>
       <Authenticated setTokenStatus={setTokenStatus}>
         <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
-          <Grid item sx={{ m: 'auto', maxWidth: 600, width: '100%' }}>
+          <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
             <ChannelList tokenStatus={tokenStatus} />
           </Grid>
         </Grid>

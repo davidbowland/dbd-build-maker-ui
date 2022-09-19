@@ -26,7 +26,7 @@ describe('DisableList component', () => {
   describe('data load', () => {
     test('expect build options rendered', async () => {
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -42,7 +42,7 @@ describe('DisableList component', () => {
       mocked(buildMaker).fetchBuildOptions.mockRejectedValueOnce(undefined)
 
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -57,7 +57,7 @@ describe('DisableList component', () => {
       mocked(buildMaker).fetchChannel.mockRejectedValueOnce(undefined)
 
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -72,7 +72,7 @@ describe('DisableList component', () => {
       mocked(buildMaker).fetchChannel.mockRejectedValueOnce(undefined)
 
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -91,7 +91,7 @@ describe('DisableList component', () => {
     test('expect patchChannel called when save clicked', async () => {
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -123,7 +123,7 @@ describe('DisableList component', () => {
     test('expect re-checking box works', async () => {
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -157,7 +157,7 @@ describe('DisableList component', () => {
       mocked(buildMaker).patchChannel.mockRejectedValueOnce(undefined)
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -182,7 +182,7 @@ describe('DisableList component', () => {
       mocked(buildMaker).patchChannel.mockRejectedValueOnce(undefined)
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -207,7 +207,7 @@ describe('DisableList component', () => {
     test('expect expand works', async () => {
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -224,7 +224,7 @@ describe('DisableList component', () => {
     test('expect contract works', async () => {
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -250,7 +250,7 @@ describe('DisableList component', () => {
     test('expect dialog closes on escape', async () => {
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {
@@ -273,7 +273,7 @@ describe('DisableList component', () => {
       mocked(buildMaker).patchChannel.mockReturnValueOnce(new Promise(() => undefined))
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const editBuildOptionsButton = (await screen.findByText(/Edit build options/i, {
+      const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
       act(() => {

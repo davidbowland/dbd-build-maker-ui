@@ -100,6 +100,17 @@ describe('BuildList component', () => {
       expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled()
     })
 
+    test('expect clicking refresh butten refreshes builds', async () => {
+      render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+      const refreshBuildsButton = (await screen.findByLabelText(/Refresh builds/i)) as HTMLDivElement
+      await act(() => {
+        refreshBuildsButton.click()
+      })
+
+      expect(mocked(buildMaker).fetchAllBuilds).toHaveBeenCalledTimes(2)
+    })
+
     test('expect refresh build is called when setInterval fires', async () => {
       setInterval.mockImplementationOnce((fn) => fn() as unknown as ReturnType<typeof window.setInterval>)
       render(<BuildList channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)

@@ -37,7 +37,7 @@ describe('GenerateBuildUrl component', () => {
     test('expect token URL generated when button clicked', async () => {
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
@@ -61,7 +61,7 @@ describe('GenerateBuildUrl component', () => {
     test('expect error message when no requestor', async () => {
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
@@ -79,7 +79,7 @@ describe('GenerateBuildUrl component', () => {
       mocked(buildMaker).createBuildToken.mockRejectedValueOnce(undefined)
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
@@ -101,7 +101,7 @@ describe('GenerateBuildUrl component', () => {
       mocked(buildMaker).createBuildToken.mockRejectedValueOnce(undefined)
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
@@ -126,13 +126,13 @@ describe('GenerateBuildUrl component', () => {
     test('expect dialog closes on escape', async () => {
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
         generateTokenButton.click()
       })
-      const dialog = (await screen.findAllByText(/Generate build URL/i))[1] as HTMLBodyElement
+      const dialog = (await screen.findByText(/Generate build URL/i)) as HTMLBodyElement
       await act(() => {
         fireEvent.keyDown(dialog, {
           code: 'Escape',
@@ -141,7 +141,7 @@ describe('GenerateBuildUrl component', () => {
       })
 
       waitFor(() => {
-        expect(screen.queryByText(/Generate$/i, { selector: 'button' })).not.toBeInTheDocument()
+        expect(screen.queryByText(/Build URL/i)).not.toBeInTheDocument()
       })
     })
 
@@ -149,7 +149,7 @@ describe('GenerateBuildUrl component', () => {
       mocked(buildMaker).createBuildToken.mockReturnValueOnce(new Promise(() => undefined))
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
@@ -163,7 +163,7 @@ describe('GenerateBuildUrl component', () => {
       await act(() => {
         generateButton.click()
       })
-      const dialog = (await screen.findAllByText(/Generate build URL/i))[1] as HTMLBodyElement
+      const dialog = (await screen.findByText(/Generate build URL/i)) as HTMLBodyElement
       await act(() => {
         fireEvent.keyDown(dialog, {
           code: 'Escape',
@@ -171,7 +171,7 @@ describe('GenerateBuildUrl component', () => {
         })
       })
 
-      expect(screen.queryByText(/Generate$/i, { selector: 'button' })).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Generate$/i, { selector: 'button' })).not.toBeInTheDocument()
     })
   })
 
@@ -179,7 +179,7 @@ describe('GenerateBuildUrl component', () => {
     test('expect clicking copy to clipboard copies to clipboard', async () => {
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
@@ -207,7 +207,7 @@ describe('GenerateBuildUrl component', () => {
     test('expect closing success message removes it', async () => {
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
@@ -241,7 +241,7 @@ describe('GenerateBuildUrl component', () => {
       })
       render(<GenerateBuildUrl accessToken={twitchAuthToken} channelId={channelId} />)
 
-      const generateTokenButton = (await screen.findByText(/Generate build URL/i, {
+      const generateTokenButton = (await screen.findByLabelText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {

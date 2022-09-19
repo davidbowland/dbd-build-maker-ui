@@ -13,6 +13,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Divider from '@mui/material/Divider'
+import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
@@ -90,7 +91,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
   }
 
   const renderLoading = (): JSX.Element[] => {
-    return Array.from({ length: 3 }).map((_, index) => (
+    return Array.from({ length: 5 }).map((_, index) => (
       <Skeleton height={100} key={index} variant="rounded" width="100%" />
     ))
   }
@@ -110,7 +111,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
 
   return (
     <>
-      <Stack margin="auto" maxWidth="600px" spacing={4}>
+      <Stack spacing={4} sx={{ width: '100%' }}>
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Channels
         </Typography>
@@ -120,7 +121,13 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
             <Divider />
           </>
         )}
-        {channels ? renderChannels(channels) : renderLoading()}
+        <Grid container justifyContent="center" spacing={2} sx={{ paddingBottom: 2, paddingRight: 2, width: '100%' }}>
+          {(channels ? renderChannels(channels) : renderLoading()).map((el, index) => (
+            <Grid item key={index} lg={4} md={6} xs={12}>
+              {el}
+            </Grid>
+          ))}
+        </Grid>
         {tokenStatus === undefined && (
           <>
             <Divider />

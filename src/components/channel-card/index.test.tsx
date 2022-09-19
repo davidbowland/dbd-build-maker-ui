@@ -111,7 +111,7 @@ describe('ChannelCard component', () => {
       act(() => {
         fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
       })
-      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit instructions/i)) as HTMLImageElement
+      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit/i)) as HTMLImageElement
       act(() => {
         submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
@@ -137,7 +137,7 @@ describe('ChannelCard component', () => {
       act(() => {
         fireEvent.change(restrictionsInput, { target: { value: '' } })
       })
-      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit instructions/i)) as HTMLImageElement
+      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit/i)) as HTMLImageElement
       act(() => {
         submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })
@@ -165,7 +165,7 @@ describe('ChannelCard component', () => {
       act(() => {
         fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
       })
-      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit instructions/i)) as HTMLImageElement
+      const submitRestrictionsIcon = (await screen.findByLabelText(/Submit/i)) as HTMLImageElement
       act(() => {
         submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       })

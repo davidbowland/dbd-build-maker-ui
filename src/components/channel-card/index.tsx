@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Avatar from '@mui/material/Avatar'
-import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CheckIcon from '@mui/icons-material/Check'
 import CircularProgress from '@mui/material/CircularProgress'
 import EditIcon from '@mui/icons-material/Edit'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
 import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import jsonpatch from 'fast-json-patch'
 
@@ -77,45 +79,50 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
     if (isEditing && accessToken) {
       return (
         <Alert severity="info" variant="filled">
-          <Stack direction="row" spacing={1}>
-            <TextField
-              disabled={isLoading}
-              fullWidth
-              label="Special instructions"
-              name="special-instructions"
-              onChange={(event) => setInstructions(event.target.value)}
-              sx={{ maxWidth: '100%', width: '600px' }}
-              type="text"
-              value={instructions}
-              variant="filled"
-            />
-            <Box sx={{ minWidth: '25px' }}>
-              {isLoading ? (
-                <CircularProgress color="inherit" size={20} />
-              ) : (
-                <CheckIcon
-                  aria-label="Submit instructions"
-                  color="success"
+          <Grid container spacing={1} sx={{ maxWidth: '100%', width: '600px' }}>
+            <Grid item xs>
+              <TextField
+                disabled={isLoading}
+                fullWidth
+                label="Special instructions"
+                name="special-instructions"
+                onChange={(event) => setInstructions(event.target.value)}
+                type="text"
+                value={instructions}
+                variant="filled"
+              />
+            </Grid>
+            <Grid item xs="auto">
+              <Tooltip title="Submit">
+                <IconButton
+                  aria-label="Submit"
+                  disabled={isLoading}
                   onClick={() => handleSubmitClick(channelInfo, accessToken)}
-                />
-              )}
-            </Box>
-          </Stack>
+                >
+                  {isLoading ? <CircularProgress color="inherit" size={20} /> : <CheckIcon color="success" />}
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          </Grid>
         </Alert>
       )
     }
     return (
       <Alert severity={channelInfo.notes ? 'warning' : 'success'} variant="filled">
-        <Stack direction="row" spacing={1}>
-          <Typography sx={{ maxWidth: '100%', width: '600px' }} variant="body1">
-            {channelInfo.notes ?? NO_INSTRUCTIONS_TEXT}
-          </Typography>
+        <Grid container spacing={1} sx={{ maxWidth: '100%', width: '600px' }}>
+          <Grid item xs>
+            <Typography variant="body1">{channelInfo.notes ?? NO_INSTRUCTIONS_TEXT}</Typography>
+          </Grid>
           {tokenStatus?.id === channelId && accessToken && (
-            <Box>
-              <EditIcon aria-label="Edit instructions" onClick={() => setIsEditing(true)} />
-            </Box>
+            <Grid item xs="auto">
+              <Tooltip title="Edit special instructions">
+                <IconButton aria-label="Edit instructions" onClick={() => setIsEditing(true)}>
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
           )}
-        </Stack>
+        </Grid>
       </Alert>
     )
   }

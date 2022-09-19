@@ -1,23 +1,23 @@
 import React, { useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
+import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import NativeSelect from '@mui/material/NativeSelect'
+import Paper from '@mui/material/Paper'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import ShuffleIcon from '@mui/icons-material/Shuffle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { navigate } from 'gatsby'
 
 import { Build, BuildOptions, BuildSubmission, BuildTokenResponse, Channel } from '@types'
@@ -161,99 +161,103 @@ const CreateCard = ({
 
   return (
     <>
-      <Card sx={{ maxWidth: 600 }} variant="outlined">
-        <CardContent>
-          <Stack spacing={4}>
-            <label>
-              <TextField
-                aria-readonly="true"
-                disabled={true}
+      <Paper elevation={4}>
+        <Stack padding={4} spacing={4}>
+          <Typography sx={{ textAlign: 'center' }} variant="h4">
+            Build Options
+          </Typography>
+          <label>
+            <TextField
+              aria-readonly="true"
+              disabled={true}
+              fullWidth
+              label="Name of Requestor"
+              name="requestor-name"
+              type="text"
+              value={build.submitter}
+              variant="filled"
+            />
+          </label>
+          <Divider />
+          <FormControl>
+            <FormLabel id="build-type-label">Build Type</FormLabel>
+            <RadioGroup
+              aria-labelledby="build-type-label"
+              name="radio-buttons-group"
+              onChange={(event) => buildTypeChange(event.target.value as BuildType)}
+              value={buildType}
+            >
+              {channel.disabledOptions.indexOf('Killers') === -1 && (
+                <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Killer" value="killer" />
+              )}
+              {channel.disabledOptions.indexOf('Survivors') === -1 && (
+                <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Survivor" value="survivor" />
+              )}
+            </RadioGroup>
+          </FormControl>
+          <Divider />
+          {renderOptionList('Character', 'character', build.character, characters)}
+          {(buildType === 'killer' || channel.disabledOptions.indexOf('Survivor Items') === -1) && (
+            <>
+              <Divider />
+              {buildType === 'survivor' && renderOptionList('Item', 'item', build.item, items)}
+              {(buildType === 'killer' || build.item !== 'None') &&
+                renderOptionList('Addon 1', 'addon1', build.addon1, addons1)}
+              {(buildType === 'killer' || build.item !== 'None') &&
+                renderOptionList('Addon 2', 'addon2', build.addon2, addons2)}
+            </>
+          )}
+          {((buildType === 'killer' && channel.disabledOptions.indexOf('Killer Perks') === -1) ||
+            (buildType === 'survivor' && channel.disabledOptions.indexOf('Survivor Perks') === -1)) && (
+            <>
+              <Divider />
+              {renderOptionList('Perk 1', 'perk1', build.perk1, perks1)}
+              {renderOptionList('Perk 2', 'perk2', build.perk2, perks2)}
+              {renderOptionList('Perk 3', 'perk3', build.perk3, perks3)}
+              {renderOptionList('Perk 4', 'perk4', build.perk4, perks4)}
+            </>
+          )}
+          {((buildType === 'killer' && channel.disabledOptions.indexOf('Killer Offerings') === -1) ||
+            (buildType === 'survivor' && channel.disabledOptions.indexOf('Survivor Offerings') === -1)) && (
+            <>
+              <Divider />
+              {renderOptionList('Offering', 'offering', build.offering, offerings)}
+            </>
+          )}
+          {channel.disabledOptions.indexOf('Notes') === -1 && (
+            <>
+              <Divider />
+              <label>
+                <TextField
+                  disabled={isSubmitting}
+                  fullWidth
+                  label="Notes"
+                  multiline
+                  name="notes"
+                  onChange={(event) => setBuild({ ...build, notes: event.target.value.slice(0, 250) })}
+                  type="text"
+                  value={build.notes}
+                  variant="filled"
+                />
+              </label>
+            </>
+          )}
+          <Grid container justifyContent="center" sx={{ width: '100%' }}>
+            <Grid item sm={6} xs={12}>
+              <Button
+                disabled={isSubmitting}
                 fullWidth
-                label="Name of Requestor"
-                name="requestor-name"
-                type="text"
-                value={build.submitter}
-                variant="filled"
-              />
-            </label>
-            <Divider />
-            <FormControl>
-              <FormLabel id="build-type-label">Build Type</FormLabel>
-              <RadioGroup
-                aria-labelledby="build-type-label"
-                name="radio-buttons-group"
-                onChange={(event) => buildTypeChange(event.target.value as BuildType)}
-                value={buildType}
+                onClick={submitClick}
+                size="small"
+                startIcon={isSubmitting ? <CircularProgress color="inherit" size={14} /> : null}
+                variant="contained"
               >
-                {channel.disabledOptions.indexOf('Killers') === -1 && (
-                  <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Killer" value="killer" />
-                )}
-                {channel.disabledOptions.indexOf('Survivors') === -1 && (
-                  <FormControlLabel control={<Radio />} disabled={isSubmitting} label="Survivor" value="survivor" />
-                )}
-              </RadioGroup>
-            </FormControl>
-            <Divider />
-            {renderOptionList('Character', 'character', build.character, characters)}
-            {(buildType === 'killer' || channel.disabledOptions.indexOf('Survivor Items') === -1) && (
-              <>
-                <Divider />
-                {buildType === 'survivor' && renderOptionList('Item', 'item', build.item, items)}
-                {(buildType === 'killer' || build.item !== 'None') &&
-                  renderOptionList('Addon 1', 'addon1', build.addon1, addons1)}
-                {(buildType === 'killer' || build.item !== 'None') &&
-                  renderOptionList('Addon 2', 'addon2', build.addon2, addons2)}
-              </>
-            )}
-            {((buildType === 'killer' && channel.disabledOptions.indexOf('Killer Perks') === -1) ||
-              (buildType === 'survivor' && channel.disabledOptions.indexOf('Survivor Perks') === -1)) && (
-              <>
-                <Divider />
-                {renderOptionList('Perk 1', 'perk1', build.perk1, perks1)}
-                {renderOptionList('Perk 2', 'perk2', build.perk2, perks2)}
-                {renderOptionList('Perk 3', 'perk3', build.perk3, perks3)}
-                {renderOptionList('Perk 4', 'perk4', build.perk4, perks4)}
-              </>
-            )}
-            {((buildType === 'killer' && channel.disabledOptions.indexOf('Killer Offerings') === -1) ||
-              (buildType === 'survivor' && channel.disabledOptions.indexOf('Survivor Offerings') === -1)) && (
-              <>
-                <Divider />
-                {renderOptionList('Offering', 'offering', build.offering, offerings)}
-              </>
-            )}
-            {channel.disabledOptions.indexOf('Notes') === -1 && (
-              <>
-                <Divider />
-                <label>
-                  <TextField
-                    disabled={isSubmitting}
-                    fullWidth
-                    label="Notes"
-                    multiline
-                    name="notes"
-                    onChange={(event) => setBuild({ ...build, notes: event.target.value.slice(0, 250) })}
-                    type="text"
-                    value={build.notes}
-                    variant="filled"
-                  />
-                </label>
-              </>
-            )}
-          </Stack>
-        </CardContent>
-        <CardActions>
-          <Button
-            disabled={isSubmitting}
-            fullWidth
-            onClick={submitClick}
-            size="small"
-            startIcon={isSubmitting ? <CircularProgress color="inherit" size={14} /> : null}
-          >
-            {isSubmitting ? 'Processing...' : 'Submit build'}
-          </Button>
-        </CardActions>
-      </Card>
+                {isSubmitting ? 'Processing...' : 'Submit build'}
+              </Button>
+            </Grid>
+          </Grid>
+        </Stack>
+      </Paper>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
           {errorMessage}
