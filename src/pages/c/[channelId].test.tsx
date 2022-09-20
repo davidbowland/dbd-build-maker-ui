@@ -4,7 +4,7 @@ import { mocked } from 'jest-mock'
 import { render } from '@testing-library/react'
 
 import Authenticated from '@components/auth'
-import BuildList from '@components/build-list'
+import BuildTable from '@components/build-list'
 import ChannelPage from './[channelId]'
 import { channelId } from '@test/__mocks__'
 
@@ -18,7 +18,7 @@ describe('Channel page', () => {
       setTokenStatus(undefined)
       return <>{children}</>
     })
-    mocked(BuildList).mockReturnValue(<></>)
+    mocked(BuildTable).mockReturnValue(<></>)
   })
 
   test('expect rendering ChannelPage renders Authenticated', () => {
@@ -28,6 +28,6 @@ describe('Channel page', () => {
 
   test('expect rendering ChannelPage renders BuildList', () => {
     render(<ChannelPage params={{ channelId }} />)
-    expect(mocked(BuildList)).toBeCalledWith(expect.objectContaining({ channelId }), {})
+    expect(mocked(BuildTable)).toBeCalledWith(expect.objectContaining({ channelId }), {})
   })
 })

@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Fab from '@mui/material/Fab'
 import Grid from '@mui/material/Grid'
+import GridViewIcon from '@mui/icons-material/GridView'
 import IconButton from '@mui/material/IconButton'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 import List from '@mui/material/List'
@@ -14,13 +15,17 @@ import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
-import Tabs from '@mui/material/Tabs'
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import ViewListIcon from '@mui/icons-material/ViewList'
 
 import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
 import { fetchAllBuilds, fetchChannel, updateChannelMods } from '@services/build-maker'
 import BuildCards from './build-cards'
+import BuildTable from './build-table'
 import ChannelCard from '@components/channel-card'
 import DisableList from '@components/disable-list'
 import GenerateBuildUrl from '@components/generate-build-url'
@@ -33,13 +38,25 @@ export interface BuildListProps {
   tokenStatus?: TwitchTokenStatus
 }
 
+enum BuildView {
+  PENDING_BUILDS = 'pending',
+  COMPLETED_BUILDS = 'completed',
+  MODS = 'mods',
+}
+
+enum DisplayView {
+  GRID_VIEW = 'grid',
+  LIST_VIEW = 'list',
+}
+
 const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const [builds, setBuilds] = useState<BuildBatch[] | undefined>(undefined)
   const [channel, setChannel] = useState<Channel | undefined>(undefined)
+  const [displayView, setDisplayView] = useState<DisplayView>(DisplayView.GRID_VIEW)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [refreshCount, setRefreshCount] = useState(0)
-  const [tabIndex, setTabIndex] = useState(0)
+  const [tabIndex, setTabIndex] = useState<BuildView>(BuildView.PENDING_BUILDS)
 
   const topRef = useRef<HTMLHRElement>(null)
 
@@ -47,10 +64,18 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const isChannelMod =
     (channel?.mods && channel?.mods.some((value) => tokenStatus?.name === value)) || channelId === tokenStatus?.id
 
+  const filterAndSortBuilds = (builds: BuildBatch[], pendingBuilds: boolean): BuildBatch[] => {
+    if (pendingBuilds) {
+      return builds.filter((build) => !build.data.completed).sort((a, b) => a.data.expiration - b.data.expiration)
+    } else {
+      return builds.filter((build) => !!build.data.completed).sort((a, b) => b.data.completed! - a.data.completed!)
+    }
+  }
+
   const formatRefreshCount = (refreshCount: number): string =>
     new Date((REFRESH_INTERVAL_SECONDS - refreshCount) * 1000).toISOString().replace(/^.*T(00:)?([^.]+).*$/, '$2')
 
-  const handleTabChange = (event: React.SyntheticEvent, value: number) => setTabIndex(value)
+  const handleTabChange = (event: React.SyntheticEvent, value: BuildView) => setTabIndex(value)
 
   const refreshBuilds = (): void => {
     setIsRefreshing(true)
@@ -85,18 +110,6 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   }
 
   useEffect(() => {
-    if (refreshCount >= REFRESH_INTERVAL_SECONDS) {
-      refreshBuilds()
-    }
-  }, [refreshCount])
-
-  useEffect(() => {
-    if (channelId === tokenStatus?.id && accessToken) {
-      updateChannelMods(channelId, accessToken).catch((error) => console.error('updateChannelMods', error))
-    }
-  }, [tokenStatus])
-
-  useEffect(() => {
     fetchChannel(channelId)
       .then(setChannel)
       .catch((error) => {
@@ -109,6 +122,18 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     return () => window.clearInterval(timer)
   }, [])
 
+  useEffect(() => {
+    if (refreshCount >= REFRESH_INTERVAL_SECONDS) {
+      refreshBuilds()
+    }
+  }, [refreshCount])
+
+  useEffect(() => {
+    if (channelId === tokenStatus?.id && accessToken) {
+      updateChannelMods(channelId, accessToken).catch((error) => console.error('updateChannelMods', error))
+    }
+  }, [tokenStatus])
+
   return (
     <>
       <Stack margin="auto" marginBottom="50px" maxWidth="600px" spacing={4}>
@@ -118,6 +143,23 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
       </Stack>
       <Grid container ref={topRef} spacing={2} sx={{ paddingRight: 2, width: '100%' }}>
+        <Grid container item spacing={1} sx={{ paddingRight: 1 }} xs="auto">
+          <Grid item xs>
+            {displayView === DisplayView.GRID_VIEW ? (
+              <Tooltip title="List view">
+                <IconButton aria-label="List view" onClick={() => setDisplayView(DisplayView.LIST_VIEW)}>
+                  <ViewListIcon />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Grid view">
+                <IconButton aria-label="Grid view" onClick={() => setDisplayView(DisplayView.GRID_VIEW)}>
+                  <GridViewIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Grid>
+        </Grid>
         <Grid item xs></Grid>
         <Grid container item spacing={1} sx={{ paddingRight: 1 }} xs="auto">
           {isChannelMod && accessToken && (
@@ -132,7 +174,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
           )}
           <Grid item xs>
             <Tooltip title={isRefreshing ? 'Refreshing builds...' : 'Refresh builds'}>
-              <IconButton disabled={isRefreshing} onClick={refreshBuilds}>
+              <IconButton aria-label="Refresh builds" disabled={isRefreshing} onClick={refreshBuilds}>
                 {isRefreshing ? <CircularProgress color="inherit" size={14} /> : <ReplayIcon />}
               </IconButton>
             </Tooltip>
@@ -147,48 +189,68 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
       </Grid>
 
       {builds ? (
-        <Box sx={{ width: '100%' }}>
+        <TabContext value={tabIndex}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs aria-label="Build selection tabs" onChange={handleTabChange} value={tabIndex} variant="fullWidth">
+            <TabList aria-label="Build tabs" onChange={handleTabChange} variant="fullWidth">
               <Tab
                 label={`Pending builds (${builds.filter((build) => !build.data.completed).length.toLocaleString()})`}
+                value={BuildView.PENDING_BUILDS}
               />
               <Tab
                 label={`Completed builds (${builds.filter((build) => !!build.data.completed).length.toLocaleString()})`}
+                value={BuildView.COMPLETED_BUILDS}
               />
-              {channel && <Tab label={`Mods (${channel.mods.length.toLocaleString()})`} />}
-            </Tabs>
+              {channel && <Tab label={`Mods (${channel.mods.length.toLocaleString()})`} value={BuildView.MODS} />}
+            </TabList>
           </Box>
-          {tabIndex === 0 && (
-            <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+          <TabPanel value={BuildView.PENDING_BUILDS}>
+            {displayView === DisplayView.GRID_VIEW ? (
               <BuildCards
                 accessToken={accessToken}
-                builds={builds}
+                builds={filterAndSortBuilds(builds, true)}
                 channelId={channelId}
                 isChannelMod={isChannelMod}
-                pendingBuilds={true}
                 refreshBuilds={refreshBuilds}
                 setBuilds={setBuilds}
                 setErrorMessage={setErrorMessage}
               />
-            </Box>
-          )}
-          {tabIndex === 1 && (
-            <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
-              <BuildCards
+            ) : (
+              <BuildTable
                 accessToken={accessToken}
-                builds={builds}
+                builds={filterAndSortBuilds(builds, true)}
                 channelId={channelId}
                 isChannelMod={isChannelMod}
-                pendingBuilds={false}
                 refreshBuilds={refreshBuilds}
                 setBuilds={setBuilds}
                 setErrorMessage={setErrorMessage}
               />
-            </Box>
-          )}
-          {channel && tabIndex === 2 && (
-            <Box sx={{ bgcolor: 'background.paper', p: 3 }}>
+            )}
+          </TabPanel>
+          <TabPanel value={BuildView.COMPLETED_BUILDS}>
+            {displayView === DisplayView.GRID_VIEW ? (
+              <BuildCards
+                accessToken={accessToken}
+                builds={filterAndSortBuilds(builds, false)}
+                channelId={channelId}
+                isChannelMod={isChannelMod}
+                refreshBuilds={refreshBuilds}
+                setBuilds={setBuilds}
+                setErrorMessage={setErrorMessage}
+              />
+            ) : (
+              <BuildTable
+                accessToken={accessToken}
+                builds={filterAndSortBuilds(builds, false)}
+                channelId={channelId}
+                isChannelMod={isChannelMod}
+                refreshBuilds={refreshBuilds}
+                setBuilds={setBuilds}
+                setErrorMessage={setErrorMessage}
+              />
+            )}
+          </TabPanel>
+          {channel && (
+            <TabPanel value={BuildView.MODS}>
               {channel.mods.length > 0 ? (
                 renderMods(channel.mods)
               ) : (
@@ -196,9 +258,9 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
                   No mods
                 </Typography>
               )}
-            </Box>
+            </TabPanel>
           )}
-        </Box>
+        </TabContext>
       ) : (
         renderLoading()
       )}

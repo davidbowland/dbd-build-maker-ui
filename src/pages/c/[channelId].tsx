@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid'
 import { Helmet } from 'react-helmet'
 
 import Authenticated from '@components/auth'
-import BuildList from '@components/build-list'
+import BuildTable from '@components/build-list'
 import { TwitchTokenStatus } from '@types'
 
 export interface ChannelPageProps {
@@ -23,7 +23,7 @@ const ChannelPage = ({ params }: ChannelPageProps): JSX.Element => {
       <Authenticated setTokenStatus={setTokenStatus}>
         <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
           <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
-            <BuildList channelId={params.channelId} tokenStatus={tokenStatus} />
+            <BuildTable channelId={params.channelId} tokenStatus={tokenStatus} />
           </Grid>
         </Grid>
       </Authenticated>

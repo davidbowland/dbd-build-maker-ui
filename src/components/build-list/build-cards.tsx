@@ -19,7 +19,6 @@ export interface BuildCardsProps {
   builds: BuildBatch[]
   channelId: string
   isChannelMod: boolean
-  pendingBuilds: boolean
   refreshBuilds: () => void
   setBuilds: (value: any) => void
   setErrorMessage: (value: string) => void
@@ -30,20 +29,11 @@ const BuildCards = ({
   builds,
   channelId,
   isChannelMod,
-  pendingBuilds,
   refreshBuilds,
   setBuilds,
   setErrorMessage,
 }: BuildCardsProps): JSX.Element => {
   const [buildUpdating, setBuildUpdating] = useState<{ [key: string]: boolean }>({})
-
-  const filterAndSortBuilds = (builds: BuildBatch[]): BuildBatch[] => {
-    if (pendingBuilds) {
-      return builds.filter((build) => !build.data.completed).sort((a, b) => a.data.expiration - b.data.expiration)
-    } else {
-      return builds.filter((build) => !!build.data.completed).sort((a, b) => b.data.completed! - a.data.completed!)
-    }
-  }
 
   const renderBuilds = (builds: BuildBatch[]): JSX.Element[] => {
     return builds.map((build, index) => (
@@ -186,18 +176,17 @@ const BuildCards = ({
     refreshBuilds()
   }
 
-  const sortedBuilds = filterAndSortBuilds(builds)
   return (
     <Grid spacing={4} sx={{ width: '100%' }}>
       <Grid container justifyContent="center" spacing={4}>
-        {sortedBuilds.length === 0 ? (
+        {builds.length === 0 ? (
           <Grid item xs>
             <Typography sx={{ textAlign: 'center' }} variant="h5">
               No builds
             </Typography>
           </Grid>
         ) : (
-          renderBuilds(sortedBuilds)
+          renderBuilds(builds)
         )}
       </Grid>
     </Grid>
