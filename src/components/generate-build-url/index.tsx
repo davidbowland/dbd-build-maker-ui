@@ -8,18 +8,25 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import { navigate } from 'gatsby'
 
 import { createBuildToken } from '@services/build-maker'
 
 export interface GenerateBuildUrlProps {
   accessToken: string
   channelId: string
+}
+
+enum BuildType {
+  REDIRECT = 'redirect',
+  URL = 'url',
 }
 
 type Dialogs = 'none' | 'generate' | 'complete'
@@ -50,7 +57,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
     }
   }
 
-  const generateBuildUrl = async (): Promise<void> => {
+  const generateBuildUrl = async (buildType: BuildType): Promise<void> => {
     if (submitter === '') {
       setSubmitterError('Requestor name is required')
       return
@@ -59,13 +66,16 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
     setIsLoading(true)
     try {
       const buildToken = await createBuildToken(channelId, accessToken, submitter)
-      setBuildUrl(
-        `${window.location.origin}/c/${encodeURIComponent(channelId)}/b/${encodeURIComponent(buildToken.value)}`
-      )
+      const urlPath = `/c/${encodeURIComponent(channelId)}/b/${encodeURIComponent(buildToken.value)}`
+      setBuildUrl(`${window.location.origin}${urlPath}`)
       setExpiration(new Date(buildToken.expiration).toLocaleString())
       setSubmitter('')
       setSubmitterError(undefined)
-      setDialogOpen('complete')
+      if (buildType === BuildType.REDIRECT) {
+        navigate(urlPath)
+      } else {
+        setDialogOpen('complete')
+      }
     } catch (error) {
       console.error('generateBuildUrl', error)
       setErrorMessage('Error generating build URL')
@@ -73,7 +83,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
     setIsLoading(false)
   }
 
-  const renderCopyUrl = (buildUrl: string): JSX.Element => {
+  const renderCopyUrl = (buildUrl: string, expiration: string): JSX.Element => {
     return (
       <Stack spacing={2}>
         <label>
@@ -88,11 +98,9 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
             variant="filled"
           />
         </label>
-        {expiration && (
-          <Typography sx={{ textAlign: 'center' }} variant="h6">
-            Link expires {expiration}
-          </Typography>
-        )}
+        <Typography sx={{ textAlign: 'center' }} variant="h6">
+          Link expires {expiration}
+        </Typography>
         <Button
           color="secondary"
           fullWidth
@@ -102,6 +110,9 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
         >
           Copy build URL
         </Button>
+        <Typography sx={{ textAlign: 'center' }} variant="caption">
+          Send this link to the person creating the build
+        </Typography>
       </Stack>
     )
   }
@@ -117,7 +128,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
   return (
     <>
       <Dialog onClose={dialogClose} open={dialogOpen === 'generate'}>
-        <DialogTitle>Generate build URL</DialogTitle>
+        <DialogTitle>Create new build</DialogTitle>
         <DialogContent>
           <label>
             <TextField
@@ -136,27 +147,41 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
           </label>
         </DialogContent>
         <DialogActions>
-          <Button
-            disabled={isLoading}
-            fullWidth
-            onClick={generateBuildUrl}
-            startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
-          >
-            {isLoading ? 'Generating...' : 'Generate'}
-          </Button>
+          <Grid container sx={{ width: '100%' }}>
+            {isLoading ? (
+              <Grid item xs={12}>
+                <Button disabled={true} fullWidth startIcon={<CircularProgress color="inherit" size={14} />}>
+                  Working
+                </Button>
+              </Grid>
+            ) : (
+              <>
+                <Grid item sm={6} xs={12}>
+                  <Button fullWidth onClick={() => generateBuildUrl(BuildType.URL)}>
+                    Generate build URL
+                  </Button>
+                </Grid>
+                <Grid item sm={6} xs={12}>
+                  <Button fullWidth onClick={() => generateBuildUrl(BuildType.REDIRECT)}>
+                    Enter build yourself
+                  </Button>
+                </Grid>
+              </>
+            )}
+          </Grid>
         </DialogActions>
       </Dialog>
       <Dialog onClose={dialogClose} open={dialogOpen === 'complete'}>
         <DialogTitle>Build URL</DialogTitle>
-        <DialogContent>{buildUrl !== undefined && renderCopyUrl(buildUrl)}</DialogContent>
+        <DialogContent>{buildUrl && expiration && renderCopyUrl(buildUrl, expiration)}</DialogContent>
         <DialogActions>
           <Button fullWidth onClick={dialogClose}>
             Close
           </Button>
         </DialogActions>
       </Dialog>
-      <Tooltip title="Generate build URL">
-        <IconButton aria-label="Generate build URL" onClick={() => setDialogOpen('generate')}>
+      <Tooltip title="Create new build">
+        <IconButton aria-label="Create new build" onClick={() => setDialogOpen('generate')}>
           <AddIcon />
         </IconButton>
       </Tooltip>
