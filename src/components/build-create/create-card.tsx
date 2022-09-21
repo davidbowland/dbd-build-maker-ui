@@ -148,8 +148,11 @@ const CreateCard = ({
   const submitClick = async (): Promise<void> => {
     setIsSubmitting(true)
     try {
-      const updatedBuild = (buildType === 'killer' ? { ...build, item: undefined } : build) as Build
-      await createBuild(channelId, buildId, updatedBuild)
+      const removeKillerItem = (buildType === 'killer' ? { ...build, item: undefined } : build) as Build
+      const removeItemAddons = (
+        removeKillerItem.item === 'None' ? { ...removeKillerItem, addon1: 'None', addon2: 'None' } : removeKillerItem
+      ) as Build
+      await createBuild(channelId, buildId, removeItemAddons)
       setSuccessMessage('Build submitted successfully!')
       navigate(`/c/${encodeURIComponent(channelId)}`)
     } catch (error) {

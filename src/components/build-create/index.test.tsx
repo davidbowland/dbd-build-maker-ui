@@ -238,6 +238,35 @@ describe('BuildCreate component', () => {
       })
     })
 
+    test('expect no item submits no addons', async () => {
+      render(<BuildCreate buildId={buildId} channelId={channelId} />)
+
+      const radioButton = (await screen.findByLabelText(/Survivor/i)) as HTMLInputElement
+      act(() => {
+        radioButton.click()
+      })
+      const itemInput = (await screen.findByTestId(/Item/i)) as HTMLInputElement
+      act(() => {
+        fireEvent.change(itemInput, { target: { value: 'None' } })
+      })
+
+      const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
+      act(() => {
+        submitButton.click()
+      })
+
+      expect(await screen.findByText(/Build submitted successfully!/i)).toBeVisible()
+      expect(mocked(buildMaker).createBuild).toHaveBeenCalledWith(
+        '123456',
+        'ytrfghjklkmnbvfty',
+        expect.objectContaining({
+          addon1: 'None',
+          addon2: 'None',
+          item: 'None',
+        })
+      )
+    })
+
     test('expect random build submitted', async () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
