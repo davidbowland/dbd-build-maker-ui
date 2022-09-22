@@ -178,6 +178,7 @@ const BuildTable = ({
               autoHeight={true}
               columns={columnsWithCompleted}
               components={{ Toolbar: GridToolbar }}
+              disableSelectionOnClick={true}
               initialState={{ columns: { columnVisibilityModel: { id: false } } }}
               onPageSizeChange={setPageSize}
               pageSize={pageSize}
