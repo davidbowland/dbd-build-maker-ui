@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 
 import Authenticated from '@components/auth'
 import BuildTable from '@components/build-list'
+import PrivacyLink from '@components/privacy-link'
 import { TwitchTokenStatus } from '@types'
 
 export interface ChannelPageProps {
@@ -24,6 +25,7 @@ const ChannelPage = ({ params }: ChannelPageProps): JSX.Element => {
         <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
           <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
             <BuildTable channelId={params.channelId} tokenStatus={tokenStatus} />
+            <PrivacyLink />
           </Grid>
         </Grid>
       </Authenticated>

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 
 import Authenticated from '@components/auth'
 import ChannelList from '@components/channel-list'
+import PrivacyLink from '@components/privacy-link'
 import { TwitchTokenStatus } from '@types'
 
 const Index = (): JSX.Element => {
@@ -18,6 +19,7 @@ const Index = (): JSX.Element => {
         <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
           <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
             <ChannelList tokenStatus={tokenStatus} />
+            <PrivacyLink />
           </Grid>
         </Grid>
       </Authenticated>

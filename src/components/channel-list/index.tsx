@@ -111,7 +111,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
 
   return (
     <>
-      <Stack spacing={4} sx={{ width: '100%' }}>
+      <Stack spacing={4} sx={{ minHeight: '70vh', width: '100%' }}>
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Channels
         </Typography>

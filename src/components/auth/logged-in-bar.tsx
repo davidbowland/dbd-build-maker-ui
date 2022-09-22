@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
 import Box from '@mui/material/Box'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import { Link } from 'gatsby'
 import List from '@mui/material/List'
@@ -9,6 +10,7 @@ import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import LogoutIcon from '@mui/icons-material/Logout'
+import PrivacyTipIcon from '@mui/icons-material/PrivacyTip'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import Typography from '@mui/material/Typography'
 
@@ -52,6 +54,12 @@ const LoggedInBar = ({ userName }: LoggedInBarProps): JSX.Element => {
       <SwipeableDrawer anchor="right" onClose={closeMenu} onOpen={openMenu} open={isDrawerOpen}>
         <Box onClick={closeMenu} role="presentation" sx={{ width: 250 }}>
           <List>
+            <ListItem button component="a" href="/privacy-policy">
+              <ListItemIcon>
+                <PrivacyTipIcon />
+              </ListItemIcon>
+              <ListItemText primary="Privacy policy" />
+            </ListItem>
             <ListItem
               button
               onClick={() => {
@@ -66,6 +74,7 @@ const LoggedInBar = ({ userName }: LoggedInBarProps): JSX.Element => {
               <ListItemText primary="Sign out" />
             </ListItem>
           </List>
+          <Divider />
           <List>
             <ListItem button>
               <ListItemIcon>
