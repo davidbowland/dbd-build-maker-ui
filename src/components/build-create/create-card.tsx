@@ -94,6 +94,7 @@ const CreateCard = ({
     options: string[],
     disabled: string[]
   ): JSX.Element => {
+    const randomOptions = options.filter((value) => isEnabled(value, disabled))
     return (
       <FormControl fullWidth>
         <Stack direction="row">
@@ -116,7 +117,9 @@ const CreateCard = ({
           <IconButton
             aria-label={`Shuffle ${name}`}
             disabled={isSubmitting}
-            onClick={() => setBuild({ ...build, [name]: options[Math.floor(Math.random() * options.length)] })}
+            onClick={() =>
+              setBuild({ ...build, [name]: randomOptions[Math.floor(Math.random() * randomOptions.length)] })
+            }
             sx={{ margin: 'auto 0 0 0' }}
           >
             <ShuffleIcon />
