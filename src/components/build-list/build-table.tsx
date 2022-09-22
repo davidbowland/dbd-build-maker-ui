@@ -31,61 +31,70 @@ const BuildTable = ({
   const [buildUpdating, setBuildUpdating] = useState<{ [key: string]: boolean }>({})
   const [columns] = useState<GridColDef[]>([
     {
-      disableExport: true,
       field: 'submitter',
+      flex: 1,
       headerName: 'Submitter',
-      width: 200,
+      minWidth: 200,
     },
     {
       field: 'character',
+      flex: 1,
       headerName: 'Character',
-      width: 150,
+      minWidth: 200,
     },
     {
       field: 'item',
+      flex: 1,
       headerName: 'Item',
-      width: 150,
+      minWidth: 100,
     },
     {
       field: 'addon1',
+      flex: 1,
       headerName: 'Addon 1',
-      width: 150,
+      minWidth: 250,
     },
     {
       field: 'addon2',
+      flex: 1,
       headerName: 'Addon 2',
-      width: 150,
+      minWidth: 250,
     },
     {
       field: 'perk1',
+      flex: 1,
       headerName: 'Perk 1',
-      width: 250,
+      minWidth: 250,
     },
     {
       field: 'perk2',
+      flex: 1,
       headerName: 'Perk 2',
-      width: 250,
+      minWidth: 250,
     },
     {
       field: 'perk3',
+      flex: 1,
       headerName: 'Perk 3',
-      width: 250,
+      minWidth: 250,
     },
     {
       field: 'perk4',
+      flex: 1,
       headerName: 'Perk 4',
-      width: 250,
+      minWidth: 250,
     },
     {
       field: 'offering',
+      flex: 1,
       headerName: 'Offering',
-      width: 200,
+      minWidth: 200,
     },
     {
       field: 'expiration',
       headerName: 'Expiration',
+      minWidth: 200,
       valueGetter: (params: GridValueGetterParams) => new Date(params.row.expiration).toLocaleString(),
-      width: 200,
     },
   ])
   const [pageSize, setPageSize] = useState(25)
@@ -131,8 +140,10 @@ const BuildTable = ({
   const columnsWithCompleted = [
     {
       field: 'completed',
+      flex: 1,
       headerName: 'Completed',
       hideable: false,
+      minWidth: 100,
       renderCell: (params: GridRenderCellParams) =>
         buildUpdating[params.row.id] ? (
           <Typography sx={{ textAlign: 'center', width: '100%' }}>
@@ -142,9 +153,12 @@ const BuildTable = ({
           <Switch
             aria-label={params.row.completed ? 'Unmark complete' : 'Mark complete'}
             checked={!!params.row.completed}
+            disabled={!isChannelMod}
             onClick={() => invertBuildCompleted(params.row.id, params.row)}
           />
         ),
+      valueGetter: (params: GridValueGetterParams) =>
+        params.row.completed && new Date(params.row.completed).toLocaleString(),
     },
     ...columns,
   ]
