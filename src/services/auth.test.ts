@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import * as gatsby from 'gatsby'
-import { mocked } from 'jest-mock'
+import { MockedObject, mocked } from 'jest-mock'
 
 import { getAccessToken, initiateTwitchLogin, redirectLogin, removeAccessToken } from './auth'
 import Cookies from 'universal-cookie'
@@ -24,7 +24,7 @@ describe('Auth service', () => {
         ({
           get: mockCookieGet,
           set: mockCookieSet,
-        } as unknown as Cookies)
+        } as unknown as MockedObject<Cookies>)
     )
     Object.defineProperty(window, 'location', {
       configurable: true,
