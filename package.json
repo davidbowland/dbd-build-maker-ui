@@ -1,6 +1,6 @@
 {
   "name": "dbd-build-maker-ui",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "UI for dbd-build-maker",
   "author": "David Bowland",
   "engines": {
