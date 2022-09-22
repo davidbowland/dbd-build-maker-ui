@@ -28,13 +28,13 @@ const Disclaimer = (): JSX.Element => {
                 This site only uses essential cookies such as those used to keep you logged in. We collect no personally
                 identifiable information and no contact information. Depending on your activity, your IP address may
                 appear in our logs for up to 45 days. We never sell your information -- we intentionally don&apos;t have
-                information to sell -- but we do collect demographic and site usage information using{' '}
+                information to sell -- but we do collect device and site usage information using{' '}
                 <Link to="https://aws.amazon.com/pinpoint/">Amazon Pinpoint</Link>.
               </Typography>
               <Typography variant="body2">
-                The only information we store longer than 45 days is your channel information. To remove this
-                information from our database, you may delete your channel at any time. Deleting your channel is
-                immediate, but builds will be retained until they expire.
+                If you choose to sign up, the only information we store longer than 45 days is your channel information.
+                To remove this information from our database, you may delete your channel at any time. Deleting your
+                channel is immediate, but builds will be retained until they expire.
               </Typography>
             </Stack>
           </Grid>
