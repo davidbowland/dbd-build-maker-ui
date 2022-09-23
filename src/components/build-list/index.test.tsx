@@ -430,6 +430,40 @@ describe('BuildList component', () => {
         expect(await screen.findByText(/No builds/i)).toBeVisible()
       })
     })
+
+    describe('sorting', () => {
+      test('expect sorting perks returns expected result', async () => {
+        render(<BuildTable channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+        const sortIcon = (await screen.findByLabelText(/Sort addons and perks/i, {
+          selector: 'button',
+        })) as HTMLButtonElement
+        act(() => {
+          sortIcon.click()
+        })
+        const perk1 = await screen.findByText(/Dark Devotion/i)
+        expect(perk1.parentElement?.textContent).toEqual('Dark DevotionOppressionAnyAny')
+      })
+
+      test('expect unsorting perks returns expected result', async () => {
+        render(<BuildTable channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
+
+        const sortIcon = (await screen.findByLabelText(/Sort addons and perks/i, {
+          selector: 'button',
+        })) as HTMLButtonElement
+        act(() => {
+          sortIcon.click()
+        })
+        const unsortIcon = (await screen.findByLabelText(/Show addons and perk in submitted order/i, {
+          selector: 'button',
+        })) as HTMLButtonElement
+        act(() => {
+          unsortIcon.click()
+        })
+        const perk1 = await screen.findByText(/Dark Devotion/i)
+        expect(perk1.parentElement?.textContent).toEqual('AnyDark DevotionAnyOppression')
+      })
+    })
   })
 
   describe('channel', () => {

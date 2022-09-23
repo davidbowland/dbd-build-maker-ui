@@ -17,6 +17,7 @@ export interface BuildTableProps {
   refreshBuilds: () => void
   setBuilds: (value: any) => void
   setErrorMessage: (value: string) => void
+  sortCompareFn?: (a: string, b: string) => number
 }
 
 const BuildTable = ({
@@ -27,6 +28,7 @@ const BuildTable = ({
   refreshBuilds,
   setBuilds,
   setErrorMessage,
+  sortCompareFn,
 }: BuildTableProps): JSX.Element => {
   const [buildUpdating, setBuildUpdating] = useState<{ [key: string]: boolean }>({})
   const [columns] = useState<GridColDef[]>([
@@ -182,7 +184,13 @@ const BuildTable = ({
               initialState={{ columns: { columnVisibilityModel: { id: false } } }}
               onPageSizeChange={setPageSize}
               pageSize={pageSize}
-              rows={builds.map((b) => ({ ...b.data, id: b.id }))}
+              rows={builds.map((b) => {
+                const [addon1, addon2] = [b.data.addon1, b.data.addon2].sort(sortCompareFn)
+                const [perk1, perk2, perk3, perk4] = [b.data.perk1, b.data.perk2, b.data.perk3, b.data.perk4].sort(
+                  sortCompareFn
+                )
+                return { ...b.data, addon1, addon2, id: b.id, perk1, perk2, perk3, perk4 }
+              })}
               rowsPerPageOptions={[5, 10, 25, 50, 100]}
             />
           </Grid>

@@ -17,29 +17,29 @@ export { Operation as PatchOperation } from 'fast-json-patch'
 export const buildId = 'ytrfghjklkmnbvfty'
 
 export const buildKiller: Build = {
-  addon1: 'Bone Clapper',
-  addon2: 'None',
+  addon1: 'Coxcombed Clapper',
+  addon2: 'Bone Clapper',
   character: 'Wraith',
   expiration: 1659106766021,
   offering: 'Ebony Memento Mori',
-  perk1: 'Dark Devotion',
-  perk2: 'Eruption',
-  perk3: 'Oppression',
-  perk4: 'None',
+  perk1: 'Oppression',
+  perk2: 'Any',
+  perk3: 'Dark Devotion',
+  perk4: 'Any',
 }
 
 export const buildSurvivor: Build = {
   addon1: 'Battery',
-  addon2: 'None',
+  addon2: 'Leather Grip',
   character: 'Jill Valentine',
   completed: 1659106727543,
   expiration: 1659106766021,
   item: 'Flashlight',
   notes: "Don't lose!",
   offering: 'Fragrant Sweet William',
-  perk1: 'Buckle Up',
-  perk2: 'Rookie Spirit',
-  perk3: 'Technician',
+  perk1: 'Technician',
+  perk2: 'Buckle Up',
+  perk3: 'Rookie Spirit',
   perk4: 'perk-4',
 }
 

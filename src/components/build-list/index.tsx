@@ -3,6 +3,7 @@ import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Fab from '@mui/material/Fab'
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered'
 import Grid from '@mui/material/Grid'
 import GridViewIcon from '@mui/icons-material/GridView'
 import IconButton from '@mui/material/IconButton'
@@ -13,6 +14,7 @@ import ListItemText from '@mui/material/ListItemText'
 import ReplayIcon from '@mui/icons-material/Replay'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
@@ -49,8 +51,14 @@ enum DisplayView {
   LIST_VIEW = 'list',
 }
 
+enum BuildsSorted {
+  ALPHA_SORT = 'sorted',
+  UNSORTED = 'unsorted',
+}
+
 const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const [builds, setBuilds] = useState<BuildBatch[] | undefined>(undefined)
+  const [buildsSorted, setBuildsSorted] = useState<BuildsSorted>(BuildsSorted.UNSORTED)
   const [channel, setChannel] = useState<Channel | undefined>(undefined)
   const [displayView, setDisplayView] = useState<DisplayView>(DisplayView.GRID_VIEW)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
@@ -109,6 +117,21 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     setErrorMessage(undefined)
   }
 
+  const sortAlphaCompareFn = (a: string, b: string): number => {
+    if (a === b) {
+      return 0
+    } else if ((a === 'Any' || a === 'None') && b !== 'Any' && b !== 'None') {
+      return 1
+    } else if ((b === 'Any' || b === 'None') && a !== 'Any' && a !== 'None') {
+      return -1
+    } else if (a < b) {
+      return -1
+    }
+    return 1
+  }
+
+  const unsortedCompareFn = (): number => -1
+
   useEffect(() => {
     fetchChannel(channelId)
       .then(setChannel)
@@ -134,6 +157,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     }
   }, [tokenStatus])
 
+  const sortCompareFn = buildsSorted === BuildsSorted.ALPHA_SORT ? sortAlphaCompareFn : unsortedCompareFn
   return (
     <>
       <Stack margin="auto" marginBottom="50px" maxWidth="600px" spacing={4}>
@@ -155,6 +179,24 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
               <Tooltip title="Grid view">
                 <IconButton aria-label="Grid view" onClick={() => setDisplayView(DisplayView.GRID_VIEW)}>
                   <GridViewIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Grid>
+          <Grid item xs>
+            {buildsSorted === BuildsSorted.ALPHA_SORT ? (
+              <Tooltip title="Show addons and perk in submitted order">
+                <IconButton
+                  aria-label="Show addons and perk in submitted order"
+                  onClick={() => setBuildsSorted(BuildsSorted.UNSORTED)}
+                >
+                  <FormatListNumberedIcon />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Sort addons and perks">
+                <IconButton aria-label="Sort addons and perks" onClick={() => setBuildsSorted(BuildsSorted.ALPHA_SORT)}>
+                  <SortByAlphaIcon />
                 </IconButton>
               </Tooltip>
             )}
@@ -213,6 +255,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
                 refreshBuilds={refreshBuilds}
                 setBuilds={setBuilds}
                 setErrorMessage={setErrorMessage}
+                sortCompareFn={sortCompareFn}
               />
             ) : (
               <BuildTable
@@ -223,6 +266,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
                 refreshBuilds={refreshBuilds}
                 setBuilds={setBuilds}
                 setErrorMessage={setErrorMessage}
+                sortCompareFn={sortCompareFn}
               />
             )}
           </TabPanel>
@@ -236,6 +280,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
                 refreshBuilds={refreshBuilds}
                 setBuilds={setBuilds}
                 setErrorMessage={setErrorMessage}
+                sortCompareFn={sortCompareFn}
               />
             ) : (
               <BuildTable
@@ -246,6 +291,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
                 refreshBuilds={refreshBuilds}
                 setBuilds={setBuilds}
                 setErrorMessage={setErrorMessage}
+                sortCompareFn={sortCompareFn}
               />
             )}
           </TabPanel>

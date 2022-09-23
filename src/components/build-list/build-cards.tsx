@@ -22,6 +22,7 @@ export interface BuildCardsProps {
   refreshBuilds: () => void
   setBuilds: (value: any) => void
   setErrorMessage: (value: string) => void
+  sortCompareFn?: (a: string, b: string) => number
 }
 
 const BuildCards = ({
@@ -32,6 +33,7 @@ const BuildCards = ({
   refreshBuilds,
   setBuilds,
   setErrorMessage,
+  sortCompareFn,
 }: BuildCardsProps): JSX.Element => {
   const [buildUpdating, setBuildUpdating] = useState<{ [key: string]: boolean }>({})
 
@@ -142,7 +144,7 @@ const BuildCards = ({
 
   const renderSortedList = (...args: string[]): JSX.Element => (
     <ul>
-      {args.sort().map((value, index) => (
+      {args.sort(sortCompareFn).map((value, index) => (
         <li key={index}>{value}</li>
       ))}
     </ul>
