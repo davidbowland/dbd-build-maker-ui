@@ -254,7 +254,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
               {channel.mods.length > 0 ? (
                 renderMods(channel.mods)
               ) : (
-                <Typography sx={{ textAlign: 'center' }} variant="h5">
+                <Typography sx={{ minHeight: '50vh', textAlign: 'center' }} variant="h5">
                   No mods
                 </Typography>
               )}

@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 
 const PrivacyLink = (): JSX.Element => {
   return (
-    <Typography component="div" sx={{ textAlign: 'center' }} variant="caption">
+    <Typography component="div" sx={{ p: 2, textAlign: 'center' }} variant="caption">
       <Link to="/privacy-policy">Privacy policy</Link>
     </Typography>
   )
