@@ -142,6 +142,7 @@ const BuildTable = ({
   const columnsWithCompleted = [
     {
       field: 'completed',
+      filterable: false,
       flex: 1,
       headerName: 'Completed',
       hideable: false,
@@ -159,6 +160,7 @@ const BuildTable = ({
             onClick={() => invertBuildCompleted(params.row.id, params.row)}
           />
         ),
+      sortable: false,
       valueGetter: (params: GridValueGetterParams) =>
         params.row.completed && new Date(params.row.completed).toLocaleString(),
     },
