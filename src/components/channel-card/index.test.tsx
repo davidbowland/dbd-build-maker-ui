@@ -100,6 +100,17 @@ describe('ChannelCard component', () => {
       expect(screen.queryByLabelText(/Edit instructions/i)).not.toBeInTheDocument()
     })
 
+    test('expect no edit button when no message and not mod', async () => {
+      mocked(buildMaker).fetchChannel.mockResolvedValueOnce({
+        ...channel,
+        notes: undefined,
+      })
+
+      render(<ChannelCard channelId={channelId} />)
+      expect(await screen.findByText(/MyChannel/i)).toBeVisible()
+      expect(screen.queryByLabelText(/Edit instructions/i)).not.toBeInTheDocument()
+    })
+
     test('expect editing restrictions invokes patchChannel', async () => {
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
 

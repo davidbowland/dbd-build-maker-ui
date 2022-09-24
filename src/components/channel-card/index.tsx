@@ -106,6 +106,8 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
           </Grid>
         </Alert>
       )
+    } else if (tokenStatus?.id !== channelId && channelInfo.notes === undefined) {
+      return <></>
     }
     return (
       <Alert severity={channelInfo.notes ? 'warning' : 'success'} variant="filled">
