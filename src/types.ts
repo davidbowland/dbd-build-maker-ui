@@ -44,6 +44,11 @@ export interface BuildTokenResponse {
   submitter: string
 }
 
+export interface ChannelCounts {
+  completed: number
+  pending: number
+}
+
 export interface ChannelMod {
   user_id: string
   user_login: string
@@ -51,6 +56,7 @@ export interface ChannelMod {
 }
 
 export interface Channel {
+  counts: ChannelCounts
   disabledOptions: string[]
   mods: ChannelMod[]
   name: string

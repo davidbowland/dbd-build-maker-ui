@@ -170,7 +170,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
-        <ChannelCard channelId={channelId} initialBuilds={builds} tokenStatus={tokenStatus} />
+        <ChannelCard builds={builds} channelId={channelId} tokenStatus={tokenStatus} />
       </Stack>
       <Grid container ref={topRef} spacing={2} sx={{ paddingRight: 2, width: '100%' }}>
         <Grid container item spacing={1} sx={{ paddingRight: 1 }} xs="auto">

@@ -42,7 +42,8 @@ describe('ChannelList component', () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
 
       expect(await screen.findByText(/MyChannel/i)).toBeVisible()
-      expect(screen.queryByText(/^Your channel/i)).not.toBeInTheDocument()
+      expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
+      expect(await screen.findByText(/Completed builds: 1/i)).toBeVisible()
     })
 
     test('expect clicking channel navigates', async () => {
@@ -54,13 +55,6 @@ describe('ChannelList component', () => {
       })
 
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/c/123456')
-    })
-
-    test('expect your channel has special text', async () => {
-      render(<ChannelList tokenStatus={tokenForChannel} />)
-
-      expect(await screen.findByText(/MyChannel/i)).toBeVisible()
-      expect(await screen.findByText(/^Your channel/i)).toBeVisible()
     })
 
     test('expect error message on fetch reject', async () => {

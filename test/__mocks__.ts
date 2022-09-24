@@ -70,6 +70,7 @@ export const mods: ChannelMod[] = [
 
 export const channel: Channel = {
   ...channelInfo,
+  counts: { completed: 1, pending: 2 },
   disabledOptions: [],
   mods,
 }
@@ -111,7 +112,10 @@ export const buildBatch: BuildBatch[] = [
 
 export const channelBatch: ChannelBatch[] = [
   { data: channel, id: channelId },
-  { data: { disabledOptions: [], mods: [], name: 'fnord', pic: 'pic.png' }, id: '9324824' },
+  {
+    data: { counts: { completed: 3, pending: 4 }, disabledOptions: [], mods: [], name: 'fnord', pic: 'pic.png' },
+    id: '9324824',
+  },
 ]
 
 /* Build options */

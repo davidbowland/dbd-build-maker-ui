@@ -5,7 +5,7 @@ import { mocked } from 'jest-mock'
 
 import * as auth from '@services/auth'
 import * as buildMaker from '@services/build-maker'
-import { buildBatch, channel, channelId, twitchAuthToken, twitchAuthTokenStatus } from '@test/__mocks__'
+import { channel, channelId, twitchAuthToken, twitchAuthTokenStatus } from '@test/__mocks__'
 import ChannelCard from './index'
 
 jest.mock('@aws-amplify/analytics')
@@ -19,7 +19,6 @@ describe('ChannelCard component', () => {
   beforeAll(() => {
     console.error = jest.fn()
     mocked(auth).getAccessToken.mockReturnValue(twitchAuthToken)
-    mocked(buildMaker).fetchAllBuilds.mockResolvedValue(buildBatch)
     mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
   })
 
@@ -31,28 +30,10 @@ describe('ChannelCard component', () => {
     test('expect stats and name rendered', async () => {
       render(<ChannelCard channelId={channelId} />)
 
-      expect(mocked(buildMaker).fetchAllBuilds).toHaveBeenCalledWith(channelId)
       expect(mocked(buildMaker).fetchChannel).toHaveBeenCalledWith(channelId)
       expect(await screen.findByText(/MyChannel/i)).toBeVisible()
-      expect(await screen.findByText(/Pending builds: 1/i)).toBeVisible()
-    })
-
-    test("expect passing in initialBuilds doesn't invoke fetchAllBuilds", async () => {
-      render(<ChannelCard channelId={channelId} initialBuilds={buildBatch} />)
-
-      expect(await screen.findByText(/MyChannel/i)).toBeVisible()
-      expect(await screen.findByText(/Pending builds: 1/i)).toBeVisible()
-      expect(mocked(buildMaker).fetchAllBuilds).toHaveBeenCalledTimes(0)
-    })
-
-    test('expect fetchAllBuilds failure displays message', async () => {
-      mocked(buildMaker).fetchAllBuilds.mockRejectedValueOnce(undefined)
-      render(<ChannelCard channelId={channelId} />)
-
-      expect(
-        await screen.findByText(/Error fetching build details, please refresh the page to try again/i)
-      ).toBeVisible()
-      expect(console.error).toHaveBeenCalledTimes(1)
+      expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
+      expect(await screen.findByText(/Completed builds: 1/i)).toBeVisible()
     })
 
     test('expect fetchChannel failure displays message', async () => {

@@ -8,7 +8,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
@@ -18,19 +17,18 @@ import Typography from '@mui/material/Typography'
 import jsonpatch from 'fast-json-patch'
 
 import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
-import { fetchAllBuilds, fetchChannel, patchChannel } from '@services/build-maker'
+import { fetchChannel, patchChannel } from '@services/build-maker'
 import { getAccessToken } from '@services/auth'
 
 const NO_INSTRUCTIONS_TEXT = 'No special instructions'
 
 export interface ChannelCardProps {
+  builds?: BuildBatch[]
   channelId: string
-  initialBuilds?: BuildBatch[]
   tokenStatus?: TwitchTokenStatus
 }
 
-const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps): JSX.Element => {
-  const [builds, setBuilds] = useState<BuildBatch[] | undefined>(initialBuilds)
+const ChannelCard = ({ builds, channelId, tokenStatus }: ChannelCardProps): JSX.Element => {
   const [channelInfo, setChannelInfo] = useState<Channel | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [instructions, setInstructions] = useState(NO_INSTRUCTIONS_TEXT)
@@ -38,7 +36,9 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   const [isLoading, setIsLoading] = useState(false)
 
   const accessToken = getAccessToken()
-  const uncompletedBuildCount = builds?.reduce((count, build) => 1 - Math.sign(build.data.completed ?? 0) + count, 0)
+  const isChannelMod =
+    (channelInfo?.mods && channelInfo?.mods.some((value) => tokenStatus?.id === value.user_id)) ||
+    channelId === tokenStatus?.id
 
   const handleSubmitClick = async (channelInfo: Channel, accessToken: string): Promise<void> => {
     setIsLoading(true)
@@ -63,11 +63,14 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
           aria-label={`Details for ${channelInfo.name}`}
           avatar={<Avatar alt={channelInfo.name} src={channelInfo.pic} />}
           subheader={
-            uncompletedBuildCount !== undefined ? (
-              `Pending builds: ${uncompletedBuildCount.toLocaleString()}`
-            ) : (
-              <LinearProgress />
-            )
+            <>
+              <Typography component="div" variant="caption">
+                Pending builds: {channelInfo.counts.pending.toLocaleString()}
+              </Typography>
+              <Typography component="div" variant="caption">
+                Completed builds: {channelInfo.counts.completed.toLocaleString()}
+              </Typography>
+            </>
           }
           title={channelInfo.name}
         />
@@ -106,7 +109,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
           </Grid>
         </Alert>
       )
-    } else if (tokenStatus?.id !== channelId && channelInfo.notes === undefined) {
+    } else if (!isChannelMod && channelInfo.notes === undefined) {
       return <></>
     }
     return (
@@ -115,7 +118,7 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
           <Grid item xs>
             <Typography variant="body1">{channelInfo.notes ?? NO_INSTRUCTIONS_TEXT}</Typography>
           </Grid>
-          {tokenStatus?.id === channelId && accessToken && (
+          {isChannelMod && accessToken && (
             <Grid item xs="auto">
               <Tooltip title="Edit special instructions">
                 <IconButton aria-label="Edit instructions" onClick={() => setIsEditing(true)}>
@@ -141,26 +144,13 @@ const ChannelCard = ({ channelId, initialBuilds, tokenStatus }: ChannelCardProps
   }, [channelInfo])
 
   useEffect(() => {
-    if (builds === undefined) {
-      fetchAllBuilds(channelId)
-        .then(setBuilds)
-        .catch((error) => {
-          console.error('fetchAllBuilds', error)
-          setErrorMessage('Error fetching build details, please refresh the page to try again')
-        })
-    } else {
-      setBuilds(initialBuilds)
-    }
-  }, [initialBuilds])
-
-  useEffect(() => {
     fetchChannel(channelId)
       .then(setChannelInfo)
       .catch((error) => {
         console.error('fetchChannel', error)
         setErrorMessage('Error fetching channel details, please refresh the page to try again')
       })
-  }, [])
+  }, [builds])
 
   return (
     <Stack spacing={1}>

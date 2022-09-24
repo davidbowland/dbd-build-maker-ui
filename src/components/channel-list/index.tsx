@@ -60,7 +60,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
     return channels
       .sort((a, b) => a.data.name.localeCompare(b.data.name))
       .map((channel, index) => {
-        const yourChannel = tokenStatus && channel.id === tokenStatus?.id
+        const yourChannel = tokenStatus && channel.id === tokenStatus.id
         return (
           <Card key={index} sx={{ maxWidth: 600 }} variant="outlined">
             <CardActionArea>
@@ -68,7 +68,16 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
                 aria-label={`Link to ${channel.data.name}`}
                 avatar={<Avatar alt={channel.data.name} src={channel.data.pic} />}
                 onClick={() => navigate(`/c/${channel.id}`)}
-                subheader={yourChannel ? 'Your channel' : ''}
+                subheader={
+                  <>
+                    <Typography component="div" variant="caption">
+                      Pending builds: {channel.data.counts.pending.toLocaleString()}
+                    </Typography>
+                    <Typography component="div" variant="caption">
+                      Completed builds: {channel.data.counts.completed.toLocaleString()}
+                    </Typography>
+                  </>
+                }
                 title={channel.data.name}
               />
             </CardActionArea>
