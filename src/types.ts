@@ -44,9 +44,15 @@ export interface BuildTokenResponse {
   submitter: string
 }
 
+export interface ChannelMod {
+  user_id: string
+  user_login: string
+  user_name: string
+}
+
 export interface Channel {
   disabledOptions: string[]
-  mods: string[]
+  mods: ChannelMod[]
   name: string
   notes?: string
   pic: string

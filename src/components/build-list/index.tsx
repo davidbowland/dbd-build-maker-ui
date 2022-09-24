@@ -8,9 +8,6 @@ import Grid from '@mui/material/Grid'
 import GridViewIcon from '@mui/icons-material/GridView'
 import IconButton from '@mui/material/IconButton'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
 import ReplayIcon from '@mui/icons-material/Replay'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
@@ -24,7 +21,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import ViewListIcon from '@mui/icons-material/ViewList'
 
-import { BuildBatch, Channel, TwitchTokenStatus } from '@types'
+import { BuildBatch, Channel, ChannelMod, TwitchTokenStatus } from '@types'
 import { fetchAllBuilds, fetchChannel, updateChannelMods } from '@services/build-maker'
 import BuildCards from './build-cards'
 import BuildTable from './build-table'
@@ -70,7 +67,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
 
   const accessToken = getAccessToken()
   const isChannelMod =
-    (channel?.mods && channel?.mods.some((value) => tokenStatus?.name === value)) || channelId === tokenStatus?.id
+    (channel?.mods && channel?.mods.some((value) => tokenStatus?.id === value.user_id)) || channelId === tokenStatus?.id
 
   const filterAndSortBuilds = (builds: BuildBatch[], pendingBuilds: boolean): BuildBatch[] => {
     if (pendingBuilds) {
@@ -103,14 +100,14 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     ))
   }
 
-  const renderMods = (mods: string[]): JSX.Element => (
-    <List dense={true}>
-      {mods.map((name, index) => (
-        <ListItem key={index}>
-          <ListItemText primary={name} />
-        </ListItem>
+  const renderMods = (mods: ChannelMod[]): JSX.Element => (
+    <Stack spacing={2}>
+      {mods.sort(sortMods).map((m, index) => (
+        <Typography key={index} variant="h4">
+          {m.user_name}
+        </Typography>
       ))}
-    </List>
+    </Stack>
   )
 
   const snackbarErrorClose = (): void => {
@@ -125,6 +122,15 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     } else if ((b === 'Any' || b === 'None') && a !== 'Any' && a !== 'None') {
       return -1
     } else if (a < b) {
+      return -1
+    }
+    return 1
+  }
+
+  const sortMods = (a: ChannelMod, b: ChannelMod): number => {
+    if (a.user_name === b.user_name) {
+      return 0
+    } else if (a.user_name < b.user_name) {
       return -1
     }
     return 1
@@ -160,7 +166,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const sortCompareFn = buildsSorted === BuildsSorted.ALPHA_SORT ? sortAlphaCompareFn : unsortedCompareFn
   return (
     <>
-      <Stack margin="auto" marginBottom="50px" maxWidth="600px" spacing={4}>
+      <Stack spacing={4} sx={{ m: 'auto', marginBottom: '50px', maxWidth: '600px' }}>
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Builds
         </Typography>
@@ -245,7 +251,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
               {channel && <Tab label={`Mods (${channel.mods.length.toLocaleString()})`} value={BuildView.MODS} />}
             </TabList>
           </Box>
-          <TabPanel value={BuildView.PENDING_BUILDS}>
+          <TabPanel sx={{ minHeight: '50vh' }} value={BuildView.PENDING_BUILDS}>
             {displayView === DisplayView.GRID_VIEW ? (
               <BuildCards
                 accessToken={accessToken}
@@ -270,7 +276,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
               />
             )}
           </TabPanel>
-          <TabPanel value={BuildView.COMPLETED_BUILDS}>
+          <TabPanel sx={{ minHeight: '50vh' }} value={BuildView.COMPLETED_BUILDS}>
             {displayView === DisplayView.GRID_VIEW ? (
               <BuildCards
                 accessToken={accessToken}
@@ -296,14 +302,8 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
             )}
           </TabPanel>
           {channel && (
-            <TabPanel value={BuildView.MODS}>
-              {channel.mods.length > 0 ? (
-                renderMods(channel.mods)
-              ) : (
-                <Typography sx={{ minHeight: '50vh', textAlign: 'center' }} variant="h5">
-                  No mods
-                </Typography>
-              )}
+            <TabPanel sx={{ minHeight: '50vh', textAlign: 'center' }} value={BuildView.MODS}>
+              {channel.mods.length > 0 ? renderMods(channel.mods) : <Typography variant="h5">No mods</Typography>}
             </TabPanel>
           )}
         </TabContext>

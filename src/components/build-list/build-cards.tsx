@@ -183,7 +183,7 @@ const BuildCards = ({
       <Grid container justifyContent="center" spacing={4}>
         {builds.length === 0 ? (
           <Grid item xs>
-            <Typography sx={{ minHeight: '50vh', textAlign: 'center' }} variant="h5">
+            <Typography sx={{ textAlign: 'center' }} variant="h4">
               No builds
             </Typography>
           </Grid>

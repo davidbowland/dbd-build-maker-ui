@@ -6,6 +6,7 @@ import {
   BuildTokenResponse,
   Channel,
   ChannelBatch,
+  ChannelMod,
   PatchOperation,
   Theme,
   Token,
@@ -60,7 +61,12 @@ export const channelInfo = {
   pic: 'https://twitch.com/logo.png',
 }
 
-export const mods = ['mod1', 'mod2']
+export const mods: ChannelMod[] = [
+  { user_id: '269300532', user_login: 'mod1', user_name: 'mod1' },
+  { user_id: '269300533', user_login: 'mod2', user_name: 'mod2' },
+  { user_id: '269300534', user_login: 'mod3', user_name: 'mod2' },
+  { user_id: '269300535', user_login: 'mod4', user_name: 'mod0' },
+]
 
 export const channel: Channel = {
   ...channelInfo,

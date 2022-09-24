@@ -3,6 +3,7 @@ import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import CreateIcon from '@mui/icons-material/Create'
+import Grid from '@mui/material/Grid'
 import Snackbar from '@mui/material/Snackbar'
 
 import { createChannel } from '@services/build-maker'
@@ -33,17 +34,21 @@ export const CreateButton = ({ accessToken }: CreateButtonProps): JSX.Element =>
 
   return (
     <>
-      <Button
-        data-amplify-analytics-name="create-channel-click"
-        data-amplify-analytics-on="click"
-        disabled={showCreatePending}
-        fullWidth
-        onClick={createChannelClick}
-        startIcon={showCreatePending ? <CircularProgress color="inherit" size={14} /> : <CreateIcon />}
-        variant="contained"
-      >
-        {showCreatePending ? 'Creating channel...' : 'Create your channel'}
-      </Button>
+      <Grid container justifyContent="center" sx={{ width: '100%' }}>
+        <Grid item sm={6} xs={12}>
+          <Button
+            data-amplify-analytics-name="create-channel-click"
+            data-amplify-analytics-on="click"
+            disabled={showCreatePending}
+            fullWidth
+            onClick={createChannelClick}
+            startIcon={showCreatePending ? <CircularProgress color="inherit" size={14} /> : <CreateIcon />}
+            variant="contained"
+          >
+            {showCreatePending ? 'Creating channel...' : 'Create your channel'}
+          </Button>
+        </Grid>
+      </Grid>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
           {errorMessage}

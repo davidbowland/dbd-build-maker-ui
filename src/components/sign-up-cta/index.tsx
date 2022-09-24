@@ -89,7 +89,8 @@ const SignUpCta = (): JSX.Element => {
           img={<StaticImage alt="Mark build complete" src="../../assets/images/mark-complete.png" />}
           title="Track your builds"
         >
-          Marking a build as complete is as easy as clicking a button. Completed builds can be viewed separately.
+          Marking a build as complete is as easy as clicking a button or having a moderator click the button for you.
+          Completed builds can be viewed separately.
         </CtaCard>
         <CtaCard
           cta="Sounds good"
