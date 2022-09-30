@@ -81,11 +81,17 @@ describe('ChannelList component', () => {
   describe('create button', () => {
     test('expect channel created when create button clicked', async () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
-      const createChannelButton = (await screen.findByText(/Create your channel/i, {
+      const createChannelButton = (await screen.findByText(/Register your channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
         createChannelButton.click()
+      })
+      const continueButton = (await screen.findByText(/Continue/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(() => {
+        continueButton.click()
       })
 
       waitFor(() => {
@@ -94,14 +100,39 @@ describe('ChannelList component', () => {
       expect(windowLocationReload).toHaveBeenCalled()
     })
 
-    test('expect error when channel creation fails', async () => {
-      mocked(buildMaker).createChannel.mockRejectedValueOnce(undefined)
+    test("expect cancelling channel creation doesn't invoke createChannel", async () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
-      const createChannelButton = (await screen.findByText(/Create your channel/i, {
+      const createChannelButton = (await screen.findByText(/Register your channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
         createChannelButton.click()
+      })
+      const cancelButton = (await screen.findByText(/Cancel/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(() => {
+        cancelButton.click()
+      })
+
+      expect(mocked(buildMaker).createChannel).not.toHaveBeenCalled()
+      expect(windowLocationReload).not.toHaveBeenCalled()
+    })
+
+    test('expect error when channel creation fails', async () => {
+      mocked(buildMaker).createChannel.mockRejectedValueOnce(undefined)
+      render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+      const createChannelButton = (await screen.findByText(/Register your channel/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(() => {
+        createChannelButton.click()
+      })
+      const continueButton = (await screen.findByText(/Continue/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(() => {
+        continueButton.click()
       })
 
       expect(await screen.findByText(/Error creating channel/i)).toBeVisible()
@@ -111,11 +142,17 @@ describe('ChannelList component', () => {
     test('expect closing error removes it', async () => {
       mocked(buildMaker).createChannel.mockRejectedValueOnce(undefined)
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
-      const createChannelButton = (await screen.findByText(/Create your channel/i, {
+      const createChannelButton = (await screen.findByText(/Register your channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
       await act(() => {
         createChannelButton.click()
+      })
+      const continueButton = (await screen.findByText(/Continue/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(() => {
+        continueButton.click()
       })
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
       act(() => {

@@ -39,11 +39,11 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
   const accessToken = getAccessToken()
   const hasChannel = tokenStatus && channels?.some((channel) => channel.id === tokenStatus?.id)
 
-  const deleteChannelClick = async (): Promise<void> => {
+  const deleteChannelClick = async (channelId: string, accessToken: string): Promise<void> => {
     try {
       setShowDeleteDialog(false)
       setShowDeletePending(true)
-      await deleteChannel(tokenStatus!.id!, accessToken!)
+      await deleteChannel(channelId, accessToken)
       window.location.reload()
     } catch (error) {
       console.error('deleteChannelClick', error)
@@ -161,7 +161,9 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
           <Button autoFocus onClick={deleteDialogClose}>
             Go back
           </Button>
-          <Button onClick={deleteChannelClick}>Continue</Button>
+          <Button onClick={() => tokenStatus?.id && accessToken && deleteChannelClick(tokenStatus.id, accessToken)}>
+            Continue
+          </Button>
         </DialogActions>
       </Dialog>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
