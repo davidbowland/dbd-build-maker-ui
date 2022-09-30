@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 import { mocked } from 'jest-mock'
 
@@ -75,6 +75,63 @@ describe('ChannelList component', () => {
       })
 
       expect(screen.queryByText(/Error fetching channel list/i)).not.toBeInTheDocument()
+    })
+  })
+
+  describe('channel sorting', () => {
+    test('expect sorting alphabetically shows channel', async () => {
+      render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
+      const sortInput = (await screen.findByTestId(/channel-sort/i)) as HTMLInputElement
+      act(() => {
+        fireEvent.change(sortInput, { target: { value: 'alpha' } })
+      })
+
+      expect(await screen.findByText(/MyChannel/i)).toBeVisible()
+      expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
+      expect(await screen.findByText(/Completed builds: 1/i)).toBeVisible()
+    })
+
+    test('expect sorting by build count shows channel', async () => {
+      render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
+      const sortInput = (await screen.findByTestId(/channel-sort/i)) as HTMLInputElement
+      act(() => {
+        fireEvent.change(sortInput, { target: { value: 'builds' } })
+      })
+
+      expect(await screen.findByText(/MyChannel/i)).toBeVisible()
+      expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
+      expect(await screen.findByText(/Completed builds: 1/i)).toBeVisible()
+    })
+
+    test('expect sorting by recent activity shows channel', async () => {
+      render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
+      const sortInput = (await screen.findByTestId(/channel-sort/i)) as HTMLInputElement
+      act(() => {
+        fireEvent.change(sortInput, { target: { value: 'recent' } })
+      })
+
+      expect(await screen.findByText(/MyChannel/i)).toBeVisible()
+      expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
+      expect(await screen.findByText(/Completed builds: 1/i)).toBeVisible()
+    })
+  })
+
+  describe('channel filter', () => {
+    test('expect channel filter to remove channel', async () => {
+      render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
+      await screen.findByText(/MyChannel/i)
+      const filterInput = (await screen.findByLabelText(/Search channels/i)) as HTMLInputElement
+      act(() => {
+        fireEvent.change(filterInput, { target: { value: 'fnord' } })
+      })
+
+      expect(screen.queryByText(/MyChannel/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Pending builds: 2/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Completed builds: 1/i)).not.toBeInTheDocument()
     })
   })
 

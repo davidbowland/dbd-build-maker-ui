@@ -48,14 +48,14 @@ enum DisplayView {
   LIST_VIEW = 'list',
 }
 
-enum BuildsSorted {
+enum BuildsSort {
   ALPHA_SORT = 'sorted',
   UNSORTED = 'unsorted',
 }
 
 const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const [builds, setBuilds] = useState<BuildBatch[] | undefined>(undefined)
-  const [buildsSorted, setBuildsSorted] = useState<BuildsSorted>(BuildsSorted.UNSORTED)
+  const [buildsSorted, setBuildsSorted] = useState<BuildsSort>(BuildsSort.UNSORTED)
   const [channel, setChannel] = useState<Channel | undefined>(undefined)
   const [displayView, setDisplayView] = useState<DisplayView>(DisplayView.GRID_VIEW)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
@@ -163,7 +163,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     }
   }, [tokenStatus])
 
-  const sortCompareFn = buildsSorted === BuildsSorted.ALPHA_SORT ? sortAlphaCompareFn : unsortedCompareFn
+  const sortCompareFn = buildsSorted === BuildsSort.ALPHA_SORT ? sortAlphaCompareFn : unsortedCompareFn
   return (
     <>
       <Stack spacing={4} sx={{ m: 'auto', marginBottom: '50px', maxWidth: '600px' }}>
@@ -190,18 +190,18 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
             )}
           </Grid>
           <Grid item xs>
-            {buildsSorted === BuildsSorted.ALPHA_SORT ? (
+            {buildsSorted === BuildsSort.ALPHA_SORT ? (
               <Tooltip title="Show addons and perk in submitted order">
                 <IconButton
                   aria-label="Show addons and perk in submitted order"
-                  onClick={() => setBuildsSorted(BuildsSorted.UNSORTED)}
+                  onClick={() => setBuildsSorted(BuildsSort.UNSORTED)}
                 >
                   <FormatListNumberedIcon />
                 </IconButton>
               </Tooltip>
             ) : (
               <Tooltip title="Sort addons and perks">
-                <IconButton aria-label="Sort addons and perks" onClick={() => setBuildsSorted(BuildsSorted.ALPHA_SORT)}>
+                <IconButton aria-label="Sort addons and perks" onClick={() => setBuildsSorted(BuildsSort.ALPHA_SORT)}>
                   <SortByAlphaIcon />
                 </IconButton>
               </Tooltip>

@@ -10,6 +10,7 @@ import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import NativeSelect from '@mui/material/NativeSelect'
+import { NativeSelectInputProps } from '@mui/material/NativeSelect/NativeSelectInput'
 import Paper from '@mui/material/Paper'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -21,7 +22,6 @@ import Typography from '@mui/material/Typography'
 import { navigate } from 'gatsby'
 
 import { Build, BuildOptions, BuildSubmission, BuildTokenResponse, Channel } from '@types'
-import { NativeSelectInputProps } from '@mui/material/NativeSelect/NativeSelectInput'
 import { createBuild } from '@services/build-maker'
 
 export interface CreateCardProps {
