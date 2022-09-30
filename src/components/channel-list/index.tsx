@@ -217,9 +217,6 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
         <Typography sx={{ textAlign: 'center' }} variant="h2">
           Channels
         </Typography>
-        {tokenStatus !== undefined && channels && !hasChannel && accessToken && (
-          <CreateButton accessToken={accessToken} />
-        )}
         <Grid container justifyContent="center" spacing={2} sx={{ paddingRight: 2, width: '100%' }}>
           <Grid item md={3} sm={5} xs={12}>
             <FormControl fullWidth>
@@ -262,12 +259,11 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
             </Grid>
           ))}
         </Grid>
-        {tokenStatus === undefined && (
-          <>
-            <Divider />
-            <SignUpCta />
-          </>
+        <Divider />
+        {tokenStatus !== undefined && channels && !hasChannel && accessToken && (
+          <CreateButton accessToken={accessToken} />
         )}
+        {tokenStatus === undefined && <SignUpCta />}
       </Stack>
       <Dialog
         aria-describedby="Are you sure you want to delete the channel?"
