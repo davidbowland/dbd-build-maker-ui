@@ -8,6 +8,7 @@ import {
   channel,
   channelBatch,
   channelId,
+  createdChannel,
   jsonPatchOperations,
   submitter,
   twitchAuthToken,
@@ -36,7 +37,7 @@ jest.mock('@aws-amplify/analytics')
 describe('Build maker service', () => {
   describe('channels', () => {
     describe('createChannel', () => {
-      const postEndpoint = jest.fn().mockReturnValue(channel)
+      const postEndpoint = jest.fn().mockReturnValue(createdChannel)
 
       beforeAll(() => {
         server.use(
@@ -54,7 +55,7 @@ describe('Build maker service', () => {
       test('expect result from call returned', async () => {
         const result = await createChannel(twitchAuthToken)
         expect(postEndpoint).toHaveBeenCalledTimes(1)
-        expect(result).toEqual(channel)
+        expect(result).toEqual(createdChannel)
       })
     })
 

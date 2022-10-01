@@ -7,6 +7,7 @@ import {
   Channel,
   ChannelBatch,
   ChannelMod,
+  CreatedChannel,
   PatchOperation,
   Theme,
   Token,
@@ -72,7 +73,13 @@ export const channel: Channel = {
   ...channelInfo,
   counts: { completed: 1, pending: 2 },
   disabledOptions: [],
+  lastModified: 1664636096491,
   mods,
+}
+
+export const createdChannel: CreatedChannel = {
+  ...channel,
+  channelId,
 }
 
 export const jsonPatchOperations: PatchOperation[] = [{ op: 'replace', path: '/name', value: 'NewChannel' }]
@@ -113,7 +120,14 @@ export const buildBatch: BuildBatch[] = [
 export const channelBatch: ChannelBatch[] = [
   { data: channel, id: channelId },
   {
-    data: { counts: { completed: 3, pending: 4 }, disabledOptions: [], mods: [], name: 'fnord', pic: 'pic.png' },
+    data: {
+      counts: { completed: 3, pending: 4 },
+      disabledOptions: [],
+      lastModified: 1664636092863,
+      mods: [],
+      name: 'fnord',
+      pic: 'pic.png',
+    },
     id: '9324824',
   },
 ]

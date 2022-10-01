@@ -6,7 +6,7 @@ import { mocked } from 'jest-mock'
 import * as auth from '@services/auth'
 import * as buildMaker from '@services/build-maker'
 import * as gatsby from 'gatsby'
-import { channelBatch, channelId, twitchAuthToken, twitchAuthTokenStatus } from '@test/__mocks__'
+import { channelBatch, channelId, createdChannel, twitchAuthToken, twitchAuthTokenStatus } from '@test/__mocks__'
 import ChannelList from './index'
 import SignUpCta from '@components/sign-up-cta'
 
@@ -18,18 +18,19 @@ jest.mock('gatsby')
 
 describe('ChannelList component', () => {
   const consoleError = console.error
+  const mockWindowLocationReload = jest.fn()
   const tokenForChannel = { ...twitchAuthTokenStatus, id: channelId }
-  const windowLocationReload = jest.fn()
 
   beforeAll(() => {
     console.error = jest.fn()
     mocked(SignUpCta).mockReturnValue(<></>)
     mocked(auth).getAccessToken.mockReturnValue(twitchAuthToken)
+    mocked(buildMaker).createChannel.mockResolvedValue(createdChannel)
     mocked(buildMaker).fetchAllChannels.mockResolvedValue(channelBatch)
 
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: { reload: windowLocationReload },
+      value: { reload: mockWindowLocationReload },
     })
   })
 
@@ -154,7 +155,7 @@ describe('ChannelList component', () => {
       waitFor(() => {
         expect(mocked(buildMaker).createChannel).toHaveBeenCalledWith(twitchAuthToken)
       })
-      expect(windowLocationReload).toHaveBeenCalled()
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/c/123456')
     })
 
     test("expect cancelling channel creation doesn't invoke createChannel", async () => {
@@ -173,7 +174,7 @@ describe('ChannelList component', () => {
       })
 
       expect(mocked(buildMaker).createChannel).not.toHaveBeenCalled()
-      expect(windowLocationReload).not.toHaveBeenCalled()
+      expect(mocked(gatsby).navigate).not.toHaveBeenCalled()
     })
 
     test('expect error when channel creation fails', async () => {
@@ -264,7 +265,7 @@ describe('ChannelList component', () => {
 
       expect(screen.queryByText(/Delete channel\?/i)).not.toBeVisible()
       expect(mocked(buildMaker).deleteChannel).toHaveBeenCalledWith('123456', 'otfghjklkgtyuijnmk')
-      expect(windowLocationReload).toHaveBeenCalled()
+      expect(mockWindowLocationReload).toHaveBeenCalled()
     })
 
     test('expect error message on delete failure', async () => {

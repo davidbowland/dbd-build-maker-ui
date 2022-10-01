@@ -70,6 +70,17 @@ export interface ChannelBatch {
   id: string
 }
 
+export interface CreatedChannel {
+  channelId: string
+  counts: ChannelCounts
+  disabledOptions: string[]
+  lastModified: number
+  mods: ChannelMod[]
+  name: string
+  notes?: string
+  pic: string
+}
+
 export interface StringObject {
   [key: string]: any
 }

@@ -6,6 +6,7 @@ import {
   BuildTokenResponse,
   Channel,
   ChannelBatch,
+  CreatedChannel,
   PatchOperation,
   Token,
   TwitchTokenStatus,
@@ -14,7 +15,7 @@ import { buildMakerApiNameUnauthenticated } from '@config/amplify'
 
 /* Channels */
 
-export const createChannel = (token: string): Promise<Channel> =>
+export const createChannel = (token: string): Promise<CreatedChannel> =>
   API.post(buildMakerApiNameUnauthenticated, '/channels', { body: {}, headers: { 'X-Twitch-Token': token } })
 
 export const fetchChannel = (channelId: string): Promise<Channel> =>

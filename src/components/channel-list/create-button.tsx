@@ -10,6 +10,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Grid from '@mui/material/Grid'
 import Snackbar from '@mui/material/Snackbar'
+import { navigate } from 'gatsby'
 
 import { createChannel } from '@services/build-maker'
 
@@ -26,8 +27,8 @@ export const CreateButton = ({ accessToken }: CreateButtonProps): JSX.Element =>
     try {
       setShowCreateDialog(false)
       setShowCreatePending(true)
-      await createChannel(accessToken)
-      window.location.reload()
+      const channel = await createChannel(accessToken)
+      navigate(`/c/${channel.channelId}`)
     } catch (error) {
       console.error('createChannelClick', error)
       setErrorMessage('Error creating channel')
