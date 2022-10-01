@@ -40,7 +40,7 @@ const BuildCards = ({
   const renderBuilds = (builds: BuildBatch[]): JSX.Element[] => {
     return builds.map((build, index) => (
       <Grid item key={index} md={4} sm={6} xs={12}>
-        <Card variant="outlined">
+        <Card>
           <CardHeader
             avatar={build.data.completed ? <CheckCircleOutlineIcon color="success" /> : <CancelIcon color="error" />}
             subheader={

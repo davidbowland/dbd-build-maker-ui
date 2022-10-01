@@ -99,7 +99,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
       .map((channel, index) => {
         const yourChannel = tokenStatus && channel.id === tokenStatus.id
         return (
-          <Card key={index} variant="outlined">
+          <Card key={index}>
             <CardActionArea>
               <CardHeader
                 aria-label={`Link to ${channel.data.name}`}
