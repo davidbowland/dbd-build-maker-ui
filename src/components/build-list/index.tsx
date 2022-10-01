@@ -166,12 +166,9 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
   const sortCompareFn = buildsSorted === BuildsSort.ALPHA_SORT ? sortAlphaCompareFn : unsortedCompareFn
   return (
     <>
-      <Stack spacing={4} sx={{ m: 'auto', marginBottom: '50px', maxWidth: '600px' }}>
-        <Typography sx={{ textAlign: 'center' }} variant="h2">
-          Builds
-        </Typography>
+      <Grid sx={{ m: 'auto', marginBottom: '50px', maxWidth: '600px' }}>
         <ChannelCard builds={builds} channelId={channelId} tokenStatus={tokenStatus} />
-      </Stack>
+      </Grid>
       <Grid container ref={topRef} spacing={2} sx={{ paddingRight: 2, width: '100%' }}>
         <Grid container item spacing={1} sx={{ paddingRight: 1 }} xs="auto">
           <Grid item xs>

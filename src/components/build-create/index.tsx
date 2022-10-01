@@ -69,24 +69,19 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
 
   return (
     <>
-      <Stack margin="auto" maxWidth="600px" spacing={4}>
-        <Typography sx={{ textAlign: 'center' }} variant="h2">
-          Create Build
-        </Typography>
-        <Stack spacing={8}>
-          <ChannelCard channelId={channelId} tokenStatus={tokenStatus} />
-          {isLoadingInitial ? (
-            renderInitialLoading()
-          ) : (
-            <CreateCard
-              buildId={buildId}
-              buildOptions={buildOptions}
-              buildTokenResponse={buildTokenResponse}
-              channel={channel}
-              channelId={channelId}
-            />
-          )}
-        </Stack>
+      <Stack margin="auto" maxWidth="600px" spacing={8}>
+        <ChannelCard channelId={channelId} tokenStatus={tokenStatus} />
+        {isLoadingInitial ? (
+          renderInitialLoading()
+        ) : (
+          <CreateCard
+            buildId={buildId}
+            buildOptions={buildOptions}
+            buildTokenResponse={buildTokenResponse}
+            channel={channel}
+            channelId={channelId}
+          />
+        )}
       </Stack>
       <Snackbar autoHideDuration={20_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
         <Alert onClose={snackbarErrorClose} severity="error" variant="filled">

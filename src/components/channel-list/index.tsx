@@ -214,9 +214,6 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
   return (
     <>
       <Stack spacing={4} sx={{ minHeight: '70vh', width: '100%' }}>
-        <Typography sx={{ textAlign: 'center' }} variant="h2">
-          Channels
-        </Typography>
         <Grid container justifyContent="center" spacing={2} sx={{ paddingRight: 2, width: '100%' }}>
           <Grid item md={3} sm={5} xs={12}>
             <FormControl fullWidth>

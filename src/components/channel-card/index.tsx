@@ -72,7 +72,7 @@ const ChannelCard = ({ builds, channelId, tokenStatus }: ChannelCardProps): JSX.
               </Typography>
             </>
           }
-          title={channelInfo.name}
+          title={<Typography variant="h6">{channelInfo.name}</Typography>}
         />
       </Card>
     )
