@@ -1,4 +1,4 @@
-import { Amplify } from 'aws-amplify'
+import { Amplify, Auth } from 'aws-amplify'
 import { Analytics } from '@aws-amplify/analytics'
 
 const identityPoolId = process.env.GATSBY_IDENTITY_POOL_ID
@@ -51,3 +51,5 @@ Analytics.autoTrack('event', {
   // REQUIRED, turn on/off the auto tracking
   enable: true,
 })
+
+Auth.configure(analyticsConfig)
