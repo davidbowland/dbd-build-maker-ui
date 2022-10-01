@@ -46,7 +46,7 @@ const BuildCards = ({
             subheader={
               build.data.completed ? `Completed ${new Date(build.data.completed).toLocaleString()}` : 'Incomplete'
             }
-            title={build.data.character}
+            title={<Typography variant="h6">{build.data.character}</Typography>}
           />
           <CardContent>
             {build.data.item && (
