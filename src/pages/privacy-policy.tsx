@@ -11,7 +11,7 @@ const PrivacyPage = (): JSX.Element => {
   const [_, setTokenStatus] = useState<TwitchTokenStatus | undefined>(undefined)
 
   return (
-    <Paper elevation={1}>
+    <>
       <Helmet>
         <title>Privacy Policy -- dbd.dbowland.com</title>
       </Helmet>
@@ -22,7 +22,7 @@ const PrivacyPage = (): JSX.Element => {
           </Paper>
         </Authenticated>
       </main>
-    </Paper>
+    </>
   )
 }
 
