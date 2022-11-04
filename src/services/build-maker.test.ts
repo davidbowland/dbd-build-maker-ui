@@ -59,6 +59,30 @@ describe('Build maker service', () => {
       })
     })
 
+    describe('deleteChannel', () => {
+      const deleteEndpoint = jest.fn().mockReturnValue(channel)
+
+      beforeAll(() => {
+        server.use(
+          rest.delete(`${baseUrl}/channels/:id`, async (req, res, ctx) => {
+            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
+              return res(ctx.status(401))
+            }
+
+            const { id } = req.params
+            const body = deleteEndpoint(id)
+            return res(body ? ctx.json(body) : ctx.status(400))
+          })
+        )
+      })
+
+      test('expect result from call returned', async () => {
+        const result = await deleteChannel(channelId, twitchAuthToken)
+        expect(deleteEndpoint).toHaveBeenCalledTimes(1)
+        expect(result).toEqual(channel)
+      })
+    })
+
     describe('fetchChannel', () => {
       const getEndpoint = jest.fn().mockReturnValue(channel)
 
@@ -118,30 +142,6 @@ describe('Build maker service', () => {
       test('expect result from call returned', async () => {
         const result = await patchChannel(channelId, jsonPatchOperations, twitchAuthToken)
         expect(patchEndpoint).toHaveBeenCalledWith(channelId, jsonPatchOperations)
-        expect(result).toEqual(channel)
-      })
-    })
-
-    describe('deleteChannel', () => {
-      const deleteEndpoint = jest.fn().mockReturnValue(channel)
-
-      beforeAll(() => {
-        server.use(
-          rest.delete(`${baseUrl}/channels/:id`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
-            }
-
-            const { id } = req.params
-            const body = deleteEndpoint(id)
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
-        )
-      })
-
-      test('expect result from call returned', async () => {
-        const result = await deleteChannel(channelId, twitchAuthToken)
-        expect(deleteEndpoint).toHaveBeenCalledTimes(1)
         expect(result).toEqual(channel)
       })
     })
@@ -240,13 +240,13 @@ describe('Build maker service', () => {
 
   describe('builds', () => {
     describe('createBuild', () => {
-      const postEndpoint = jest.fn().mockReturnValue(buildKiller)
+      const putEndpoint = jest.fn().mockReturnValue(buildKiller)
 
       beforeAll(() => {
         server.use(
           rest.put(`${baseUrl}/channels/:id/builds/:buildId`, async (req, res, ctx) => {
             const { buildId, id } = req.params
-            const body = postEndpoint(id, buildId, await req.json())
+            const body = putEndpoint(id, buildId, await req.json())
             return res(body ? ctx.json(body) : ctx.status(400))
           })
         )
@@ -254,7 +254,7 @@ describe('Build maker service', () => {
 
       test('expect result from call returned', async () => {
         const result = await createBuild(channelId, buildId, buildKiller)
-        expect(postEndpoint).toHaveBeenCalledWith(channelId, buildId, buildKiller)
+        expect(putEndpoint).toHaveBeenCalledWith(channelId, buildId, buildKiller)
         expect(result).toEqual(buildKiller)
       })
     })

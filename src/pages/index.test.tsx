@@ -33,7 +33,7 @@ describe('Index page', () => {
     expect(mocked(PrivacyLink)).toHaveBeenCalledTimes(1)
   })
 
-  test('expect rendering Index renders SessionCreate', () => {
+  test('expect rendering Index renders ChannelList', () => {
     render(<Index />)
     expect(mocked(ChannelList)).toHaveBeenCalledTimes(1)
   })

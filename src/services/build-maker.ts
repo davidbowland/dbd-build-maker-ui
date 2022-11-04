@@ -18,6 +18,11 @@ import { buildMakerApiNameUnauthenticated } from '@config/amplify'
 export const createChannel = (token: string): Promise<CreatedChannel> =>
   API.post(buildMakerApiNameUnauthenticated, '/channels', { body: {}, headers: { 'X-Twitch-Token': token } })
 
+export const deleteChannel = (channelId: string, token: string): Promise<Channel> =>
+  API.del(buildMakerApiNameUnauthenticated, `/channels/${encodeURIComponent(channelId)}`, {
+    headers: { 'X-Twitch-Token': token },
+  })
+
 export const fetchChannel = (channelId: string): Promise<Channel> =>
   API.get(buildMakerApiNameUnauthenticated, `/channels/${encodeURIComponent(channelId)}`, {})
 
@@ -27,11 +32,6 @@ export const fetchAllChannels = (): Promise<ChannelBatch[]> =>
 export const patchChannel = (channelId: string, patchOperations: PatchOperation[], token: string): Promise<Channel> =>
   API.patch(buildMakerApiNameUnauthenticated, `/channels/${encodeURIComponent(channelId)}`, {
     body: patchOperations,
-    headers: { 'X-Twitch-Token': token },
-  })
-
-export const deleteChannel = (channelId: string, token: string): Promise<Channel> =>
-  API.del(buildMakerApiNameUnauthenticated, `/channels/${encodeURIComponent(channelId)}`, {
     headers: { 'X-Twitch-Token': token },
   })
 
