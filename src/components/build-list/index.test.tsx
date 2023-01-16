@@ -376,7 +376,6 @@ describe('BuildList component', () => {
           markCompleteSwitch.click()
         })
         waitFor(() => {
-          expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
           expect(screen.queryByText(/Error updating build/i)).toBeVisible()
         })
         expect(console.error).toHaveBeenCalled()

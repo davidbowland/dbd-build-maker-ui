@@ -241,7 +241,7 @@ describe('DisableList component', () => {
       })
 
       waitFor(() => {
-        expect(screen.queryByLabelText(/Collapse Killers/i)).not.toBeVisible()
+        expect(screen.queryByLabelText(/Collapse Killers/i)).not.toBeInTheDocument()
       })
     })
   })

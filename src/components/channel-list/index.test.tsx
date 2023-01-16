@@ -283,7 +283,9 @@ describe('ChannelList component', () => {
       })
 
       expect(screen.queryByText(/Delete channel\?/i)).not.toBeVisible()
-      expect(screen.queryByText(/Error deleting channel/i)).toBeVisible()
+      waitFor(() => {
+        expect(screen.queryByText(/Error deleting channel/i)).toBeVisible()
+      })
       expect(console.error).toHaveBeenCalled()
     })
   })

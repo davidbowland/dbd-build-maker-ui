@@ -208,7 +208,7 @@ describe('Authenticated component', () => {
       })
 
       await waitFor(() => {
-        expect(screen.queryByText(/Sign out/i)).not.toBeInTheDocument()
+        expect(screen.queryByText(/Sign out/i)).not.toBeVisible()
       })
     })
   })

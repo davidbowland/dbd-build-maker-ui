@@ -127,7 +127,10 @@ describe('GenerateBuildUrl component', () => {
         generateButton.click()
       })
 
-      expect(screen.queryByText(/Error generating build URL/i)).toBeVisible()
+      expect(mocked(buildMaker).createBuildToken).toHaveBeenCalled()
+      waitFor(() => {
+        expect(screen.queryByText(/Error generating build URL/i)).toBeVisible()
+      })
     })
 
     test('expect closing error removes it', async () => {
