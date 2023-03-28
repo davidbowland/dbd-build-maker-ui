@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as auth from '@services/auth'
 import * as buildMaker from '@services/build-maker'
@@ -14,16 +14,10 @@ jest.mock('@services/build-maker')
 jest.mock('gatsby')
 
 describe('ChannelCard component', () => {
-  const consoleError = console.error
-
   beforeAll(() => {
     console.error = jest.fn()
     mocked(auth).getAccessToken.mockReturnValue(twitchAuthToken)
     mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
-  })
-
-  afterAll(() => {
-    console.error = consoleError
   })
 
   describe('data load', () => {

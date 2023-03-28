@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { act, render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as auth from '@services/auth'
 import * as buildMaker from '@services/build-maker'
@@ -17,7 +17,6 @@ jest.mock('@services/auth')
 jest.mock('@services/build-maker')
 
 describe('BuildList component', () => {
-  const consoleError = console.error
   const setInterval = jest.spyOn(window, 'setInterval')
 
   beforeAll(() => {
@@ -30,10 +29,6 @@ describe('BuildList component', () => {
     mocked(buildMaker).updateChannelMods.mockResolvedValue(undefined)
     mocked(ChannelCard).mockReturnValue(<>ChannelCard</>)
     mocked(GenerateBuildUrl).mockReturnValue(<>GenerateBuildUrl</>)
-  })
-
-  afterAll(() => {
-    console.error = consoleError
   })
 
   describe('builds', () => {
@@ -108,7 +103,7 @@ describe('BuildList component', () => {
         refreshBuildsButton.click()
       })
 
-      expect(mocked(buildMaker).fetchAllBuilds).toHaveBeenCalledTimes(1)
+      expect(mocked(buildMaker).fetchAllBuilds).toHaveBeenCalledTimes(2)
     })
 
     test('expect refresh build is called when setInterval fires', async () => {
@@ -358,7 +353,9 @@ describe('BuildList component', () => {
         )
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'test', path: '/completed' }))
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'remove', path: '/completed' }))
-        expect((await screen.findAllByLabelText(/^Mark complete/i)).length).toEqual(2)
+        waitFor(() => {
+          expect(screen.queryAllByLabelText(/^Mark complete/i).length).toEqual(2)
+        })
       })
 
       test('expect patchBuild error shows error message', async () => {

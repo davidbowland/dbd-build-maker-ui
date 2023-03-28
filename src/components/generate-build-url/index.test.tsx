@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as buildMaker from '@services/build-maker'
 import * as gatsby from 'gatsby'
@@ -15,7 +15,6 @@ jest.mock('gatsby')
 describe('GenerateBuildUrl component', () => {
   const buildPath = '/c/123456/b/ytrfghjklkmnbvfty'
   const buildUrl = `http://localhost${buildPath}`
-  const consoleError = console.error
   const mockCopyToClipboard = jest.fn()
 
   beforeAll(() => {
@@ -30,10 +29,6 @@ describe('GenerateBuildUrl component', () => {
       value: { origin: 'http://localhost' },
     })
     console.error = jest.fn()
-  })
-
-  afterAll(() => {
-    console.error = consoleError
   })
 
   describe('token', () => {

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { act, render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as auth from '@services/auth'
 import * as buildMaker from '@services/build-maker'
@@ -14,7 +14,6 @@ jest.mock('@services/build-maker')
 
 describe('Authenticated component', () => {
   const accessToken = 'tfvbjhgfr567uhghji987ytrdsdfgbn'
-  const consoleError = console.error
   const setTokenStatus = jest.fn()
   const windowLocationHash = `#access_token=${accessToken}`
   const windowLocationOrigin = 'http://localhost'
@@ -35,10 +34,6 @@ describe('Authenticated component', () => {
 
     mocked(auth).getAccessToken.mockReturnValue(accessToken)
     mocked(buildMaker).validateTwitchToken.mockResolvedValue(twitchAuthTokenStatus)
-  })
-
-  afterAll(() => {
-    console.error = consoleError
   })
 
   describe('signed out', () => {

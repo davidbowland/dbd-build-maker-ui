@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as buildMaker from '@services/build-maker'
 import { buildOptions, channel, channelId, twitchAuthToken } from '@test/__mocks__'
@@ -11,16 +11,10 @@ jest.mock('@aws-amplify/analytics')
 jest.mock('@services/build-maker')
 
 describe('DisableList component', () => {
-  const consoleError = console.error
-
   beforeAll(() => {
     console.error = jest.fn()
     mocked(buildMaker).fetchBuildOptions.mockResolvedValue(buildOptions)
     mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
-  })
-
-  afterAll(() => {
-    console.error = consoleError
   })
 
   describe('data load', () => {

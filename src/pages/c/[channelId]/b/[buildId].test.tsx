@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 import { render } from '@testing-library/react'
 
 import { buildId, channelId } from '@test/__mocks__'

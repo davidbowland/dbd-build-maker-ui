@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as buildMaker from '@services/build-maker'
 import * as gatsby from 'gatsby'
@@ -15,8 +15,6 @@ jest.mock('@services/build-maker')
 jest.mock('gatsby')
 
 describe('BuildCreate component', () => {
-  const consoleError = console.error
-  const mathRandom = Math.random
   const mockRandom = jest.fn()
 
   beforeAll(() => {
@@ -26,11 +24,6 @@ describe('BuildCreate component', () => {
     mocked(buildMaker).fetchBuildToken.mockResolvedValue(buildTokenResponse)
     mocked(buildMaker).fetchChannel.mockResolvedValue(channel)
     mocked(ChannelCard).mockReturnValue(<>ChannelCard</>)
-  })
-
-  afterAll(() => {
-    Math.random = mathRandom
-    console.error = consoleError
   })
 
   describe('initial load', () => {

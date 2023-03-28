@@ -18,18 +18,18 @@ import Grid from '@mui/material/Grid'
 import InputLabel from '@mui/material/InputLabel'
 import NativeSelect from '@mui/material/NativeSelect'
 import { NativeSelectInputProps } from '@mui/material/NativeSelect/NativeSelectInput'
+import { navigate } from 'gatsby'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { navigate } from 'gatsby'
 
 import { ChannelBatch, TwitchTokenStatus } from '@types'
 import { deleteChannel, fetchAllChannels } from '@services/build-maker'
 import CreateButton from './create-button'
-import SignUpCta from '@components/sign-up-cta'
 import { getAccessToken } from '@services/auth'
+import SignUpCta from '@components/sign-up-cta'
 
 // 30 minutes * 60 seconds * 1000 milliseconds = 1_800_000
 const TRENDING_WINDOW_IN_SECONDS = 1_800_000

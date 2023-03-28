@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as auth from '@services/auth'
 import * as buildMaker from '@services/build-maker'
@@ -17,7 +17,6 @@ jest.mock('@services/build-maker')
 jest.mock('gatsby')
 
 describe('ChannelList component', () => {
-  const consoleError = console.error
   const mockWindowLocationReload = jest.fn()
   const tokenForChannel = { ...twitchAuthTokenStatus, id: channelId }
 
@@ -32,10 +31,6 @@ describe('ChannelList component', () => {
       configurable: true,
       value: { reload: mockWindowLocationReload },
     })
-  })
-
-  afterAll(() => {
-    console.error = consoleError
   })
 
   describe('channels', () => {

@@ -2,9 +2,9 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar, GridValueGette
 import React, { useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
+import jsonpatch from 'fast-json-patch'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
-import jsonpatch from 'fast-json-patch'
 
 import { Build, BuildBatch } from '@types'
 import { patchBuild } from '@services/build-maker'
@@ -99,7 +99,10 @@ const BuildTable = ({
       valueGetter: (params: GridValueGetterParams) => new Date(params.row.expiration).toLocaleString(),
     },
   ])
-  const [pageSize, setPageSize] = useState(25)
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 25,
+  })
 
   const invertBuildCompleted = async (buildId: string, build: Build): Promise<void> => {
     if (isChannelMod) {
@@ -182,10 +185,11 @@ const BuildTable = ({
               autoHeight={true}
               columns={columnsWithCompleted}
               components={{ Toolbar: GridToolbar }}
-              disableSelectionOnClick={true}
+              disableRowSelectionOnClick={true}
               initialState={{ columns: { columnVisibilityModel: { id: false } } }}
-              onPageSizeChange={setPageSize}
-              pageSize={pageSize}
+              onPaginationModelChange={setPaginationModel}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              paginationModel={paginationModel}
               rows={builds.map((b) => {
                 const [addon1, addon2] = [b.data.addon1, b.data.addon2].sort(sortCompareFn)
                 const [perk1, perk2, perk3, perk4] = [b.data.perk1, b.data.perk2, b.data.perk3, b.data.perk4].sort(
@@ -193,7 +197,6 @@ const BuildTable = ({
                 )
                 return { ...b.data, addon1, addon2, id: b.id, perk1, perk2, perk3, perk4 }
               })}
-              rowsPerPageOptions={[5, 10, 25, 50, 100]}
             />
           </Grid>
         )}

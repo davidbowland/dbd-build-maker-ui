@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import * as gatsby from 'gatsby'
-import { MockedObject, mocked } from 'jest-mock'
+import { mocked, MockedObject } from 'jest-mock'
 
 import { getAccessToken, initiateTwitchLogin, redirectLogin, removeAccessToken } from './auth'
 import Cookies from 'universal-cookie'
