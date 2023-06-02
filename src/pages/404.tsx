@@ -4,7 +4,8 @@ import Authenticated from '@components/auth'
 import ServerErrorMessage from '@components/server-error-message'
 
 const NotFound = (): JSX.Element => {
-  const display404 = typeof window !== 'undefined' && window.location.pathname.match(/^\/c\/[^/]+$/) === null
+  const display404 =
+    typeof window !== 'undefined' && window.location.pathname.match(/^\/c\/[^/]+(\/b\/[^/]+)?$/) === null
 
   if (display404) {
     return (

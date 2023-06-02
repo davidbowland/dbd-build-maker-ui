@@ -57,4 +57,10 @@ describe('404 error page', () => {
     render(<NotFound />)
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })
+
+  test('expect no render when pathname is build /c/*/b/*', () => {
+    window.location.pathname = '/c/aeiou/b/sometimesy'
+    render(<NotFound />)
+    expect(mocked(ServerErrorMessage)).toHaveBeenCalledTimes(0)
+  })
 })
