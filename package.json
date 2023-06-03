@@ -25,7 +25,7 @@
     "serve": "npm run build && gatsby serve",
     "test": "jest --colors",
     "typecheck": "tsc --noEmit",
-    "update": "ncu -u --doctor && npm audit fix --audit-level=none && npm run test && npm dedupe"
+    "update": "ncu -u -x '@types/node' --doctor && npm audit fix --audit-level=none && npm run test && npm dedupe"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
