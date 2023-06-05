@@ -1,6 +1,6 @@
 # DBD Build Maker UI
 
-Gatsby and Amplify implementation of dbd-build-maker-session-api and dbd-build-maker-infrastructure. Example: <https://dbd-build-maker.dbowland.com/>
+Gatsby and Amplify implementation of dbd-build-maker-session-api and dbd-build-maker-infrastructure. Example: <https://dbd.dbowland.com/>
 
 ## Static Site
 
