@@ -105,10 +105,8 @@ export interface User {
 /* Build options */
 
 export type Addons = string[]
-export type Offerings = string[]
-export type Perks = string[]
 
-export interface Killers {
+export interface KillerCharacters {
   [key: string]: Addons
 }
 
@@ -116,12 +114,24 @@ export interface Items {
   [key: string]: Addons
 }
 
+export type SurvivorCharacters = string[]
+export type Offerings = string[]
+export type Perks = string[]
+
+export interface Killer {
+  characters: KillerCharacters
+  offerings: Offerings
+  perks: Perks
+}
+
+export interface Survivor {
+  characters: SurvivorCharacters
+  items: Items
+  offerings: Offerings
+  perks: Perks
+}
+
 export interface BuildOptions {
-  Killers: Killers
-  ['Killer Offerings']: Offerings
-  ['Killer Perks']: Perks
-  Survivors: string[]
-  ['Survivor Items']: Items
-  ['Survivor Perks']: Perks
-  ['Survivor Offerings']: Offerings
+  killer: Killer
+  survivor: Survivor
 }

@@ -159,6 +159,18 @@ const DisableList = ({ accessToken, channelId }: DisableListProps): JSX.Element 
     setErrorMessage(undefined)
   }
 
+  const transformPrimaryBuildOptions = (buildOptions: BuildOptions) => ({
+    Killers: buildOptions.killer.characters,
+    // eslint-disable-next-line sort-keys
+    'Killer Offerings': buildOptions.killer.offerings,
+    'Killer Perks': buildOptions.killer.perks,
+    Survivors: buildOptions.survivor.characters,
+    // eslint-disable-next-line sort-keys
+    'Survivor Items': buildOptions.survivor.items,
+    'Survivor Offerings': buildOptions.survivor.offerings,
+    'Survivor Perks': buildOptions.survivor.perks,
+  })
+
   const updateCheckbox = (value: string): void => {
     if (disabledOptions.indexOf(value) < 0) {
       setDisabledOptions([...disabledOptions, value])
@@ -208,7 +220,7 @@ const DisableList = ({ accessToken, channelId }: DisableListProps): JSX.Element 
               renderLoading(6)
             ) : (
               <>
-                {renderOptions(buildOptions)}
+                {renderOptions(transformPrimaryBuildOptions(buildOptions))}
                 {renderNotesOption()}
               </>
             )}

@@ -61,12 +61,26 @@ const CreateCard = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
 
-  const characters = buildType === 'killer' ? Object.keys(buildOptions.Killers) : buildOptions.Survivors
-  const addons =
-    buildType === 'killer' ? buildOptions.Killers[build.character] : buildOptions['Survivor Items'][build.item]
-  const items = Object.keys(buildOptions['Survivor Items'])
-  const offerings = buildType === 'killer' ? buildOptions['Killer Offerings'] : buildOptions['Survivor Offerings']
-  const perks = buildType === 'killer' ? buildOptions['Killer Perks'] : buildOptions['Survivor Perks']
+  const getBuildChoices = (build: BuildSubmission, buildType: BuildType) => {
+    if (buildType === 'killer') {
+      return {
+        addons: buildOptions.killer.characters[build.character],
+        characters: Object.keys(buildOptions.killer.characters),
+        items: [],
+        offerings: buildOptions.killer.offerings,
+        perks: buildOptions.killer.perks,
+      }
+    }
+    return {
+      addons: buildOptions.survivor.items[build.item],
+      characters: buildOptions.survivor.characters,
+      items: Object.keys(buildOptions.survivor.items),
+      offerings: buildOptions.survivor.offerings,
+      perks: buildOptions.survivor.perks,
+    }
+  }
+
+  const { addons, characters, items, offerings, perks } = getBuildChoices(build, buildType)
 
   const buildTypeChange = (value: BuildType): void => {
     setBuildType(value)
