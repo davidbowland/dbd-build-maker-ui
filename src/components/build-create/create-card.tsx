@@ -21,8 +21,16 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
-import { Build, BuildOptions, BuildSubmission, BuildTokenResponse, Channel } from '@types'
+import { Addons, Build, BuildOptions, BuildSubmission, BuildTokenResponse, Channel, Offerings } from '@types'
 import { createBuild } from '@services/build-maker'
+
+export interface BuildChoices {
+  addons: Addons
+  characters: string[]
+  items: string[]
+  offerings: Offerings
+  perks: string[]
+}
 
 export interface CreateCardProps {
   buildId: string
@@ -61,7 +69,7 @@ const CreateCard = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
 
-  const getBuildChoices = (build: BuildSubmission, buildType: BuildType) => {
+  const getBuildChoices = (build: BuildSubmission, buildType: BuildType): BuildChoices => {
     if (buildType === 'killer') {
       return {
         addons: buildOptions.killer.characters[build.character],
@@ -71,6 +79,7 @@ const CreateCard = ({
         perks: buildOptions.killer.perks,
       }
     }
+
     return {
       addons: buildOptions.survivor.items[build.item],
       characters: buildOptions.survivor.characters,
