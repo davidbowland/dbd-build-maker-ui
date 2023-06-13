@@ -37,7 +37,6 @@ export interface BuildSubmission {
   perk2: string
   perk3: string
   perk4: string
-  submitter?: string
 }
 
 export interface BuildTokenResponse {

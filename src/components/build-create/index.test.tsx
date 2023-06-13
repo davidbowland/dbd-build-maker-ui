@@ -107,7 +107,6 @@ describe('BuildCreate component', () => {
         perk2: 'Any',
         perk3: 'Any',
         perk4: 'Any',
-        submitter: 'cfb',
       })
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/c/123456')
     })
@@ -227,7 +226,6 @@ describe('BuildCreate component', () => {
         perk2: 'Dance With Me',
         perk3: 'Saboteur',
         perk4: 'Smash Hit',
-        submitter: 'cfb',
       })
     })
 
@@ -284,7 +282,6 @@ describe('BuildCreate component', () => {
         perk2: 'Any',
         perk3: 'Any',
         perk4: 'Any',
-        submitter: 'cfb',
       })
     })
   })

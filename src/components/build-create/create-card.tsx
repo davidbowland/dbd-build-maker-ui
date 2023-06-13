@@ -60,7 +60,6 @@ const CreateCard = ({
     perk2: 'Any',
     perk3: 'Any',
     perk4: 'Any',
-    submitter: buildTokenResponse.submitter,
   })
   const [buildType, setBuildType] = useState<BuildType>(
     channel.disabledOptions.indexOf('Killers') === -1 ? 'killer' : 'survivor'
@@ -195,7 +194,7 @@ const CreateCard = ({
               label="Name of Requestor"
               name="requestor-name"
               type="text"
-              value={build.submitter}
+              value={buildTokenResponse.submitter}
               variant="filled"
             />
           </label>
