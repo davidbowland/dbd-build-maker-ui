@@ -76,6 +76,8 @@
     "@types/react-dom": "^18.2.15",
     "@types/react-helmet": "^6.1.6",
     "@types/styled-components": "^5.1.30",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0",
     "babel-jest": "^29.5.0",
     "babel-preset-gatsby": "^3.12.1",
     "eslint-config-prettier": "^8.8.0",
