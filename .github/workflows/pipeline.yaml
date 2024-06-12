@@ -14,6 +14,7 @@ env:
   PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbd-build-maker-cloudformation
   PROD_S3_BUCKET: dbd-build-maker-ui-source
   PROD_REGION: ${{ secrets.AWS_REGION }}
+  HUSKY: 0
 
 on: push
 
@@ -42,7 +43,7 @@ jobs:
 
   build-and-deploy-feature:
     name: Deploy feature branch
-    if: startsWith(github.ref, 'refs/heads/feature')
+    if: github.ref != 'refs/heads/master'
     needs: [test]
     runs-on: ubuntu-latest
     steps:
@@ -205,6 +206,6 @@ jobs:
           git config --local user.email "dbowland1+bot@gmail.com"
           git config --local user.name "github-actions[bot]"
       - name: Bump the minor version
-        run: npm version --no-commit-hooks minor
+        run: npm version minor
       - name: Push tag created by version bump
-        run: git push
+        run: git push --follow-tags
