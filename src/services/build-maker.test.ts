@@ -29,7 +29,7 @@ import {
   updateChannelMods,
   validateTwitchToken,
 } from './build-maker'
-import { rest, server } from '@test/setup-server'
+import { http, HttpResponse, server } from '@test/setup-server'
 
 const baseUrl = process.env.GATSBY_BUILD_MAKER_API_BASE_URL
 jest.mock('@aws-amplify/analytics')
@@ -41,14 +41,14 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.post(`${baseUrl}/channels`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
+          http.post(`${baseUrl}/channels`, async ({ request }) => {
+            if (`${twitchAuthToken}` !== request.headers.get('X-Twitch-Token')) {
+              return new HttpResponse(JSON.stringify({ message: 'Invalid Twitch token' }), { status: 401 })
             }
 
             const body = postEndpoint()
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -64,15 +64,15 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.delete(`${baseUrl}/channels/:id`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
+          http.delete(`${baseUrl}/channels/:id`, async ({ params, request }) => {
+            if (`${twitchAuthToken}` !== request.headers.get('X-Twitch-Token')) {
+              return new HttpResponse(JSON.stringify({ message: 'Invalid Twitch token' }), { status: 401 })
             }
 
-            const { id } = req.params
+            const { id } = params
             const body = deleteEndpoint(id)
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -88,11 +88,11 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.get(`${baseUrl}/channels/:id`, async (req, res, ctx) => {
-            const { id } = req.params
+          http.get(`${baseUrl}/channels/:id`, async ({ params }) => {
+            const { id } = params
             const body = getEndpoint(id)
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -108,10 +108,10 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.get(`${baseUrl}/channels`, async (req, res, ctx) => {
+          http.get(`${baseUrl}/channels`, async () => {
             const body = getEndpoint()
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -127,15 +127,15 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.patch(`${baseUrl}/channels/:id`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
+          http.patch(`${baseUrl}/channels/:id`, async ({ params, request }) => {
+            if (`${twitchAuthToken}` !== request.headers.get('X-Twitch-Token')) {
+              return new HttpResponse(JSON.stringify({ message: 'Invalid Twitch token' }), { status: 401 })
             }
 
-            const { id } = req.params
-            const body = patchEndpoint(id, await req.json())
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            const { id } = params
+            const body = patchEndpoint(id, await request.json())
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -151,15 +151,15 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.post(`${baseUrl}/channels/:id/update-mods`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
+          http.post(`${baseUrl}/channels/:id/update-mods`, async ({ params, request }) => {
+            if (`${twitchAuthToken}` !== request.headers.get('X-Twitch-Token')) {
+              return new HttpResponse(JSON.stringify({ message: 'Invalid Twitch token' }), { status: 401 })
             }
 
-            const { id } = req.params
+            const { id } = params
             updateModsEndpoint(id)
-            return res(ctx.json({}))
-          })
+            return HttpResponse.json({})
+          }),
         )
       })
 
@@ -177,15 +177,15 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.post(`${baseUrl}/channels/:id/tokens`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
+          http.post(`${baseUrl}/channels/:id/tokens`, async ({ params, request }) => {
+            if (`${twitchAuthToken}` !== request.headers.get('X-Twitch-Token')) {
+              return new HttpResponse(JSON.stringify({ message: 'Invalid Twitch token' }), { status: 401 })
             }
 
-            const { id } = req.params
-            const body = postEndpoint(id, await req.json())
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            const { id } = params
+            const body = postEndpoint(id, await request.json())
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -201,11 +201,11 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.get(`${baseUrl}/channels/:id/tokens/:token`, async (req, res, ctx) => {
-            const { id, token } = req.params
+          http.get(`${baseUrl}/channels/:id/tokens/:token`, async ({ params }) => {
+            const { id, token } = params
             const body = getEndpoint(id, token)
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -223,10 +223,10 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.get(`${baseUrl}/build-options`, async (req, res, ctx) => {
+          http.get(`${baseUrl}/build-options`, async () => {
             const body = getEndpoint()
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -244,11 +244,11 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.put(`${baseUrl}/channels/:id/builds/:buildId`, async (req, res, ctx) => {
-            const { buildId, id } = req.params
-            const body = putEndpoint(id, buildId, await req.json())
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+          http.put(`${baseUrl}/channels/:id/builds/:buildId`, async ({ params, request }) => {
+            const { buildId, id } = params
+            const body = putEndpoint(id, buildId, await request.json())
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -264,11 +264,11 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.get(`${baseUrl}/channels/:id/builds`, async (req, res, ctx) => {
-            const { id } = req.params
+          http.get(`${baseUrl}/channels/:id/builds`, async ({ params }) => {
+            const { id } = params
             const body = getEndpoint(id)
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -284,15 +284,15 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.patch(`${baseUrl}/channels/:id/builds/:buildId`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
+          http.patch(`${baseUrl}/channels/:id/builds/:buildId`, async ({ params, request }) => {
+            if (`${twitchAuthToken}` !== request.headers.get('X-Twitch-Token')) {
+              return new HttpResponse(JSON.stringify({ message: 'Invalid Twitch token' }), { status: 401 })
             }
 
-            const { buildId, id } = req.params
-            const body = patchEndpoint(id, buildId, await req.json())
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            const { buildId, id } = params
+            const body = patchEndpoint(id, buildId, await request.json())
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
@@ -310,14 +310,14 @@ describe('Build maker service', () => {
 
       beforeAll(() => {
         server.use(
-          rest.get(`${baseUrl}/twitch/validate-token`, async (req, res, ctx) => {
-            if (`${twitchAuthToken}` !== req.headers.get('X-Twitch-Token')) {
-              return res(ctx.status(401))
+          http.get(`${baseUrl}/twitch/validate-token`, async ({ request }) => {
+            if (`${twitchAuthToken}` !== request.headers.get('X-Twitch-Token')) {
+              return new HttpResponse(JSON.stringify({ message: 'Invalid Twitch token' }), { status: 401 })
             }
 
             const body = getEndpoint()
-            return res(body ? ctx.json(body) : ctx.status(400))
-          })
+            return body ? HttpResponse.json(body) : new HttpResponse(null, { status: 400 })
+          }),
         )
       })
 
