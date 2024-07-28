@@ -52,7 +52,7 @@ export const fetchBuildToken = (channelId: string, token: string): Promise<Build
   API.get(
     buildMakerApiNameUnauthenticated,
     `/channels/${encodeURIComponent(channelId)}/tokens/${encodeURIComponent(token)}`,
-    {}
+    {},
   )
 
 /* Build options */
@@ -65,7 +65,7 @@ export const createBuild = (channelId: string, buildId: string, build: Build): P
   API.put(
     buildMakerApiNameUnauthenticated,
     `/channels/${encodeURIComponent(channelId)}/builds/${encodeURIComponent(buildId)}`,
-    { body: build }
+    { body: build },
   )
 
 export const fetchAllBuilds = (channelId: string): Promise<BuildBatch[]> =>
@@ -75,12 +75,12 @@ export const patchBuild = (
   channelId: string,
   buildId: string,
   patchOperations: PatchOperation[],
-  token: string
+  token: string,
 ): Promise<Build> =>
   API.patch(
     buildMakerApiNameUnauthenticated,
     `/channels/${encodeURIComponent(channelId)}/builds/${encodeURIComponent(buildId)}`,
-    { body: patchOperations, headers: { 'X-Twitch-Token': token } }
+    { body: patchOperations, headers: { 'X-Twitch-Token': token } },
   )
 
 /* Twitch tokens */

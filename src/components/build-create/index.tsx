@@ -17,11 +17,11 @@ export interface BuildCreateProps {
 }
 
 const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX.Element => {
-  const [buildOptions, setBuildOptions] = useState<BuildOptions | undefined>(undefined)
-  const [buildTokenResponse, setBuildTokenResponse] = useState<BuildTokenResponse | undefined>(undefined)
-  const [channel, setChannel] = useState<Channel | undefined>(undefined)
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
-  const [loadingError, setLoadingError] = useState<string | undefined>(undefined)
+  const [buildOptions, setBuildOptions] = useState<BuildOptions | undefined>()
+  const [buildTokenResponse, setBuildTokenResponse] = useState<BuildTokenResponse | undefined>()
+  const [channel, setChannel] = useState<Channel | undefined>()
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
+  const [loadingError, setLoadingError] = useState<string | undefined>()
 
   const isLoadingInitial = buildOptions === undefined || buildTokenResponse === undefined || channel === undefined
 
@@ -44,7 +44,7 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
     fetchBuildOptions()
       .then(setBuildOptions)
       .catch((error) => {
-        console.error('fetchBuildOptions', error)
+        console.error('fetchBuildOptions', { error })
         const message = 'Error fetching build options, please refresh the page to try again'
         setErrorMessage(message)
         setLoadingError(message)
@@ -52,7 +52,7 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
     fetchBuildToken(channelId, buildId)
       .then(setBuildTokenResponse)
       .catch((error) => {
-        console.error('fetchBuildToken', error)
+        console.error('fetchBuildToken', { buildId, channelId, error })
         const message = 'Error validating build token. Your link may have expired.'
         setErrorMessage(message)
         setLoadingError(message)
@@ -60,7 +60,7 @@ const BuildCreate = ({ buildId, channelId, tokenStatus }: BuildCreateProps): JSX
     fetchChannel(channelId)
       .then(setChannel)
       .catch((error) => {
-        console.error('fetchChannel', error)
+        console.error('fetchChannel', { channelId, error })
         const message = 'Error fetching channel details, please refresh the page to try again'
         setErrorMessage(message)
         setLoadingError(message)

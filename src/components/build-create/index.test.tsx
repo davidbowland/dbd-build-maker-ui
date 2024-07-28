@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -38,7 +38,7 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       expect(
-        (await screen.findAllByText(/Error fetching build options, please refresh the page to try again/i)).length
+        (await screen.findAllByText(/Error fetching build options, please refresh the page to try again/i)).length,
       ).toEqual(2)
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -48,7 +48,7 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       expect(
-        (await screen.findAllByText(/Error validating build token\. Your link may have expired\./i)).length
+        (await screen.findAllByText(/Error validating build token\. Your link may have expired\./i)).length,
       ).toEqual(2)
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -58,7 +58,7 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       expect(
-        (await screen.findAllByText(/Error fetching channel details, please refresh the page to try again/i)).length
+        (await screen.findAllByText(/Error fetching channel details, please refresh the page to try again/i)).length,
       ).toEqual(2)
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -68,12 +68,10 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(
-        (await screen.findAllByText(/Error fetching build options, please refresh the page to try again/i)).length
+        (await screen.findAllByText(/Error fetching build options, please refresh the page to try again/i)).length,
       ).toEqual(1)
     })
   })
@@ -91,9 +89,7 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        submitButton.click()
-      })
+      fireEvent.click(submitButton)
 
       expect(await screen.findByText(/Build submitted successfully!/i)).toBeVisible()
       expect(mocked(buildMaker).createBuild).toHaveBeenCalledWith('123456', 'ytrfghjklkmnbvfty', {
@@ -115,13 +111,9 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        submitButton.click()
-      })
+      fireEvent.click(submitButton)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Build submitted successfully!/i)).not.toBeInTheDocument()
     })
@@ -131,12 +123,10 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        submitButton.click()
-      })
+      fireEvent.click(submitButton)
 
       expect(
-        await screen.findByText(/Error processing submission, please reload the page and try again/i)
+        await screen.findByText(/Error processing submission, please reload the page and try again/i),
       ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -146,16 +136,12 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        submitButton.click()
-      })
+      fireEvent.click(submitButton)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(
-        screen.queryByText(/Error processing submission, please reload the page and try again/i)
+        screen.queryByText(/Error processing submission, please reload the page and try again/i),
       ).not.toBeInTheDocument()
     })
   })
@@ -165,54 +151,30 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const radioButton = (await screen.findByLabelText(/Survivor/i)) as HTMLInputElement
-      act(() => {
-        radioButton.click()
-      })
+      fireEvent.click(radioButton)
       const characterInput = (await screen.findByTestId(/Character/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(characterInput, { target: { value: 'Nea Karlsson' } })
-      })
+      fireEvent.change(characterInput, { target: { value: 'Nea Karlsson' } })
       const itemInput = (await screen.findByTestId(/Item/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(itemInput, { target: { value: 'Flashlight' } })
-      })
+      fireEvent.change(itemInput, { target: { value: 'Flashlight' } })
       const addon1Input = (await screen.findByTestId(/Addon1/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(addon1Input, { target: { value: 'Battery' } })
-      })
+      fireEvent.change(addon1Input, { target: { value: 'Battery' } })
       const addon2Input = (await screen.findByTestId(/Addon2/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(addon2Input, { target: { value: 'Leather Grip' } })
-      })
+      fireEvent.change(addon2Input, { target: { value: 'Leather Grip' } })
       const perk1Input = (await screen.findByTestId(/Perk1/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(perk1Input, { target: { value: 'Head On' } })
-      })
+      fireEvent.change(perk1Input, { target: { value: 'Head On' } })
       const perk2Input = (await screen.findByTestId(/Perk2/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(perk2Input, { target: { value: 'Dance With Me' } })
-      })
+      fireEvent.change(perk2Input, { target: { value: 'Dance With Me' } })
       const perk3Input = (await screen.findByTestId(/Perk3/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(perk3Input, { target: { value: 'Saboteur' } })
-      })
+      fireEvent.change(perk3Input, { target: { value: 'Saboteur' } })
       const perk4Input = (await screen.findByTestId(/Perk4/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(perk4Input, { target: { value: 'Smash Hit' } })
-      })
+      fireEvent.change(perk4Input, { target: { value: 'Smash Hit' } })
       const offeringInput = (await screen.findByTestId(/Offering/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(offeringInput, { target: { value: 'Chalk Pouch' } })
-      })
+      fireEvent.change(offeringInput, { target: { value: 'Chalk Pouch' } })
       const notesInput = (await screen.findByLabelText(/Notes/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(notesInput, { target: { value: 'Have fun!' } })
-      })
+      fireEvent.change(notesInput, { target: { value: 'Have fun!' } })
 
       const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        submitButton.click()
-      })
+      fireEvent.click(submitButton)
 
       expect(await screen.findByText(/Build submitted successfully!/i)).toBeVisible()
       expect(mocked(buildMaker).createBuild).toHaveBeenCalledWith('123456', 'ytrfghjklkmnbvfty', {
@@ -233,18 +195,12 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const radioButton = (await screen.findByLabelText(/Survivor/i)) as HTMLInputElement
-      act(() => {
-        radioButton.click()
-      })
+      fireEvent.click(radioButton)
       const itemInput = (await screen.findByTestId(/Item/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(itemInput, { target: { value: 'None' } })
-      })
+      fireEvent.change(itemInput, { target: { value: 'None' } })
 
       const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        submitButton.click()
-      })
+      fireEvent.click(submitButton)
 
       expect(await screen.findByText(/Build submitted successfully!/i)).toBeVisible()
       expect(mocked(buildMaker).createBuild).toHaveBeenCalledWith(
@@ -254,7 +210,7 @@ describe('BuildCreate component', () => {
           addon1: 'None',
           addon2: 'None',
           item: 'None',
-        })
+        }),
       )
     })
 
@@ -262,13 +218,9 @@ describe('BuildCreate component', () => {
       render(<BuildCreate buildId={buildId} channelId={channelId} />)
 
       const randomCharacterIcon = (await screen.findByLabelText(/Shuffle character/i)) as HTMLImageElement
-      act(() => {
-        randomCharacterIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      })
+      fireEvent.click(randomCharacterIcon)
       const submitButton = (await screen.findByText(/Submit build/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        submitButton.click()
-      })
+      fireEvent.click(submitButton)
 
       expect(await screen.findByText(/Build submitted successfully!/i)).toBeVisible()
       expect(mocked(buildMaker).createBuild).toHaveBeenCalledWith('123456', 'ytrfghjklkmnbvfty', {

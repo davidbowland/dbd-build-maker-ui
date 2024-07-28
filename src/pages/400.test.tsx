@@ -33,7 +33,7 @@ describe('400 error page', () => {
     render(<BadRequest />)
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
-      expect.anything()
+      expect.anything(),
     )
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })

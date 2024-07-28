@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -46,9 +46,7 @@ describe('ChannelList component', () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
 
       const card = await screen.findByText(/MyChannel/i)
-      act(() => {
-        card.click()
-      })
+      fireEvent.click(card)
 
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/c/123456')
     })
@@ -66,9 +64,7 @@ describe('ChannelList component', () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
 
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error fetching channel list/i)).not.toBeInTheDocument()
     })
@@ -79,9 +75,7 @@ describe('ChannelList component', () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
 
       const sortInput = (await screen.findByTestId(/channel-sort/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(sortInput, { target: { value: 'alpha' } })
-      })
+      fireEvent.change(sortInput, { target: { value: 'alpha' } })
 
       expect(await screen.findByText(/MyChannel/i)).toBeVisible()
       expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
@@ -92,9 +86,7 @@ describe('ChannelList component', () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
 
       const sortInput = (await screen.findByTestId(/channel-sort/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(sortInput, { target: { value: 'builds' } })
-      })
+      fireEvent.change(sortInput, { target: { value: 'builds' } })
 
       expect(await screen.findByText(/MyChannel/i)).toBeVisible()
       expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
@@ -105,9 +97,7 @@ describe('ChannelList component', () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
 
       const sortInput = (await screen.findByTestId(/channel-sort/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(sortInput, { target: { value: 'recent' } })
-      })
+      fireEvent.change(sortInput, { target: { value: 'recent' } })
 
       expect(await screen.findByText(/MyChannel/i)).toBeVisible()
       expect(await screen.findByText(/Pending builds: 2/i)).toBeVisible()
@@ -121,9 +111,7 @@ describe('ChannelList component', () => {
 
       await screen.findByText(/MyChannel/i)
       const filterInput = (await screen.findByLabelText(/Search channels/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(filterInput, { target: { value: 'fnord' } })
-      })
+      fireEvent.change(filterInput, { target: { value: 'fnord' } })
 
       expect(screen.queryByText(/MyChannel/i)).not.toBeInTheDocument()
       expect(screen.queryByText(/Pending builds: 2/i)).not.toBeInTheDocument()
@@ -134,39 +122,34 @@ describe('ChannelList component', () => {
   describe('create button', () => {
     test('expect channel created when create button clicked', async () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
       const createChannelButton = (await screen.findByText(/Register your channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        createChannelButton.click()
-      })
+      fireEvent.click(createChannelButton)
       const continueButton = (await screen.findByText(/Continue/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        continueButton.click()
-      })
+      fireEvent.click(continueButton)
 
-      waitFor(() => {
-        expect(mocked(buildMaker).createChannel).toHaveBeenCalledWith(twitchAuthToken)
+      await waitFor(() => {
+        expect(mocked(buildMaker).createChannel).toHaveBeenCalled()
       })
+      expect(mocked(buildMaker).createChannel).toHaveBeenCalledWith(twitchAuthToken)
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/c/123456')
     })
 
     test("expect cancelling channel creation doesn't invoke createChannel", async () => {
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
       const createChannelButton = (await screen.findByText(/Register your channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        createChannelButton.click()
-      })
+      fireEvent.click(createChannelButton)
       const cancelButton = (await screen.findByText(/Cancel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        cancelButton.click()
-      })
+      fireEvent.click(cancelButton)
 
       expect(mocked(buildMaker).createChannel).not.toHaveBeenCalled()
       expect(mocked(gatsby).navigate).not.toHaveBeenCalled()
@@ -175,18 +158,15 @@ describe('ChannelList component', () => {
     test('expect error when channel creation fails', async () => {
       mocked(buildMaker).createChannel.mockRejectedValueOnce(undefined)
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
       const createChannelButton = (await screen.findByText(/Register your channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        createChannelButton.click()
-      })
+      fireEvent.click(createChannelButton)
       const continueButton = (await screen.findByText(/Continue/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        continueButton.click()
-      })
+      fireEvent.click(continueButton)
 
       expect(await screen.findByText(/Error creating channel/i)).toBeVisible()
       expect(console.error).toHaveBeenCalled()
@@ -195,22 +175,17 @@ describe('ChannelList component', () => {
     test('expect closing error removes it', async () => {
       mocked(buildMaker).createChannel.mockRejectedValueOnce(undefined)
       render(<ChannelList tokenStatus={twitchAuthTokenStatus} />)
+
       const createChannelButton = (await screen.findByText(/Register your channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        createChannelButton.click()
-      })
+      fireEvent.click(createChannelButton)
       const continueButton = (await screen.findByText(/Continue/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        continueButton.click()
-      })
+      fireEvent.click(continueButton)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error creating channel/i)).not.toBeInTheDocument()
     })
@@ -219,68 +194,60 @@ describe('ChannelList component', () => {
   describe('delete button', () => {
     test('expect clicking delete button shows delete dialog', async () => {
       render(<ChannelList tokenStatus={tokenForChannel} />)
+
       const deleteChannelButton = (await screen.findByText(/Delete channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        deleteChannelButton.click()
-      })
+      fireEvent.click(deleteChannelButton)
 
       expect(await screen.findByText(/Delete channel\?/i)).toBeVisible()
     })
 
     test('expect closing delete dialog removes it', async () => {
       render(<ChannelList tokenStatus={tokenForChannel} />)
+
       const deleteChannelButton = (await screen.findByText(/Delete channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        deleteChannelButton.click()
-      })
+      fireEvent.click(deleteChannelButton)
       const backButton = (await screen.findByText(/Go back/i, { selector: 'button' })) as HTMLButtonElement
-      await act(() => {
-        backButton.click()
-      })
+      fireEvent.click(backButton)
 
       expect(screen.queryByText(/Delete channel\?/i)).not.toBeVisible()
     })
 
     test('expect clicking continue on delete dialog deletes channel', async () => {
       render(<ChannelList tokenStatus={tokenForChannel} />)
+
       const deleteChannelButton = (await screen.findByText(/Delete channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        deleteChannelButton.click()
-      })
+      fireEvent.click(deleteChannelButton)
       const continueButton = (await screen.findByText(/Continue/i, { selector: 'button' })) as HTMLButtonElement
-      await act(() => {
-        continueButton.click()
-      })
+      fireEvent.click(continueButton)
 
+      await waitFor(() => {
+        expect(mockWindowLocationReload).toHaveBeenCalled()
+      })
       expect(screen.queryByText(/Delete channel\?/i)).not.toBeVisible()
       expect(mocked(buildMaker).deleteChannel).toHaveBeenCalledWith('123456', 'otfghjklkgtyuijnmk')
-      expect(mockWindowLocationReload).toHaveBeenCalled()
     })
 
     test('expect error message on delete failure', async () => {
       mocked(buildMaker).deleteChannel.mockRejectedValueOnce(undefined)
       render(<ChannelList tokenStatus={tokenForChannel} />)
+
       const deleteChannelButton = (await screen.findByText(/Delete channel/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        deleteChannelButton.click()
-      })
+      fireEvent.click(deleteChannelButton)
       const continueButton = (await screen.findByText(/Continue/i, { selector: 'button' })) as HTMLButtonElement
-      await act(() => {
-        continueButton.click()
-      })
+      fireEvent.click(continueButton)
 
-      expect(screen.queryByText(/Delete channel\?/i)).not.toBeVisible()
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.queryByText(/Error deleting channel/i)).toBeVisible()
       })
+      expect(screen.queryByText(/Delete channel\?/i)).not.toBeVisible()
       expect(console.error).toHaveBeenCalled()
     })
   })

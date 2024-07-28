@@ -31,9 +31,9 @@ describe('Build page', () => {
 
   test('expect rendering BuildPage renders BuildCreate', () => {
     render(<BuildPage params={{ buildId, channelId }} />)
-    expect(mocked(BuildCreate)).toBeCalledWith(
+    expect(mocked(BuildCreate)).toHaveBeenCalledWith(
       expect.objectContaining({ buildId, channelId, tokenStatus: undefined }),
-      {}
+      {},
     )
   })
 

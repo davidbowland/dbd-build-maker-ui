@@ -19,7 +19,7 @@ export interface CreateButtonProps {
 }
 
 export const CreateButton = ({ accessToken }: CreateButtonProps): JSX.Element => {
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [showCreatePending, setShowCreatePending] = useState(false)
 

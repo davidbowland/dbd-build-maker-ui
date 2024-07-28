@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { mocked, MockedObject } from 'jest-mock'
 import Cookies from 'universal-cookie'
 import React from 'react'
@@ -13,13 +13,10 @@ describe('Disclaimer component', () => {
   const mockCookieSet = jest.fn()
 
   beforeAll(() => {
-    mocked(Cookies).mockImplementation(
-      () =>
-        ({
-          get: mockCookieGet,
-          set: mockCookieSet,
-        } as unknown as MockedObject<Cookies>)
-    )
+    mocked(Cookies).mockReturnValue({
+      get: mockCookieGet,
+      set: mockCookieSet,
+    } as unknown as MockedObject<Cookies>)
   })
 
   test('expect disclaimer loads under normal circumstances', async () => {
@@ -34,9 +31,8 @@ describe('Disclaimer component', () => {
     const closeButton = (await screen.findByText(/Accept & continue/i, {
       selector: 'button',
     })) as HTMLButtonElement
-    act(() => {
-      closeButton.click()
-    })
+    fireEvent.click(closeButton)
+
     expect(mockCookieSet).toHaveBeenCalledWith('disclaimer_accept', 'true', {
       path: '/',
       sameSite: 'strict',

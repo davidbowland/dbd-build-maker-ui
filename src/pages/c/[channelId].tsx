@@ -14,7 +14,7 @@ export interface ChannelPageProps {
 }
 
 const ChannelPage = ({ params }: ChannelPageProps): JSX.Element => {
-  const [tokenStatus, setTokenStatus] = useState<TwitchTokenStatus | undefined>(undefined)
+  const [tokenStatus, setTokenStatus] = useState<TwitchTokenStatus | undefined>()
 
   return (
     <main style={{ minHeight: '90vh' }}>

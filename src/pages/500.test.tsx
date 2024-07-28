@@ -33,7 +33,7 @@ describe('500 error page', () => {
     render(<InternalServerError />)
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
-      expect.anything()
+      expect.anything(),
     )
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })

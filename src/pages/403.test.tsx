@@ -33,7 +33,7 @@ describe('403 error page', () => {
     render(<Forbidden />)
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
-      expect.anything()
+      expect.anything(),
     )
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })

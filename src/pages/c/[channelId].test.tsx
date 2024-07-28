@@ -31,7 +31,7 @@ describe('Channel page', () => {
 
   test('expect rendering ChannelPage renders BuildList', () => {
     render(<ChannelPage params={{ channelId }} />)
-    expect(mocked(BuildTable)).toBeCalledWith(expect.objectContaining({ channelId }), {})
+    expect(mocked(BuildTable)).toHaveBeenCalledWith(expect.objectContaining({ channelId }), {})
   })
 
   test('expect rendering BuildPage renders PrivacyLink', () => {

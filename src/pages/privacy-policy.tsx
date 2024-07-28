@@ -8,7 +8,7 @@ import PrivacyPolicy from '@components/privacy-policy'
 import { TwitchTokenStatus } from '@types'
 
 const PrivacyPage = (): JSX.Element => {
-  const [_, setTokenStatus] = useState<TwitchTokenStatus | undefined>(undefined)
+  const [_, setTokenStatus] = useState<TwitchTokenStatus | undefined>()
 
   return (
     <>

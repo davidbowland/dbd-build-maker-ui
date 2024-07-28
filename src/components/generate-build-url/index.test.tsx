@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -38,23 +38,17 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
 
       expect(mocked(buildMaker).createBuildToken).toHaveBeenCalledWith('123456', 'otfghjklkgtyuijnmk', 'cfb')
       expect(((await screen.findByLabelText(/Build URL/i, { selector: 'input' })) as HTMLInputElement).value).toEqual(
-        buildUrl
+        buildUrl,
       )
     })
 
@@ -64,20 +58,17 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const manualBuildButton = (await screen.findByText(/Enter build yourself/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        manualBuildButton.click()
-      })
+      fireEvent.click(manualBuildButton)
 
+      await waitFor(() => {
+        expect(mocked(gatsby).navigate).toHaveBeenCalled()
+      })
       expect(mocked(buildMaker).createBuildToken).toHaveBeenCalledWith('123456', 'otfghjklkgtyuijnmk', 'cfb')
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith(buildPath)
     })
@@ -88,15 +79,11 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
 
       expect(await screen.findByText(/Requestor name is required/i)).toBeVisible()
     })
@@ -108,22 +95,16 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
 
       expect(mocked(buildMaker).createBuildToken).toHaveBeenCalled()
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.queryByText(/Error generating build URL/i)).toBeVisible()
       })
     })
@@ -135,23 +116,15 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error generating build URL/i)).not.toBeInTheDocument()
     })
@@ -162,18 +135,14 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const dialog = (await screen.findByText(/Create new build/i)) as HTMLBodyElement
-      await act(() => {
-        fireEvent.keyDown(dialog, {
-          code: 'Escape',
-          key: 'Escape',
-        })
+      fireEvent.keyDown(dialog, {
+        code: 'Escape',
+        key: 'Escape',
       })
 
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.queryByText(/Build URL/i)).not.toBeInTheDocument()
       })
     })
@@ -185,25 +154,17 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
       const dialog = (await screen.findByText(/Create new build/i)) as HTMLBodyElement
-      await act(() => {
-        fireEvent.keyDown(dialog, {
-          code: 'Escape',
-          key: 'Escape',
-        })
+      fireEvent.keyDown(dialog, {
+        code: 'Escape',
+        key: 'Escape',
       })
 
       expect(screen.queryByLabelText(/Generate build URL/i, { selector: 'button' })).not.toBeInTheDocument()
@@ -217,25 +178,17 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
       const copyToClipboardButton = (await screen.findByText(/Copy build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        copyToClipboardButton.click()
-      })
+      fireEvent.click(copyToClipboardButton)
 
       expect(mockCopyToClipboard).toHaveBeenCalledWith(buildUrl)
       expect(screen.queryByText(/Link copied to clipboard/i)).toBeVisible()
@@ -247,29 +200,19 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
       const copyToClipboardButton = (await screen.findByText(/Copy build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        copyToClipboardButton.click()
-      })
+      fireEvent.click(copyToClipboardButton)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Link copied to clipboard/i)).not.toBeInTheDocument()
     })
@@ -283,25 +226,17 @@ describe('GenerateBuildUrl component', () => {
       const generateTokenButton = (await screen.findByLabelText(/Create new build/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateTokenButton.click()
-      })
+      fireEvent.click(generateTokenButton)
       const submitterInput = (await screen.findByLabelText(/Name of Requestor/i)) as HTMLInputElement
-      await act(() => {
-        fireEvent.change(submitterInput, { target: { value: submitter } })
-      })
+      fireEvent.change(submitterInput, { target: { value: submitter } })
       const generateButton = (await screen.findByText(/Generate build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(() => {
-        generateButton.click()
-      })
+      fireEvent.click(generateButton)
       const copyToClipboardButton = (await screen.findByText(/Copy build URL/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        copyToClipboardButton.click()
-      })
+      fireEvent.click(copyToClipboardButton)
 
       expect(await screen.findByText(/Could not copy link to clipboard/i)).toBeVisible()
     })

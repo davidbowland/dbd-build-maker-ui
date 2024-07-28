@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -50,9 +50,8 @@ describe('BuildList component', () => {
       const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        completedBuildsTab.click()
-      })
+      fireEvent.click(completedBuildsTab)
+
       expect(await screen.findByText(/Jill Valentine/i)).toBeVisible()
     })
 
@@ -77,9 +76,7 @@ describe('BuildList component', () => {
 
       await screen.findByText(/Error fetching build list/i)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error fetching build list/i)).not.toBeInTheDocument()
     })
@@ -88,9 +85,7 @@ describe('BuildList component', () => {
       render(<BuildTable channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
 
       const scroller = (await screen.findByLabelText(/Scroll to top/i)) as HTMLDivElement
-      await act(() => {
-        scroller.click()
-      })
+      fireEvent.click(scroller)
 
       expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled()
     })
@@ -99,9 +94,7 @@ describe('BuildList component', () => {
       render(<BuildTable channelId={channelId} tokenStatus={twitchAuthTokenStatus} />)
 
       const refreshBuildsButton = (await screen.findByLabelText(/Refresh builds/i)) as HTMLDivElement
-      await act(() => {
-        refreshBuildsButton.click()
-      })
+      fireEvent.click(refreshBuildsButton)
 
       expect(mocked(buildMaker).fetchAllBuilds).toHaveBeenCalledTimes(2)
     })
@@ -128,7 +121,7 @@ describe('BuildList component', () => {
       render(<BuildTable channelId={channelId} tokenStatus={tokenForChannel} />)
 
       expect(mocked(buildMaker).updateChannelMods).toHaveBeenCalledWith(channelId, twitchAuthToken)
-      waitFor(() => {
+      await waitFor(() => {
         expect(console.error).toHaveBeenCalled()
       })
     })
@@ -136,7 +129,7 @@ describe('BuildList component', () => {
     test('expect GenerateBuildUrl shown', async () => {
       render(<BuildTable channelId={channelId} tokenStatus={tokenForChannel} />)
 
-      waitFor(() => {
+      await waitFor(() => {
         expect(mocked(GenerateBuildUrl)).toHaveBeenCalled()
       })
     })
@@ -154,23 +147,20 @@ describe('BuildList component', () => {
         const markCompleteButton = (await screen.findByText(/^Mark complete/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          markCompleteButton.click()
-        })
+        fireEvent.click(markCompleteButton)
         const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          completedBuildsTab.click()
-        })
-        waitFor(() => {
+        fireEvent.click(completedBuildsTab)
+
+        await waitFor(() => {
           expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
         })
         expect(mocked(buildMaker).patchBuild).toHaveBeenCalledWith(
           channelId,
           'ytrfghjklkmnbvfty',
           expect.anything(),
-          twitchAuthToken
+          twitchAuthToken,
         )
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'add', path: '/completed' }))
         expect(screen.queryAllByText(/Unmark complete/i).length).toEqual(2)
@@ -188,29 +178,24 @@ describe('BuildList component', () => {
         const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          completedBuildsTab.click()
-        })
+        fireEvent.click(completedBuildsTab)
         const unmarkCompleteButton = (await screen.findByText(/Unmark complete/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          unmarkCompleteButton.click()
-        })
+        fireEvent.click(unmarkCompleteButton)
         const pendingBuildsTab = (await screen.findByText(/Pending builds/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          pendingBuildsTab.click()
-        })
-        waitFor(() => {
+        fireEvent.click(pendingBuildsTab)
+
+        await waitFor(() => {
           expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
         })
         expect(mocked(buildMaker).patchBuild).toHaveBeenCalledWith(
           channelId,
           'jhgfghj',
           expect.anything(),
-          twitchAuthToken
+          twitchAuthToken,
         )
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'test', path: '/completed' }))
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'remove', path: '/completed' }))
@@ -224,13 +209,12 @@ describe('BuildList component', () => {
         const markCompleteButton = (await screen.findByText(/^Mark complete/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        await act(() => {
-          markCompleteButton.click()
-        })
-        waitFor(() => {
+        fireEvent.click(markCompleteButton)
+
+        await waitFor(() => {
           expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
-          expect(screen.queryByText(/Error updating build/i)).toBeVisible()
         })
+        expect(screen.queryByText(/Error updating build/i)).toBeVisible()
         expect(console.error).toHaveBeenCalled()
       })
 
@@ -242,9 +226,8 @@ describe('BuildList component', () => {
         const markCompleteButton = (await screen.findByText(/^Mark complete/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          markCompleteButton.click()
-        })
+        fireEvent.click(markCompleteButton)
+
         expect(mocked(buildMaker).patchBuild).not.toHaveBeenCalled()
       })
 
@@ -254,20 +237,16 @@ describe('BuildList component', () => {
         const listViewIcon = (await screen.findByLabelText(/List view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          listViewIcon.click()
-        })
+        fireEvent.click(listViewIcon)
         const gridViewIcon = (await screen.findByLabelText(/Grid view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          gridViewIcon.click()
-        })
+        fireEvent.click(gridViewIcon)
 
         expect(
           await screen.findByText(/^Mark complete/i, {
             selector: 'button',
-          })
+          }),
         ).toBeVisible()
       })
     })
@@ -285,27 +264,22 @@ describe('BuildList component', () => {
         const listViewIcon = (await screen.findByLabelText(/List view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          listViewIcon.click()
-        })
+        fireEvent.click(listViewIcon)
         const markCompleteSwitch = (await screen.findByLabelText(/^Mark complete/i)) as HTMLBaseElement
-        act(() => {
-          markCompleteSwitch.click()
-        })
+        fireEvent.click(markCompleteSwitch)
         const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          completedBuildsTab.click()
-        })
-        waitFor(() => {
+        fireEvent.click(completedBuildsTab)
+
+        await waitFor(() => {
           expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
         })
         expect(mocked(buildMaker).patchBuild).toHaveBeenCalledWith(
           channelId,
           'ytrfghjklkmnbvfty',
           expect.anything(),
-          twitchAuthToken
+          twitchAuthToken,
         )
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'add', path: '/completed' }))
         expect(screen.queryAllByLabelText(/Unmark complete/i).length).toEqual(2)
@@ -323,37 +297,30 @@ describe('BuildList component', () => {
         const listViewIcon = (await screen.findByLabelText(/List view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          listViewIcon.click()
-        })
+        fireEvent.click(listViewIcon)
         const completedBuildsTab = (await screen.findByText(/Completed builds/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          completedBuildsTab.click()
-        })
+        fireEvent.click(completedBuildsTab)
         const unmarkCompleteSwitch = (await screen.findByLabelText(/Unmark complete/i)) as HTMLBaseElement
-        act(() => {
-          unmarkCompleteSwitch.click()
-        })
+        fireEvent.click(unmarkCompleteSwitch)
         const pendingBuildsTab = (await screen.findByText(/Pending builds/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          pendingBuildsTab.click()
-        })
-        waitFor(() => {
+        fireEvent.click(pendingBuildsTab)
+
+        await waitFor(() => {
           expect(mocked(buildMaker).patchBuild).toHaveBeenCalled()
         })
         expect(mocked(buildMaker).patchBuild).toHaveBeenCalledWith(
           channelId,
           'jhgfghj',
           expect.anything(),
-          twitchAuthToken
+          twitchAuthToken,
         )
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'test', path: '/completed' }))
         expect(mockOperation).toHaveBeenCalledWith(expect.objectContaining({ op: 'remove', path: '/completed' }))
-        waitFor(() => {
+        await waitFor(() => {
           expect(screen.queryAllByLabelText(/^Mark complete/i).length).toEqual(2)
         })
       })
@@ -365,14 +332,11 @@ describe('BuildList component', () => {
         const listViewIcon = (await screen.findByLabelText(/List view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          listViewIcon.click()
-        })
+        fireEvent.click(listViewIcon)
         const markCompleteSwitch = (await screen.findByLabelText(/^Mark complete/i)) as HTMLBaseElement
-        await act(() => {
-          markCompleteSwitch.click()
-        })
-        waitFor(() => {
+        fireEvent.click(markCompleteSwitch)
+
+        await waitFor(() => {
           expect(screen.queryByText(/Error updating build/i)).toBeVisible()
         })
         expect(console.error).toHaveBeenCalled()
@@ -387,13 +351,10 @@ describe('BuildList component', () => {
         const listViewIcon = (await screen.findByLabelText(/List view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          listViewIcon.click()
-        })
+        fireEvent.click(listViewIcon)
         const markCompleteSwitch = (await screen.findByLabelText(/^Mark complete/i)) as HTMLBaseElement
-        act(() => {
-          markCompleteSwitch.click()
-        })
+        fireEvent.click(markCompleteSwitch)
+
         expect(mocked(buildMaker).patchBuild).not.toHaveBeenCalled()
       })
 
@@ -403,13 +364,10 @@ describe('BuildList component', () => {
         const listViewIcon = (await screen.findByLabelText(/List view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          listViewIcon.click()
-        })
+        fireEvent.click(listViewIcon)
         const markCompleteSwitch = (await screen.findByLabelText(/^Mark complete/i)) as HTMLBaseElement
-        act(() => {
-          markCompleteSwitch.click()
-        })
+        fireEvent.click(markCompleteSwitch)
+
         expect(mocked(buildMaker).patchBuild).not.toHaveBeenCalled()
       })
 
@@ -420,9 +378,8 @@ describe('BuildList component', () => {
         const listViewIcon = (await screen.findByLabelText(/List view/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          listViewIcon.click()
-        })
+        fireEvent.click(listViewIcon)
+
         expect(await screen.findByText(/No builds/i)).toBeVisible()
       })
     })
@@ -434,9 +391,8 @@ describe('BuildList component', () => {
         const sortIcon = (await screen.findByLabelText(/Sort addons and perks/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          sortIcon.click()
-        })
+        fireEvent.click(sortIcon)
+
         const perk1 = await screen.findByText(/Dark Devotion/i)
         expect(perk1.parentElement?.textContent).toEqual('Dark DevotionOppressionAnyAny')
       })
@@ -447,15 +403,12 @@ describe('BuildList component', () => {
         const sortIcon = (await screen.findByLabelText(/Sort addons and perks/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          sortIcon.click()
-        })
+        fireEvent.click(sortIcon)
         const unsortIcon = (await screen.findByLabelText(/Show addons and perk in submitted order/i, {
           selector: 'button',
         })) as HTMLButtonElement
-        act(() => {
-          unsortIcon.click()
-        })
+        fireEvent.click(unsortIcon)
+
         const perk1 = await screen.findByText(/Dark Devotion/i)
         expect(perk1.parentElement?.textContent).toEqual('AnyDark DevotionAnyOppression')
       })
@@ -477,9 +430,7 @@ describe('BuildList component', () => {
 
       await screen.findByText(/Error fetching channel info/i)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error fetching channel info/i)).not.toBeInTheDocument()
     })
@@ -490,9 +441,7 @@ describe('BuildList component', () => {
       const modsTab = (await screen.findByText(/Mods/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        modsTab.click()
-      })
+      fireEvent.click(modsTab)
 
       expect(await screen.findByText(/mod1/i)).toBeInTheDocument()
     })
@@ -504,9 +453,7 @@ describe('BuildList component', () => {
       const modsTab = (await screen.findByText(/Mods/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        modsTab.click()
-      })
+      fireEvent.click(modsTab)
 
       expect(await screen.findByText(/No mods/i)).toBeInTheDocument()
     })

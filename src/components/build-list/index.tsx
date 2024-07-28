@@ -54,11 +54,11 @@ enum BuildsSort {
 }
 
 const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
-  const [builds, setBuilds] = useState<BuildBatch[] | undefined>(undefined)
+  const [builds, setBuilds] = useState<BuildBatch[] | undefined>()
   const [buildsSorted, setBuildsSorted] = useState<BuildsSort>(BuildsSort.UNSORTED)
-  const [channel, setChannel] = useState<Channel | undefined>(undefined)
+  const [channel, setChannel] = useState<Channel | undefined>()
   const [displayView, setDisplayView] = useState<DisplayView>(DisplayView.GRID_VIEW)
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [refreshCount, setRefreshCount] = useState(0)
   const [tabIndex, setTabIndex] = useState<BuildView>(BuildView.PENDING_BUILDS)
@@ -88,7 +88,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     fetchAllBuilds(channelId)
       .then(setBuilds)
       .catch((error) => {
-        console.error('refreshBuilds', error)
+        console.error('refreshBuilds', { channelId, error })
         setErrorMessage('Error fetching build list, please refresh the page to try again')
       })
       .then(() => setIsRefreshing(false))
@@ -142,7 +142,7 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
     fetchChannel(channelId)
       .then(setChannel)
       .catch((error) => {
-        console.error('fetchChannel', error)
+        console.error('fetchChannel', { channelId, error })
         setErrorMessage('Error fetching channel info, please refresh the page to try again')
       })
 
@@ -159,7 +159,9 @@ const BuildList = ({ channelId, tokenStatus }: BuildListProps): JSX.Element => {
 
   useEffect(() => {
     if (channelId === tokenStatus?.id && accessToken) {
-      updateChannelMods(channelId, accessToken).catch((error) => console.error('updateChannelMods', error))
+      updateChannelMods(channelId, accessToken).catch((error) =>
+        console.error('updateChannelMods', { channelId, error }),
+      )
     }
   }, [tokenStatus])
 

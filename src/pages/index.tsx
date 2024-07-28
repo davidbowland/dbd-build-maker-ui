@@ -8,7 +8,7 @@ import PrivacyLink from '@components/privacy-link'
 import { TwitchTokenStatus } from '@types'
 
 const Index = (): JSX.Element => {
-  const [tokenStatus, setTokenStatus] = useState<TwitchTokenStatus | undefined>(undefined)
+  const [tokenStatus, setTokenStatus] = useState<TwitchTokenStatus | undefined>()
 
   return (
     <main style={{ minHeight: '90vh' }}>

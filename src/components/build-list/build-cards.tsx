@@ -163,10 +163,10 @@ const BuildCards = ({
             current && [
               ...current.filter((build: BuildBatch) => build.id !== buildId),
               { channelId, data: updatedBuild, id: buildId },
-            ]
+            ],
         )
       } catch (error) {
-        console.error('setBuildCompleted', error)
+        console.error('setBuildCompleted', { build, buildId, channelId, completed, error, jsonPatchOperations })
         setErrorMessage('Error updating build, please refresh the page as the build may have changed')
       }
     }

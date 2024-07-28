@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -35,7 +35,7 @@ describe('ChannelCard component', () => {
       render(<ChannelCard channelId={channelId} />)
 
       expect(
-        await screen.findByText(/Error fetching channel details, please refresh the page to try again/i)
+        await screen.findByText(/Error fetching channel details, please refresh the page to try again/i),
       ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -45,12 +45,10 @@ describe('ChannelCard component', () => {
       render(<ChannelCard channelId={channelId} />)
 
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(
-        screen.queryByText(/Error fetching channel details, please refresh the page to try again/i)
+        screen.queryByText(/Error fetching channel details, please refresh the page to try again/i),
       ).not.toBeInTheDocument()
     })
   })
@@ -90,17 +88,11 @@ describe('ChannelCard component', () => {
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
 
       const editRestrictionsIcon = (await screen.findByLabelText(/Edit instructions/i)) as HTMLImageElement
-      act(() => {
-        editRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      })
+      fireEvent.click(editRestrictionsIcon)
       const restrictionsInput = (await screen.findByLabelText(/Special instructions/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
-      })
+      fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
       const submitRestrictionsIcon = (await screen.findByLabelText(/Submit/i)) as HTMLImageElement
-      act(() => {
-        submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      })
+      fireEvent.click(submitRestrictionsIcon)
 
       expect(mocked(buildMaker).patchChannel).toHaveBeenCalledWith(
         '123456',
@@ -108,7 +100,7 @@ describe('ChannelCard component', () => {
           { op: 'test', path: '/notes', value: 'No new perks' },
           { op: 'replace', path: '/notes', value: 'No nurse' },
         ],
-        'otfghjklkgtyuijnmk'
+        'otfghjklkgtyuijnmk',
       )
     })
 
@@ -116,17 +108,11 @@ describe('ChannelCard component', () => {
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
 
       const editRestrictionsIcon = (await screen.findByLabelText(/Edit instructions/i)) as HTMLImageElement
-      act(() => {
-        editRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      })
+      fireEvent.click(editRestrictionsIcon)
       const restrictionsInput = (await screen.findByLabelText(/Special instructions/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(restrictionsInput, { target: { value: '' } })
-      })
+      fireEvent.change(restrictionsInput, { target: { value: '' } })
       const submitRestrictionsIcon = (await screen.findByLabelText(/Submit/i)) as HTMLImageElement
-      act(() => {
-        submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      })
+      fireEvent.click(submitRestrictionsIcon)
 
       expect(mocked(buildMaker).patchChannel).toHaveBeenCalledWith(
         '123456',
@@ -134,7 +120,7 @@ describe('ChannelCard component', () => {
           { op: 'test', path: '/notes', value: 'No new perks' },
           { op: 'remove', path: '/notes' },
         ],
-        'otfghjklkgtyuijnmk'
+        'otfghjklkgtyuijnmk',
       )
     })
 
@@ -144,17 +130,11 @@ describe('ChannelCard component', () => {
       render(<ChannelCard channelId={channelId} tokenStatus={tokenForChannel} />)
 
       const editRestrictionsIcon = (await screen.findByLabelText(/Edit instructions/i)) as HTMLImageElement
-      act(() => {
-        editRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      })
+      fireEvent.click(editRestrictionsIcon)
       const restrictionsInput = (await screen.findByLabelText(/Special instructions/i)) as HTMLInputElement
-      act(() => {
-        fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
-      })
+      fireEvent.change(restrictionsInput, { target: { value: 'No nurse' } })
       const submitRestrictionsIcon = (await screen.findByLabelText(/Submit/i)) as HTMLImageElement
-      act(() => {
-        submitRestrictionsIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      })
+      fireEvent.click(submitRestrictionsIcon)
 
       expect(await screen.findByText(/Unable to save changes, please reload the page and try again/i)).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)

@@ -16,8 +16,8 @@ export interface AuthenticatedProps {
 }
 
 const Authenticated = ({ children, setTokenStatus }: AuthenticatedProps): JSX.Element => {
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
-  const [userName, setUserName] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
+  const [userName, setUserName] = useState<string | undefined>()
   const authToken = getAccessToken()
 
   const snackbarErrorClose = (): void => {
@@ -39,7 +39,7 @@ const Authenticated = ({ children, setTokenStatus }: AuthenticatedProps): JSX.El
           }
         })
         .catch((error) => {
-          console.error('validateTwitchToken', error)
+          console.error('validateTwitchToken', { error })
           setErrorMessage('Problem verifying token. Refresh the page.')
           setTokenStatus(undefined)
         })

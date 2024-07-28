@@ -41,7 +41,7 @@ describe('404 error page', () => {
     render(<NotFound />)
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
-      expect.anything()
+      expect.anything(),
     )
     expect(mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })

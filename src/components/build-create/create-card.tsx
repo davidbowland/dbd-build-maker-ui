@@ -62,11 +62,11 @@ const CreateCard = ({
     perk4: 'Any',
   })
   const [buildType, setBuildType] = useState<BuildType>(
-    channel.disabledOptions.indexOf('Killers') === -1 ? 'killer' : 'survivor'
+    channel.disabledOptions.indexOf('Killers') === -1 ? 'killer' : 'survivor',
   )
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
+  const [successMessage, setSuccessMessage] = useState<string | undefined>()
 
   const getBuildChoices = (build: BuildSubmission, buildType: BuildType): BuildChoices => {
     if (buildType === 'killer') {
@@ -114,7 +114,7 @@ const CreateCard = ({
     name: string,
     value: string,
     options: string[],
-    disabled: string[]
+    disabled: string[],
   ): JSX.Element => {
     const randomOptions = options.filter((value) => isEnabled(value, disabled))
     return (
@@ -170,7 +170,7 @@ const CreateCard = ({
       setSuccessMessage('Build submitted successfully!')
       navigate(`/c/${encodeURIComponent(channelId)}`)
     } catch (error) {
-      console.error('submitClick', error)
+      console.error('submitClick', { build, buildId, buildType, channelId, error })
       setErrorMessage('Error processing submission, please reload the page and try again')
       setIsSubmitting(false)
     }

@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -46,7 +46,7 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
 
       expect(await screen.findByText(/Testing children/i)).toBeVisible()
@@ -57,12 +57,10 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
       const signInButton = (await screen.findByText(/Sign in/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        signInButton.click()
-      })
+      fireEvent.click(signInButton)
 
       expect(mocked(auth).initiateTwitchLogin).toHaveBeenCalled()
     })
@@ -78,13 +76,14 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
 
       await waitFor(() => {
-        expect(setTokenStatus).toBeCalledWith(twitchAuthTokenStatus)
+        expect(setTokenStatus).toHaveBeenCalled()
       })
       expect(await screen.findByText(/btse/i)).toBeVisible()
+      expect(setTokenStatus).toHaveBeenCalledWith(twitchAuthTokenStatus)
     })
 
     test('expect invalid token shows an error message and refreshes with Twitch', async () => {
@@ -92,7 +91,7 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
 
       await waitFor(() => {
@@ -106,11 +105,11 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
 
       await waitFor(() => {
-        expect(setTokenStatus).toBeCalledWith(undefined)
+        expect(setTokenStatus).toHaveBeenCalledWith(undefined)
       })
       expect(await screen.findByText(/Problem verifying token. Refresh the page./i)).toBeVisible()
       expect(console.error).toHaveBeenCalled()
@@ -121,16 +120,14 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
 
-      await waitFor(async () => {
-        expect(await screen.findByText(/Problem verifying token. Refresh the page./i)).toBeVisible()
+      await waitFor(() => {
+        expect(screen.getByText(/Problem verifying token. Refresh the page./i)).toBeVisible()
       })
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(await screen.queryByText(/Problem verifying token. Refresh the page./i)).not.toBeInTheDocument()
     })
@@ -146,15 +143,13 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
-      await waitFor(async () => {
-        expect(await screen.findByLabelText(/menu/i, { selector: 'button' })).toBeVisible()
+      await waitFor(() => {
+        expect(screen.getByLabelText(/menu/i, { selector: 'button' })).toBeVisible()
       })
       const menuButton = (await screen.findByLabelText(/menu/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        menuButton.click()
-      })
+      fireEvent.click(menuButton)
 
       expect(await screen.findByText(/Sign out/i)).toBeVisible()
       expect(await screen.findByText(/Close/i)).toBeVisible()
@@ -164,19 +159,15 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
       await waitFor(() => {
         expect(screen.queryByLabelText(/menu/i, { selector: 'button' })).toBeVisible()
       })
       const menuButton = (await screen.findByLabelText(/menu/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        menuButton.click()
-      })
+      fireEvent.click(menuButton)
       const signOutButton = (await screen.findByText(/Sign out/i)) as HTMLButtonElement
-      await act(async () => {
-        signOutButton.click()
-      })
+      fireEvent.click(signOutButton)
 
       await waitFor(() => {
         expect(windowLocationReload).toHaveBeenCalled()
@@ -188,19 +179,15 @@ describe('Authenticated component', () => {
       render(
         <Authenticated setTokenStatus={setTokenStatus}>
           <p>Testing children</p>
-        </Authenticated>
+        </Authenticated>,
       )
-      waitFor(async () => {
-        expect(await screen.findByLabelText(/menu/i, { selector: 'button' })).toBeVisible()
+      await waitFor(() => {
+        expect(screen.getByLabelText(/menu/i, { selector: 'button' })).toBeVisible()
       })
       const menuButton = (await screen.findByLabelText(/menu/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        menuButton.click()
-      })
+      fireEvent.click(menuButton)
       const closeButton = (await screen.findByText(/Close/i)) as HTMLButtonElement
-      await act(async () => {
-        closeButton.click()
-      })
+      fireEvent.click(closeButton)
 
       await waitFor(() => {
         expect(screen.queryByText(/Sign out/i)).not.toBeVisible()

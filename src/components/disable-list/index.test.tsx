@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -20,12 +20,11 @@ describe('DisableList component', () => {
   describe('data load', () => {
     test('expect build options rendered', async () => {
       render(<DisableList accessToken={twitchAuthToken} channelId={channelId} />)
+
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
 
       expect(mocked(buildMaker).fetchBuildOptions).toHaveBeenCalled()
       expect(mocked(buildMaker).fetchChannel).toHaveBeenCalledWith(channelId)
@@ -39,9 +38,7 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
 
       expect(await screen.findByText(/Error fetching build options, please try again/i)).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
@@ -54,9 +51,7 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
 
       expect(await screen.findByText(/Error fetching channel details, please try again/i)).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
@@ -69,13 +64,9 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error fetching channel details, please try again/i)).not.toBeInTheDocument()
     })
@@ -88,21 +79,13 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const killerListItem = (await screen.findByText(/Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerListItem.click()
-      })
+      fireEvent.click(killerListItem)
       const notesListItem = (await screen.findByText(/Notes/i)) as HTMLBodyElement
-      act(() => {
-        notesListItem.click()
-      })
+      fireEvent.click(notesListItem)
       const saveOptionsClick = (await screen.findByText(/Save/i)) as HTMLButtonElement
-      act(() => {
-        saveOptionsClick.click()
-      })
+      fireEvent.click(saveOptionsClick)
 
       expect(mocked(buildMaker).patchChannel).toHaveBeenCalledWith(
         '123456',
@@ -110,7 +93,7 @@ describe('DisableList component', () => {
           { op: 'add', path: '/disabledOptions/0', value: 'Killers' },
           { op: 'add', path: '/disabledOptions/1', value: 'Notes' },
         ],
-        'otfghjklkgtyuijnmk'
+        'otfghjklkgtyuijnmk',
       )
     })
 
@@ -120,30 +103,20 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const killerListItem = (await screen.findByText(/Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerListItem.click()
-      })
+      fireEvent.click(killerListItem)
       const survivorListItem = (await screen.findByText(/Survivors/i)) as HTMLBodyElement
-      act(() => {
-        survivorListItem.click()
-      })
+      fireEvent.click(survivorListItem)
       const killerListItem2 = (await screen.findByText(/Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerListItem2.click()
-      })
+      fireEvent.click(killerListItem2)
       const saveOptionsClick = (await screen.findByText(/Save/i)) as HTMLButtonElement
-      act(() => {
-        saveOptionsClick.click()
-      })
+      fireEvent.click(saveOptionsClick)
 
       expect(mocked(buildMaker).patchChannel).toHaveBeenCalledWith(
         '123456',
         [{ op: 'add', path: '/disabledOptions/0', value: 'Survivors' }],
-        'otfghjklkgtyuijnmk'
+        'otfghjklkgtyuijnmk',
       )
     })
 
@@ -154,20 +127,14 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const killerListItem = (await screen.findByText(/Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerListItem.click()
-      })
+      fireEvent.click(killerListItem)
       const saveOptionsClick = (await screen.findByText(/Save/i)) as HTMLButtonElement
-      act(() => {
-        saveOptionsClick.click()
-      })
+      fireEvent.click(saveOptionsClick)
 
       expect(
-        await screen.findByText(/Error saving build options, please refresh the page and try again/i)
+        await screen.findByText(/Error saving build options, please refresh the page and try again/i),
       ).toBeVisible()
       expect(console.error).toHaveBeenCalledTimes(1)
     })
@@ -179,21 +146,13 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const killerListItem = (await screen.findByText(/Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerListItem.click()
-      })
+      fireEvent.click(killerListItem)
       const survivorsListItem = (await screen.findByText(/Survivors/i)) as HTMLBodyElement
-      act(() => {
-        survivorsListItem.click()
-      })
+      fireEvent.click(survivorsListItem)
       const saveOptionsClick = (await screen.findByText(/Save/i)) as HTMLButtonElement
-      act(() => {
-        saveOptionsClick.click()
-      })
+      fireEvent.click(saveOptionsClick)
 
       expect(await screen.findByText(/Either Killers or Survivors must be enabled/i)).toBeVisible()
     })
@@ -204,13 +163,9 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const killerExpand = (await screen.findByLabelText(/Expand Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerExpand.click()
-      })
+      fireEvent.click(killerExpand)
 
       expect(await screen.findByText(/Artist/i)).toBeVisible()
     })
@@ -221,20 +176,14 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const killerExpand = (await screen.findByLabelText(/Expand Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerExpand.click()
-      })
+      fireEvent.click(killerExpand)
       await screen.findByText(/Artist/i)
       const killerCollapse = (await screen.findByLabelText(/Collapse Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerCollapse.click()
-      })
+      fireEvent.click(killerCollapse)
 
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.queryByLabelText(/Collapse Killers/i)).not.toBeInTheDocument()
       })
     })
@@ -247,18 +196,14 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const dialog = (await screen.findByText(/Enabled build options/i)) as HTMLBodyElement
-      await act(() => {
-        fireEvent.keyDown(dialog, {
-          code: 'Escape',
-          key: 'Escape',
-        })
+      fireEvent.keyDown(dialog, {
+        code: 'Escape',
+        key: 'Escape',
       })
 
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.queryByText(/Save$/i, { selector: 'button' })).not.toBeInTheDocument()
       })
     })
@@ -270,23 +215,15 @@ describe('DisableList component', () => {
       const editBuildOptionsButton = (await screen.findByLabelText(/Edit build options/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      act(() => {
-        editBuildOptionsButton.click()
-      })
+      fireEvent.click(editBuildOptionsButton)
       const killerListItem = (await screen.findByText(/Killers/i)) as HTMLBodyElement
-      act(() => {
-        killerListItem.click()
-      })
+      fireEvent.click(killerListItem)
       const saveOptionsClick = (await screen.findByText(/Save/i)) as HTMLButtonElement
-      act(() => {
-        saveOptionsClick.click()
-      })
+      fireEvent.click(saveOptionsClick)
       const dialog = (await screen.findByText(/Enabled build options/i)) as HTMLBodyElement
-      await act(() => {
-        fireEvent.keyDown(dialog, {
-          code: 'Escape',
-          key: 'Escape',
-        })
+      fireEvent.keyDown(dialog, {
+        code: 'Escape',
+        key: 'Escape',
       })
 
       expect(await screen.findByText(/Save$/i, { selector: 'button' })).toBeInTheDocument()

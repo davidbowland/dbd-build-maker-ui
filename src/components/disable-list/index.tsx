@@ -32,12 +32,12 @@ export interface DisableListProps {
 }
 
 const DisableList = ({ accessToken, channelId }: DisableListProps): JSX.Element => {
-  const [buildOptions, setBuildOptions] = useState<BuildOptions | undefined>(undefined)
-  const [channel, setChannel] = useState<Channel | undefined>(undefined)
+  const [buildOptions, setBuildOptions] = useState<BuildOptions | undefined>()
+  const [channel, setChannel] = useState<Channel | undefined>()
   const [collapsedOptions, setCollapsedOptions] = useState<{ [key: string]: boolean }>({})
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [disabledOptions, setDisabledOptions] = useState<string[]>([])
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
 
   const dialogClose = (): void => {
@@ -149,7 +149,7 @@ const DisableList = ({ accessToken, channelId }: DisableListProps): JSX.Element 
       setChannel(newChannel)
       setDialogOpen(false)
     } catch (error) {
-      console.error('saveBuildOptions', error)
+      console.error('saveBuildOptions', { channel, disabledOptions, error })
       setErrorMessage('Error saving build options, please refresh the page and try again')
     }
     setIsLoading(false)
@@ -190,14 +190,14 @@ const DisableList = ({ accessToken, channelId }: DisableListProps): JSX.Element 
       fetchBuildOptions()
         .then(setBuildOptions)
         .catch((error) => {
-          console.error('fetchBuildOptions', error)
+          console.error('fetchBuildOptions', { error })
           setErrorMessage('Error fetching build options, please try again')
           setDialogOpen(false)
         })
       fetchChannel(channelId)
         .then(setChannel)
         .catch((error) => {
-          console.error('fetchChannel', error)
+          console.error('fetchChannel', { channelId, error })
           setErrorMessage('Error fetching channel details, please try again')
           setDialogOpen(false)
         })

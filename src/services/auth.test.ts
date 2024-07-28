@@ -24,7 +24,7 @@ describe('Auth service', () => {
         ({
           get: mockCookieGet,
           set: mockCookieSet,
-        } as unknown as MockedObject<Cookies>)
+        }) as unknown as MockedObject<Cookies>,
     )
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -101,7 +101,7 @@ describe('Auth service', () => {
 
       expect(mockCookieGet).toHaveBeenCalledWith('return_url')
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith(
-        'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=jhgfrtyhjkjgyjh&redirect_uri=http%3A%2F%2Flocalhost&scope=moderation%3Aread'
+        'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=jhgfrtyhjkjgyjh&redirect_uri=http%3A%2F%2Flocalhost&scope=moderation%3Aread',
       )
       expect(mockCookieSet).toHaveBeenCalledWith('return_url', '/c/123456', {
         path: '/',
@@ -121,7 +121,7 @@ describe('Auth service', () => {
 
       expect(mockCookieGet).toHaveBeenCalledWith('return_url')
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith(
-        'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=jhgfrtyhjkjgyjh&redirect_uri=http%3A%2F%2Flocalhost&scope=moderation%3Aread'
+        'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=jhgfrtyhjkjgyjh&redirect_uri=http%3A%2F%2Flocalhost&scope=moderation%3Aread',
       )
       expect(mockCookieSet).not.toHaveBeenCalledWith('return_url', expect.anything(), expect.anything())
     })

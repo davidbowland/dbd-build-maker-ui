@@ -26,7 +26,7 @@ const Themed = ({ children }: ThemedProps): JSX.Element => {
           mode: prefersDarkMode ? 'dark' : 'light',
         },
       }),
-    [prefersDarkMode]
+    [prefersDarkMode],
   )
 
   return (

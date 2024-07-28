@@ -48,10 +48,10 @@ enum ChannelSort {
 }
 
 const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
-  const [channels, setChannels] = useState<ChannelBatch[] | undefined>(undefined)
+  const [channels, setChannels] = useState<ChannelBatch[] | undefined>()
   const [channelFilter, setChannelFilter] = useState('')
   const [channelSort, setChannelSort] = useState<ChannelSort>(ChannelSort.TRENDING)
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showDeletePending, setShowDeletePending] = useState(false)
 
@@ -70,7 +70,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
       await deleteChannel(channelId, accessToken)
       window.location.reload()
     } catch (error) {
-      console.error('deleteChannelClick', error)
+      console.error('deleteChannelClick', { channelId, error })
       setErrorMessage('Error deleting channel')
       setShowDeletePending(false)
     }
@@ -206,7 +206,7 @@ const ChannelList = ({ tokenStatus }: ChannelListProps): JSX.Element => {
     fetchAllChannels()
       .then(setChannels)
       .catch((error) => {
-        console.error('fetchAllChannels', error)
+        console.error('fetchAllChannels', { error })
         setErrorMessage('Error fetching channel list, please refresh the page to try again')
       })
   }, [])

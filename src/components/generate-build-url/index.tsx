@@ -32,21 +32,21 @@ enum BuildType {
 type Dialogs = 'none' | 'generate' | 'complete'
 
 const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JSX.Element => {
-  const [buildUrl, setBuildUrl] = useState<string | undefined>(undefined)
+  const [buildUrl, setBuildUrl] = useState<string | undefined>()
   const [dialogOpen, setDialogOpen] = useState<Dialogs>('none')
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
-  const [expiration, setExpiration] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
+  const [expiration, setExpiration] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [submitter, setSubmitter] = useState('')
-  const [submitterError, setSubmitterError] = useState<string | undefined>(undefined)
-  const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
+  const [submitterError, setSubmitterError] = useState<string | undefined>()
+  const [successMessage, setSuccessMessage] = useState<string | undefined>()
 
   const copyBuildUrl = (buildUrl: string): void => {
     try {
       navigator.clipboard.writeText(buildUrl)
       setSuccessMessage('Link copied to clipboard')
     } catch (error) {
-      console.error('copyShortenedUrl', error)
+      console.error('copyShortenedUrl', { buildUrl, error })
       setErrorMessage('Could not copy link to clipboard')
     }
   }
@@ -77,7 +77,7 @@ const GenerateBuildUrl = ({ accessToken, channelId }: GenerateBuildUrlProps): JS
         setDialogOpen('complete')
       }
     } catch (error) {
-      console.error('generateBuildUrl', error)
+      console.error('generateBuildUrl', { buildType, channelId, error, submitter })
       setErrorMessage('Error generating build URL')
     }
     setIsLoading(false)

@@ -29,8 +29,8 @@ export interface ChannelCardProps {
 }
 
 const ChannelCard = ({ builds, channelId, tokenStatus }: ChannelCardProps): JSX.Element => {
-  const [channelInfo, setChannelInfo] = useState<Channel | undefined>(undefined)
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [channelInfo, setChannelInfo] = useState<Channel | undefined>()
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [instructions, setInstructions] = useState(NO_INSTRUCTIONS_TEXT)
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -50,7 +50,7 @@ const ChannelCard = ({ builds, channelId, tokenStatus }: ChannelCardProps): JSX.
       setChannelInfo(newChannelInfo)
       setIsEditing(false)
     } catch (error) {
-      console.error('handleSubmitClick', error)
+      console.error('handleSubmitClick', { channelId, channelInfo, error, instructions })
       setErrorMessage('Unable to save changes, please reload the page and try again')
     }
     setIsLoading(false)
@@ -147,7 +147,7 @@ const ChannelCard = ({ builds, channelId, tokenStatus }: ChannelCardProps): JSX.
     fetchChannel(channelId)
       .then(setChannelInfo)
       .catch((error) => {
-        console.error('fetchChannel', error)
+        console.error('fetchChannel', { channelId, error })
         setErrorMessage('Error fetching channel details, please refresh the page to try again')
       })
   }, [builds])

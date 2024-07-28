@@ -33,8 +33,8 @@ export const initiateTwitchLogin = (): void => {
   cookies.set('access_token', '', { path: '/', sameSite: 'strict', secure: true })
   navigate(
     `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${encodeURIComponent(
-      twitchClientId
-    )}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=${encodeURIComponent('moderation:read')}`
+      twitchClientId,
+    )}&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=${encodeURIComponent('moderation:read')}`,
   )
 }
 

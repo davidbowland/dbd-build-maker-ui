@@ -15,7 +15,7 @@ export interface BuildPageProps {
 }
 
 const BuildPage = ({ params }: BuildPageProps): JSX.Element => {
-  const [tokenStatus, setTokenStatus] = useState<TwitchTokenStatus | undefined>(undefined)
+  const [tokenStatus, setTokenStatus] = useState<TwitchTokenStatus | undefined>()
 
   return (
     <main style={{ minHeight: '90vh' }}>

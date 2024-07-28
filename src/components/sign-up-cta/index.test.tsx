@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -18,9 +18,7 @@ describe('SignUpCta component', () => {
     render(<SignUpCta />)
 
     const signInButton = (await screen.findByText(/Sign in with Twitch/i, { selector: 'button' })) as HTMLButtonElement
-    await act(async () => {
-      signInButton.click()
-    })
+    fireEvent.click(signInButton)
 
     expect(mocked(auth).initiateTwitchLogin).toHaveBeenCalled()
   })

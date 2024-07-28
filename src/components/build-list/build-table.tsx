@@ -127,10 +127,10 @@ const BuildTable = ({
             current && [
               ...current.filter((build: BuildBatch) => build.id !== buildId),
               { channelId, data: updatedBuild, id: buildId },
-            ]
+            ],
         )
       } catch (error) {
-        console.error('setBuildCompleted', error)
+        console.error('setBuildCompleted', { build, buildId, channelId, completed, error, jsonPatchOperations })
         setErrorMessage('Error updating build, please refresh the page as the build may have changed')
       }
     }
@@ -193,7 +193,7 @@ const BuildTable = ({
               rows={builds.map((b) => {
                 const [addon1, addon2] = [b.data.addon1, b.data.addon2].sort(sortCompareFn)
                 const [perk1, perk2, perk3, perk4] = [b.data.perk1, b.data.perk2, b.data.perk3, b.data.perk4].sort(
-                  sortCompareFn
+                  sortCompareFn,
                 )
                 return { ...b.data, addon1, addon2, id: b.id, perk1, perk2, perk3, perk4 }
               })}
